@@ -1,0 +1,11 @@
+# Terraform state
+**/*.tfstate
+**/*.tfstate.backup
+
+# Keys
+**/key
+**/key.pub
+**/key.pem
+
+# Virtualenv
+**/venv
