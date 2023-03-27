@@ -1,0 +1,20 @@
+volumes:
+  pihole_data:
+  pihole_dnsmasq:
+
+services:
+  pihole:
+    image: pihole/pihole:2023.01
+    container_name: pihole
+    restart: always
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - pihole_data:/etc/pihole
+      - pihole_dnsmasq:/etc/dnsmasq.d
+    environment:
+      - DNSMASQ_USER=root
+      - TZ=America/Sao_Paulo
+      - INTERFACE=enp0s31f6
+      - WEB_PORT=81
