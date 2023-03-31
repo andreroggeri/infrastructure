@@ -19,7 +19,7 @@ services:
         --keep-weekly 5
         --keep-monthly 12
       AWS_ACCESS_KEY_ID: "$AWS_ACCESS_KEY_ID"
-      AWS_SECRET_ACCESS_KEY: "AWS_SECRET_ACCESS_KEY"
+      AWS_SECRET_ACCESS_KEY: "$AWS_SECRET_ACCESS_KEY"
       TZ: "America/Sao_Paulo"
     volumes:
       - /var/lib/docker/volumes:/mnt/volumes:ro
