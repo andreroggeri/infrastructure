@@ -23,7 +23,7 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
 
   grafana:
-    image: grafana/grafana:8.5.22
+    image: grafana/grafana:9.2.15
     container_name: grafana
     networks:
       - monitoring
