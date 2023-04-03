@@ -1,0 +1,14 @@
+networks:
+  applications:
+    external: true
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:2023.3.1
+    container_name: cloudflared
+    restart: unless-stopped
+    command: "tunnel --no-autoupdate run --token $CLOUDFLARE_TOKEN"
+    networks:
+      - applications
+    environment:
+      - TZ=America/Sao_Paulo
