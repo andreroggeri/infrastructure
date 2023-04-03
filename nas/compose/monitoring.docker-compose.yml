@@ -1,0 +1,76 @@
+version: '3'
+
+volumes:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  monitoring:
+  applications:
+    external: true
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.43.0
+    container_name: prometheus
+    restart: unless-stopped    
+    networks:
+      - monitoring
+    volumes:
+      - /archive/data/nas/prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+
+  grafana:
+    image: grafana/grafana:8.5.22
+    container_name: grafana
+    networks:
+      - monitoring
+      - applications
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:v1.5.0
+    container_name: node_exporter
+    restart: unless-stopped
+    networks:
+      - monitoring
+    command:
+      - '--path.rootfs=/host'
+    pid: host
+    volumes:
+      - '/:/host:ro,rslave'
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.1
+    container_name: cadvisor
+    restart: unless-stopped
+    networks:
+      - monitoring
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+  
+  speedtest:
+    image: jraviles/prometheus_speedtest:0.9.14
+    container_name: speedtest
+    restart: unless-stopped
+    networks:
+      - monitoring
+    
+  grafana-ntfy:
+    image: saibe1111/grafana-to-ntfy:1.0.0
+    container_name: grafana-ntfy
+    restart: unless-stopped
+    networks:
+      - monitoring
+    environment:
+      - "NTFY_TOPIC=${NTFY_TOPIC}"
