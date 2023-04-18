@@ -14,7 +14,7 @@ services:
       - PGID=1001
       - TZ=America/Sao_Paulo
       - REGENERATE_SETTINGS=true
-      - SITE_ROOT=https://healthchecks.local.andreroggeri.com.br
+      - SITE_ROOT=$HEALTHCHECKS_HOST
       - SITE_NAME=Healthchecks
       - SUPERUSER_EMAIL=$HEALTHCHECKS_SUPERUSER_EMAIL
       - SUPERUSER_PASSWORD=$HEALTHCHECKS_SUPERUSER_PASSWORD
