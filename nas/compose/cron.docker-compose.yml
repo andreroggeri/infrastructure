@@ -1,0 +1,54 @@
+volumes:
+  healthchecks_config:
+
+networks:
+  applications:
+    external: true
+
+services:
+  healthchecks:
+    image: linuxserver/healthchecks:2.7.20230331
+    container_name: healthchecks
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=America/Sao_Paulo
+      - REGENERATE_SETTINGS=true
+      - SITE_ROOT=https://healthchecks.local.andreroggeri.com.br
+      - SITE_NAME=Healthchecks
+      - SUPERUSER_EMAIL=$HEALTHCHECKS_SUPERUSER_EMAIL
+      - SUPERUSER_PASSWORD=$HEALTHCHECKS_SUPERUSER_PASSWORD
+    volumes:
+      - healthchecks_config:/config
+    networks:
+      - applications
+    restart: unless-stopped
+
+  runitor:
+    image: runitor-ynab
+    build:
+      context: ./cron
+      dockerfile: runitor.Dockerfile
+    container_name: runitor
+    command: -api-url ${HEALTHCHECKS_HOST}/ping --uuid ${SYNC_PING_UUID} -- ./sync-transactions.sh
+    depends_on:
+      - healthchecks
+    environment:
+      - SYNC_CONFIG=$SYNC_CONFIG
+      - SYNC_TOPIC=$SYNC_TOPIC
+
+  ofelia:
+    image: mcuadros/ofelia:v0.3.7
+    restart: unless-stopped
+    container_name: ofelia
+    depends_on:
+      - runitor
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - ofelia.enabled=true
+      - ofelia.job-run.ynab-sync.schedule=@every 12h
+      - ofelia.job-run.ynab-sync.image=runitor-ynab:latest
+      - ofelia.job-run.ynab-sync.environment=["SYNC_CONFIG=${SYNC_CONFIG}", "SYNC_TOPIC=${SYNC_TOPIC}"]
+      - ofelia.job-run.ynab-sync.command=-api-url ${HEALTHCHECKS_HOST}/ping --uuid ${SYNC_PING_UUID} -- ./sync-transactions.sh
