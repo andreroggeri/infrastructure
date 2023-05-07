@@ -25,7 +25,7 @@ services:
       - applications
     restart: unless-stopped
 
-  runitor:
+  runitor-ynab:
     image: runitor-ynab
     build:
       context: ./cron
@@ -61,7 +61,7 @@ services:
     restart: unless-stopped
     container_name: ofelia
     depends_on:
-      - runitor
+      - runitor-ynab
       - runitor-restic-backup
     command: daemon --docker
     volumes:
