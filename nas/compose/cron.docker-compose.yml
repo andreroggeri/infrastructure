@@ -1,5 +1,6 @@
 volumes:
   healthchecks_config:
+  restic_cache:
 
 networks:
   applications:
@@ -28,7 +29,7 @@ services:
     image: runitor-ynab
     build:
       context: ./cron
-      dockerfile: runitor.Dockerfile
+      dockerfile: runitor-ynab.Dockerfile
     container_name: runitor
     command: -api-url ${HEALTHCHECKS_HOST}/ping --uuid ${SYNC_PING_UUID} -- ./sync-transactions.sh
     depends_on:
@@ -37,17 +38,41 @@ services:
       - SYNC_CONFIG=$SYNC_CONFIG
       - SYNC_TOPIC=$SYNC_TOPIC
 
+  runitor-restic-backup:
+    image: runitor-restic
+    build:
+      context: ./cron
+      dockerfile: runitor-restic.Dockerfile
+    container_name: runitor-restic
+    command: -api-url ${HEALTHCHECKS_HOST}/ping --uuid ${BACKUP_PING_UUID} -- ./backup-volumes.sh
+    depends_on:
+      - healthchecks
+    environment:
+      - RESTIC_REPOSITORY=$RESTIC_REPOSITORY
+      - RESTIC_PASSWORD=$RESTIC_PASSWORD
+      - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+    volumes:
+      - restic_cache:/cache
+      - /var/lib/docker/volumes:/mnt/docker-volumes:ro
+
   ofelia:
     image: mcuadros/ofelia:v0.3.7
     restart: unless-stopped
     container_name: ofelia
     depends_on:
       - runitor
+      - runitor-restic-backup
     command: daemon --docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - ofelia.enabled=true
+      - ofelia.job-run.restic-backup.schedule=@every 24h
+      - ofelia.job-run.restic-backup.image=runitor-restic:latest
+      - ofelia.job-run.restic-backup.environment=["RESTIC_REPOSITORY=${RESTIC_REPOSITORY}", "RESTIC_PASSWORD=${RESTIC_PASSWORD}", "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}", "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"]
+      - ofelia.job-run.restic-backup.command=-api-url ${HEALTHCHECKS_HOST}/ping --uuid ${BACKUP_PING_UUID} -- ./backup-volumes.sh
+      - ofelia.job-run.restic-backup.volume=["/var/lib/docker/volumes:/mnt/docker-volumes:ro", "restic_cache:/cache"]
       - ofelia.job-run.ynab-sync.schedule=@every 12h
       - ofelia.job-run.ynab-sync.image=runitor-ynab:latest
       - ofelia.job-run.ynab-sync.environment=["SYNC_CONFIG=${SYNC_CONFIG}", "SYNC_TOPIC=${SYNC_TOPIC}"]
