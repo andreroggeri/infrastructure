@@ -27,6 +27,7 @@ services:
 
   runitor-ynab:
     image: runitor-ynab
+    pull_policy: build
     build:
       context: ./cron
       dockerfile: runitor-ynab.Dockerfile
@@ -40,6 +41,7 @@ services:
 
   runitor-restic-backup:
     image: runitor-restic
+    pull_policy: build
     build:
       context: ./cron
       dockerfile: runitor-restic.Dockerfile
