@@ -65,7 +65,7 @@ services:
       context: ./cron
       dockerfile: runitor-restic.Dockerfile
     container_name: runitor-restic-prune
-    command: -api-url ${HEALTHCHECKS_HOST}/ping --uuid ${PRUNE_PING_UUID} -- ./prune-backups.sh
+    command: -api-url ${HEALTHCHECKS_HOST}/ping --uuid ${PRUNE_PING_UUID} -- ./backup-prune.sh
     depends_on:
       - healthchecks
     environment:
@@ -98,7 +98,7 @@ services:
       - ofelia.job-run.restic-prune.schedule=0 0 8 * * *
       - ofelia.job-run.restic-prune.image=runitor-restic:latest
       - ofelia.job-run.restic-prune.environment=["RESTIC_REPOSITORY=${RESTIC_REPOSITORY}", "RESTIC_PASSWORD=${RESTIC_PASSWORD}", "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}", "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"]
-      - ofelia.job-run.restic-prune.command=-api-url ${HEALTHCHECKS_HOST}/ping --uuid ${PRUNE_PING_UUID} -- ./prune-backups.sh
+      - ofelia.job-run.restic-prune.command=-api-url ${HEALTHCHECKS_HOST}/ping --uuid ${PRUNE_PING_UUID} -- ./backup-prune.sh
       - ofelia.job-run.restic-prune.volume=["restic_cache:/cache"]
       # YNAB sync
       - ofelia.job-run.ynab-sync.schedule=@every 4h
