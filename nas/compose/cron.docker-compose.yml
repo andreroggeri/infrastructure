@@ -45,7 +45,7 @@ services:
     build:
       context: ./cron
       dockerfile: runitor-restic.Dockerfile
-    container_name: runitor-restic
+    container_name: runitor-restic-backup
     command: -api-url ${HEALTHCHECKS_HOST}/ping --uuid ${BACKUP_PING_UUID} -- ./backup-volumes.sh
     depends_on:
       - healthchecks
@@ -57,6 +57,24 @@ services:
     volumes:
       - restic_cache:/cache
       - /var/lib/docker/volumes:/mnt/docker-volumes:ro
+
+  runitor-restic-prune:
+    image: runitor-restic
+    pull_policy: build
+    build:
+      context: ./cron
+      dockerfile: runitor-restic.Dockerfile
+    container_name: runitor-restic-prune
+    command: -api-url ${HEALTHCHECKS_HOST}/ping --uuid ${BACKUP_PING_UUID} -- ./backup-volumes.sh
+    depends_on:
+      - healthchecks
+    environment:
+      - RESTIC_REPOSITORY=$RESTIC_REPOSITORY
+      - RESTIC_PASSWORD=$RESTIC_PASSWORD
+      - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+    volumes:
+      - restic_cache:/cache
 
   ofelia:
     image: mcuadros/ofelia:v0.3.7
@@ -70,12 +88,20 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     labels:
       - ofelia.enabled=true
-      - ofelia.job-run.restic-backup.schedule=@every 24h
+      # Restic backup
+      - ofelia.job-run.restic-backup.schedule=0 0 1 * * *
       - ofelia.job-run.restic-backup.image=runitor-restic:latest
       - ofelia.job-run.restic-backup.environment=["RESTIC_REPOSITORY=${RESTIC_REPOSITORY}", "RESTIC_PASSWORD=${RESTIC_PASSWORD}", "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}", "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"]
       - ofelia.job-run.restic-backup.command=-api-url ${HEALTHCHECKS_HOST}/ping --uuid ${BACKUP_PING_UUID} -- ./backup-volumes.sh
       - ofelia.job-run.restic-backup.volume=["/var/lib/docker/volumes:/mnt/docker-volumes:ro", "restic_cache:/cache"]
-      - ofelia.job-run.ynab-sync.schedule=@every 12h
+      # Restic prune
+      - ofelia.job-run.restic-prune.schedule=0 0 8 * * *
+      - ofelia.job-run.restic-prune.image=runitor-restic:latest
+      - ofelia.job-run.restic-prune.environment=["RESTIC_REPOSITORY=${RESTIC_REPOSITORY}", "RESTIC_PASSWORD=${RESTIC_PASSWORD}", "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}", "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"]
+      - ofelia.job-run.restic-prune.command=-api-url ${HEALTHCHECKS_HOST}/ping --uuid ${BACKUP_PING_UUID} -- ./prune-backups.sh
+      - ofelia.job-run.restic-prune.volume=["restic_cache:/cache"]
+      # YNAB sync
+      - ofelia.job-run.ynab-sync.schedule=@every 4h
       - ofelia.job-run.ynab-sync.image=runitor-ynab:latest
       - ofelia.job-run.ynab-sync.environment=["SYNC_CONFIG=${SYNC_CONFIG}", "SYNC_TOPIC=${SYNC_TOPIC}"]
       - ofelia.job-run.ynab-sync.command=-api-url ${HEALTHCHECKS_HOST}/ping --uuid ${SYNC_PING_UUID} -- ./sync-transactions.sh
