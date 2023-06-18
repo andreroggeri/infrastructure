@@ -6,11 +6,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install --upgrade pip
 
-RUN pip3 install git+https://github.com/andreroggeri/br-to-ynab.git@e6a6aba5047227fffc71151bcd8123aa516535b5
-
-RUN pip3 install git+https://github.com/andreroggeri/pybradesco.git
-
-RUN pip3 install git+https://github.com/andreroggeri/python-alelo.git
+RUN pip3 install git+https://github.com/andreroggeri/br-to-ynab.git@ea9b0e9f6a8f2d90d968d6ba7349b31e0677d2eb
 
 WORKDIR /scripts
 
