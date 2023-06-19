@@ -70,7 +70,7 @@ services:
       - jackett_config:/config
 
   bazarr:
-    image: linuxserver/bazarr:1.2.0
+    image: linuxserver/bazarr:1.2.1
     container_name: bazarr
     restart: unless-stopped
     networks:
