@@ -4,7 +4,7 @@ networks:
 
 services:
   cloudflared:
-    image: cloudflare/cloudflared:2023.3.1
+    image: cloudflare/cloudflared:2023.6.0
     container_name: cloudflared
     restart: unless-stopped
     command: "tunnel --no-autoupdate run --token $CLOUDFLARE_TOKEN"
