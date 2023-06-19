@@ -22,7 +22,7 @@ services:
     restart: unless-stopped
 
   tautulli:
-    image: linuxserver/tautulli:2.12.0
+    image: linuxserver/tautulli:2.12.4
     container_name: tautulli
     restart: unless-stopped
     networks:
