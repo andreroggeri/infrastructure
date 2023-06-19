@@ -65,7 +65,7 @@ services:
 
   immich-web:
     container_name: immich-web
-    image: ghcr.io/immich-app/immich-web:v1.60.0
+    image: ghcr.io/immich-app/immich-web:v1.61.0
     restart: unless-stopped
     networks:
       - immich
