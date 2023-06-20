@@ -14,7 +14,7 @@ volumes:
 
 services:
   transmission:
-    image: linuxserver/transmission:4.0.3
+    image: linuxserver/transmission:2021.11.18
     container_name: transmission
     restart: unless-stopped
     networks:
