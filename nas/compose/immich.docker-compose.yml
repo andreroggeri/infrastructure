@@ -93,7 +93,7 @@ services:
 
   database:
     container_name: immich-postgres
-    image: postgres:14
+    image: postgres:15
     environment:
       POSTGRES_PASSWORD: ${IMMICH_DB_PASSWORD}
       POSTGRES_USER: ${IMMICH_DB_USERNAME}
