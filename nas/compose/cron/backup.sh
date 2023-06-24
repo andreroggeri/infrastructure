@@ -15,7 +15,7 @@ restic backup /mnt/docker-volumes \
 echo "Backup immich data"
 restic backup /mnt/immich \
     --repo "${RESTIC_REPOSITORY}" \
-    --tag docker-volumes \
+    --tag images \
     --exclude="*.tmp" \
     --exclude="**/cache/**" \
     --exclude="**/immich_immich_model_cache/**" \
