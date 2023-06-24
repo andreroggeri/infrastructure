@@ -46,7 +46,7 @@ services:
       context: ./cron
       dockerfile: runitor-restic.Dockerfile
     container_name: runitor-restic-backup
-    command: -api-url ${HEALTHCHECKS_HOST}/ping --uuid ${BACKUP_PING_UUID} -- ./backup-volumes.sh
+    command: -api-url ${HEALTHCHECKS_HOST}/ping --uuid ${BACKUP_PING_UUID} -- ./backup.sh
     depends_on:
       - healthchecks
     environment:
@@ -57,6 +57,7 @@ services:
     volumes:
       - restic_cache:/cache
       - /var/lib/docker/volumes:/mnt/docker-volumes:ro
+      - /archive/data/nas/immich:/mnt/immich:ro
 
   runitor-restic-prune:
     image: runitor-restic
@@ -92,8 +93,8 @@ services:
       - ofelia.job-run.restic-backup.schedule=0 0 1 * * *
       - ofelia.job-run.restic-backup.image=runitor-restic:latest
       - ofelia.job-run.restic-backup.environment=["RESTIC_REPOSITORY=${RESTIC_REPOSITORY}", "RESTIC_PASSWORD=${RESTIC_PASSWORD}", "AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}", "AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}"]
-      - ofelia.job-run.restic-backup.command=-api-url ${HEALTHCHECKS_HOST}/ping --uuid ${BACKUP_PING_UUID} -- ./backup-volumes.sh
-      - ofelia.job-run.restic-backup.volume=["/var/lib/docker/volumes:/mnt/docker-volumes:ro", "restic_cache:/cache"]
+      - ofelia.job-run.restic-backup.command=-api-url ${HEALTHCHECKS_HOST}/ping --uuid ${BACKUP_PING_UUID} -- ./backup.sh
+      - ofelia.job-run.restic-backup.volume=["/var/lib/docker/volumes:/mnt/docker-volumes:ro", "restic_cache:/cache", "/archive/data/nas/immich:/mnt/immich:ro"]
       # Restic prune
       - ofelia.job-run.restic-prune.schedule=0 0 8 * * *
       - ofelia.job-run.restic-prune.image=runitor-restic:latest

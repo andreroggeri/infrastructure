@@ -14,5 +14,5 @@ COPY --from=builder /restic /usr/local/bin/restic
 
 WORKDIR /scripts
 
-ADD ./backup-volumes.sh backup-volumes.sh
+ADD ./backup.sh backup.sh
 ADD ./backup-prune.sh backup-prune.sh
