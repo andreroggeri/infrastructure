@@ -1,0 +1,23 @@
+networks:
+  applications:
+    external: true
+
+volumes:
+  jellyfin_config:
+
+services:
+  jellyfin:
+    image: linuxserver/jellyfin:10.8.10
+    container_name: jellyfin
+    restart: unless-stopped
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=America/Sao_Paulo
+    networks:
+      - applications
+    volumes:
+      - jellyfin_config:/config
+      - /archive/media:/data/
+    devices:
+      - /dev/dri:/dev/dri
