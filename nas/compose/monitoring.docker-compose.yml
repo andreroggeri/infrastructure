@@ -33,7 +33,7 @@ services:
     restart: unless-stopped
 
   node_exporter:
-    image: quay.io/prometheus/node-exporter:v1.5.0
+    image: quay.io/prometheus/node-exporter:v1.6.1
     container_name: node_exporter
     restart: unless-stopped
     networks:
