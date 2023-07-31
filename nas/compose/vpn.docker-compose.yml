@@ -1,0 +1,17 @@
+version: "3"
+
+volumes:
+  wireguard_data:
+
+services:
+  heimdall:
+    image: linuxserver/wireguard:v1.0.20210914-ls126
+    container_name: wireguard
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ="America/Sao_Paulo"
+    volumes:
+      - wireguard_data:/config
+      - /lib/modules:/lib/modules
+    restart: unless-stopped
