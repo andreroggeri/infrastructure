@@ -8,7 +8,7 @@ networks:
 
 services:
   healthchecks:
-    image: linuxserver/healthchecks:2.7.20230331
+    image: linuxserver/healthchecks:2.10.20230911
     container_name: healthchecks
     environment:
       - PUID=1001
