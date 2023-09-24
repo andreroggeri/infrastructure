@@ -71,7 +71,7 @@ services:
       - /archive/media:/data/media
 
   overseerr:
-    image: linuxserver/overseerr:1.33.0
+    image: linuxserver/overseerr:1.33.2
     container_name: overseerr
     restart: unless-stopped
     networks:
