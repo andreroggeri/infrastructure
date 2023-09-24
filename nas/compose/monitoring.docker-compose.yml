@@ -67,7 +67,7 @@ services:
       - monitoring
     
   grafana-ntfy:
-    image: saibe1111/grafana-to-ntfy:1.0.0
+    image: saibe1111/grafana-to-ntfy:1.1.2
     container_name: grafana-ntfy
     restart: unless-stopped
     networks:
