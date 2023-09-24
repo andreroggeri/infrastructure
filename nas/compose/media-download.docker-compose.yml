@@ -29,7 +29,7 @@ services:
       - /archive/torrents/downloads:/downloads
 
   radarr:
-    image: linuxserver/radarr:4.5.2
+    image: linuxserver/radarr:4.7.5
     container_name: radarr
     restart: unless-stopped
     networks:
