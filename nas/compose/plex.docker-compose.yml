@@ -8,7 +8,7 @@ volumes:
 
 services:
   plex:
-    image: linuxserver/plex:1.32.4
+    image: linuxserver/plex:1.32.6
     container_name: plex
     environment:
       - PUID=1001
