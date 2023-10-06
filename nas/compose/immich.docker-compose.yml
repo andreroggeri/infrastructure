@@ -52,6 +52,8 @@ services:
     restart: unless-stopped
     networks:
       - immich
+    devices:
+      - /dev/dri:/dev/dri # Enable GPU access for hw encoding
 
   immich-machine-learning:
     container_name: immich-machine-learning
@@ -109,7 +111,6 @@ services:
     container_name: immich-proxy
     image: ghcr.io/immich-app/immich-proxy:v1.79.1
     environment:
-      # Make sure these values get passed through from the env file
       - IMMICH_SERVER_URL
       - IMMICH_WEB_URL
     depends_on:
