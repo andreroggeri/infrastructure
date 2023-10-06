@@ -9,6 +9,7 @@ restic backup /mnt/docker-volumes \
     --exclude="*.tmp" \
     --exclude="**/cache/**" \
     --exclude="**/immich_immich_model_cache/**" \
+    --ignore-inode \
     --cache-dir /cache
 
 # Immich data
@@ -19,4 +20,5 @@ restic backup /mnt/immich \
     --exclude="*.tmp" \
     --exclude="**/cache/**" \
     --exclude="**/immich_immich_model_cache/**" \
+    --ignore-inode \
     --cache-dir /cache

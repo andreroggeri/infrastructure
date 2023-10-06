@@ -8,4 +8,5 @@ restic forget \
     --repo "${RESTIC_REPOSITORY}" \
     --password-command "echo ${RESTIC_PASSWORD}" \
     --prune \
+    --ignore-inode \
     --cache-dir /cache
