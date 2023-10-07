@@ -9,6 +9,7 @@ restic backup /mnt/docker-volumes \
     --exclude="*.tmp" \
     --exclude="**/cache/**" \
     --exclude="**/immich_immich_model_cache/**" \
+    --host="alexandria" \
     --ignore-inode \
     --cache-dir /cache
 
@@ -20,5 +21,6 @@ restic backup /mnt/immich \
     --exclude="*.tmp" \
     --exclude="**/cache/**" \
     --exclude="**/immich_immich_model_cache/**" \
+    --host="alexandria" \
     --ignore-inode \
     --cache-dir /cache
