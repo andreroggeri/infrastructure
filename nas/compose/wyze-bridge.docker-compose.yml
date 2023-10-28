@@ -1,0 +1,14 @@
+version: "2.4"
+
+networks:
+  applications:
+    external: true
+
+services:
+  wyze-bridge:
+    container_name: wyze-bridge
+    restart: unless-stopped
+    image: mrlt8/wyze-bridge:v2.4.0
+    environment:
+      - API_ID=${API_ID}
+      - API_KEY=${API_KEY}
