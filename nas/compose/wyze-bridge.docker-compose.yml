@@ -12,5 +12,7 @@ services:
     networks:
       - applications
     environment:
+      - WYZE_EMAIL=${WYZE_EMAIL}
+      - WYZE_PASSWORD=${WYZE_PASSWORD}
       - API_ID=${WYZE_API_ID}
       - API_KEY=${WYZE_API_KEY}
