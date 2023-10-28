@@ -10,5 +10,5 @@ services:
     restart: unless-stopped
     image: mrlt8/wyze-bridge:v2.4.0
     environment:
-      - API_ID=${API_ID}
-      - API_KEY=${API_KEY}
+      - API_ID=${WYZE_API_ID}
+      - API_KEY=${WYZE_API_KEY}
