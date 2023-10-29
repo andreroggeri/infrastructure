@@ -36,10 +36,10 @@ services:
       - /dev/dri/renderD128
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /media/frigate/clips:/archive/frigate/clips
-      - /media/frigate/recordings:/archive/frigate/recordings
-      - /media/frigate/frigate.db:frigate_config/frigate.db
-      - /config/config.yml:frigate_config/config.yml
+      - /archive/frigate/clips:/media/frigate/clips
+      - /archive/frigate/recordings:/media/frigate/recordings
+      - frigate_db/frigate.db:/media/frigate/frigate.db
+      - frigate_config/config.yml:/config/config.yml
       - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
         target: /tmp/cache
         tmpfs:
