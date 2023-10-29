@@ -4,6 +4,10 @@ networks:
   applications:
     external: true
 
+volumes:
+  frigate_config:
+  frigate_db:
+
 services:
   wyze-bridge:
     container_name: wyze-bridge
@@ -20,3 +24,23 @@ services:
       - WB_RTMP_URL=rtmp://${WYZE_RTMP_HOST}/
       - WB_HLS_URL=https://${WYZE_HLS_HOST}/
       - WB_WEBRTC_URL=https://${WYZE_WEBRTC_HOST}/
+
+  frigate:
+    container_name: frigate
+    restart: unless-stopped
+    image: ghcr.io/blakeblackshear/frigate:0.12.1
+    shm_size: "128mb"
+    networks:
+      - applications
+    devices:
+      - /dev/dri/renderD128
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /media/frigate/clips:/archive/frigate/clips
+      - /media/frigate/recordings:/archive/frigate/recordings
+      - /media/frigate/frigate.db:frigate_config/frigate.db
+      - /config/config.yml:frigate_config/config.yml
+      - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
+        target: /tmp/cache
+        tmpfs:
+          size: 1000000000
