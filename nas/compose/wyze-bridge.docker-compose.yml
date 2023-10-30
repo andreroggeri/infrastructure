@@ -38,8 +38,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /archive/frigate/clips:/media/frigate/clips
       - /archive/frigate/recordings:/media/frigate/recordings
-      - frigate_db/frigate.db:/media/frigate/frigate.db
-      - frigate_config/config.yml:/config/config.yml
+      - frigate_db:/db
+      - frigate_config:/config
       - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
         target: /tmp/cache
         tmpfs:
