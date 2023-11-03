@@ -26,6 +26,8 @@ services:
       - WB_RTMP_URL=rtmp://${WYZE_RTMP_HOST}/
       - WB_HLS_URL=https://${WYZE_HLS_HOST}/
       - WB_WEBRTC_URL=https://${WYZE_WEBRTC_HOST}/
+      - FRESH_DATA=True
+      - LOG_LEVEL=True
 
   frigate:
     container_name: frigate
