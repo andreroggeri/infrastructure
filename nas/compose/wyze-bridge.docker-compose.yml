@@ -21,6 +21,7 @@ services:
       - API_ID=${WYZE_API_ID}
       - API_KEY=${WYZE_API_KEY}
       - ENABLE_AUDIO=True
+      - SUBSTREAM=True
       - WB_RTSP_URL=rtsp://${WYZE_RTSP_HOST}/
       - WB_RTMP_URL=rtmp://${WYZE_RTMP_HOST}/
       - WB_HLS_URL=https://${WYZE_HLS_HOST}/
