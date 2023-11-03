@@ -27,7 +27,7 @@ services:
       - WB_HLS_URL=https://${WYZE_HLS_HOST}/
       - WB_WEBRTC_URL=https://${WYZE_WEBRTC_HOST}/
       - FRESH_DATA=True
-      - LOG_LEVEL=True
+      - LOG_LEVEL=debug
 
   frigate:
     container_name: frigate
