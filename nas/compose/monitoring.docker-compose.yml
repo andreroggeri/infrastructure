@@ -1,8 +1,10 @@
-version: '3'
+version: "3"
 
 volumes:
   prometheus-data:
   grafana-data:
+  loki-data:
+  promtail-data:
 
 networks:
   monitoring:
@@ -13,7 +15,7 @@ services:
   prometheus:
     image: prom/prometheus:v2.47.1
     container_name: prometheus
-    restart: unless-stopped    
+    restart: unless-stopped
     networks:
       - monitoring
     volumes:
@@ -23,7 +25,7 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
 
   grafana:
-    image: grafana/grafana:10.1.5
+    image: grafana/grafana:10.2.1
     container_name: grafana
     networks:
       - monitoring
@@ -39,10 +41,10 @@ services:
     networks:
       - monitoring
     command:
-      - '--path.rootfs=/host'
+      - "--path.rootfs=/host"
     pid: host
     volumes:
-      - '/:/host:ro,rslave'
+      - "/:/host:ro,rslave"
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.2
@@ -58,14 +60,14 @@ services:
       - /dev/disk/:/dev/disk:ro
     devices:
       - /dev/kmsg
-  
+
   speedtest:
     image: jraviles/prometheus_speedtest:0.9.14
     container_name: speedtest
     restart: unless-stopped
     networks:
       - monitoring
-    
+
   grafana-ntfy:
     image: saibe1111/grafana-to-ntfy:1.1.2
     container_name: grafana-ntfy
@@ -74,3 +76,26 @@ services:
       - monitoring
     environment:
       - "NTFY_TOPIC=${NTFY_TOPIC}"
+
+  loki:
+    image: grafana/loki:2.9.2
+    container_name: loki
+    restart: unless-stopped
+    networks:
+      - monitoring
+    volumes:
+      - loki-data:/loki
+    command:
+      - "-config.file=/etc/loki/config.yaml"
+
+  promtail:
+    image: grafana/promtail:2.9.2
+    container_name: promtail
+    restart: unless-stopped
+    networks:
+      - monitoring
+    volumes:
+      - promtail-data:/promtail
+      - /var/log:/var/log
+    command:
+      - "-config.file=/etc/promtail/config.yaml"
