@@ -86,7 +86,7 @@ services:
     volumes:
       - loki-data:/loki
     command:
-      - "-config.file=/config.yml"
+      - "-config.file=/loki/config.yml"
 
   promtail:
     image: grafana/promtail:2.9.2
