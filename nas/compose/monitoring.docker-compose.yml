@@ -83,6 +83,7 @@ services:
     restart: unless-stopped
     networks:
       - monitoring
+      - applications
     volumes:
       - loki-data:/loki
     command:
