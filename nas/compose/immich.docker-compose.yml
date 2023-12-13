@@ -13,7 +13,7 @@ networks:
 services:
   immich-server:
     container_name: immich-server
-    image: ghcr.io/immich-app/immich-server:v1.82.1
+    image: ghcr.io/immich-app/immich-server:v1.90.2
     command: ["start-server.sh"]
     environment:
       - DB_HOSTNAME=immich-postgres
@@ -34,7 +34,7 @@ services:
 
   immich-microservices:
     container_name: immich-microservices
-    image: ghcr.io/immich-app/immich-server:v1.82.1
+    image: ghcr.io/immich-app/immich-server:v1.90.2
     command: ["start-microservices.sh"]
     environment:
       - DB_HOSTNAME=immich-postgres
@@ -57,17 +57,10 @@ services:
 
   immich-machine-learning:
     container_name: immich-machine-learning
-    image: ghcr.io/immich-app/immich-machine-learning:v1.82.1
+    image: ghcr.io/immich-app/immich-machine-learning:v1.90.2
     volumes:
       - ${IMMICH_UPLOAD_LOCATION}:/usr/src/app/upload
       - immich_model_cache:/cache
-    restart: unless-stopped
-    networks:
-      - immich
-
-  immich-web:
-    container_name: immich-web
-    image: ghcr.io/immich-app/immich-web:v1.82.1
     restart: unless-stopped
     networks:
       - immich
@@ -106,16 +99,3 @@ services:
     restart: unless-stopped
     networks:
       - immich
-
-  immich-proxy:
-    container_name: immich-proxy
-    image: ghcr.io/immich-app/immich-proxy:v1.82.1
-    environment:
-      - IMMICH_SERVER_URL
-      - IMMICH_WEB_URL
-    depends_on:
-      - immich-server
-    networks:
-      - applications
-      - immich
-    restart: unless-stopped
