@@ -30,6 +30,7 @@ services:
       - typesense
     networks:
       - immich
+      - applications
     restart: unless-stopped
 
   immich-microservices:
