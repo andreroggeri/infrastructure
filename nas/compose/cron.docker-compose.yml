@@ -31,7 +31,7 @@ services:
     build:
       context: ./cron
       dockerfile: runitor-ynab.Dockerfile
-    container_name: runitor
+    container_name: runitor-ynab
     command: -api-url ${HEALTHCHECKS_HOST}/ping --uuid ${SYNC_PING_UUID} -- ./sync-transactions.sh
     depends_on:
       - healthchecks
