@@ -53,7 +53,7 @@ services:
       - /dev/dri:/dev/dri
 
   jellystat-db:
-    image: postgres:15.5
+    image: postgres:16.1
     container_name: jellystat-db
     restart: unless-stopped
     environment:
