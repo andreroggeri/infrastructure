@@ -78,7 +78,7 @@ services:
       - "NTFY_TOPIC=${NTFY_TOPIC}"
 
   loki:
-    image: grafana/loki:2.9.2
+    image: grafana/loki:2.9.3
     container_name: loki
     restart: unless-stopped
     networks:
