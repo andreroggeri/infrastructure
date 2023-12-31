@@ -13,7 +13,7 @@ networks:
 
 services:
   prometheus:
-    image: prom/prometheus:v2.47.1
+    image: prom/prometheus:v2.48.1
     container_name: prometheus
     restart: unless-stopped
     networks:
@@ -25,7 +25,7 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml"
 
   grafana:
-    image: grafana/grafana:10.2.1
+    image: grafana/grafana:10.2.3
     container_name: grafana
     networks:
       - monitoring
@@ -35,7 +35,7 @@ services:
     restart: unless-stopped
 
   node_exporter:
-    image: quay.io/prometheus/node-exporter:v1.6.1
+    image: quay.io/prometheus/node-exporter:v1.7.0
     container_name: node_exporter
     restart: unless-stopped
     networks:
@@ -47,7 +47,7 @@ services:
       - "/:/host:ro,rslave"
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    image: gcr.io/cadvisor/cadvisor:v0.48.1
     container_name: cadvisor
     restart: unless-stopped
     networks:
@@ -69,7 +69,7 @@ services:
       - monitoring
 
   grafana-ntfy:
-    image: saibe1111/grafana-to-ntfy:1.1.2
+    image: saibe1111/grafana-to-ntfy:2.1.6
     container_name: grafana-ntfy
     restart: unless-stopped
     networks:
@@ -78,7 +78,7 @@ services:
       - "NTFY_TOPIC=${NTFY_TOPIC}"
 
   loki:
-    image: grafana/loki:2.9.2
+    image: grafana/loki:2.9.3
     container_name: loki
     restart: unless-stopped
     networks:
@@ -90,7 +90,7 @@ services:
       - "-config.file=/loki/config.yml"
 
   promtail:
-    image: grafana/promtail:2.9.2
+    image: grafana/promtail:2.9.3
     container_name: promtail
     restart: unless-stopped
     networks:
