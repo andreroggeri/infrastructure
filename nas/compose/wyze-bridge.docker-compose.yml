@@ -12,7 +12,7 @@ services:
   wyze-bridge:
     container_name: wyze-bridge
     restart: unless-stopped
-    image: mrlt8/wyze-bridge:2.4.0
+    image: mrlt8/wyze-bridge:2.6.0
     networks:
       - applications
     environment:
