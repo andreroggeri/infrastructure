@@ -1,0 +1,81 @@
+networks:
+  applications:
+    external: true
+
+volumes:
+  plex_config:
+  tautulli_config:
+  jellyfin_config:
+  jellystat_db:
+
+services:
+  plex:
+    image: linuxserver/plex:1.32.8
+    container_name: plex
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=America/Sao_Paulo
+    networks:
+      - applications
+    volumes:
+      - plex_config:/config
+      - /archive/media:/data/
+    restart: unless-stopped
+
+  tautulli:
+    image: linuxserver/tautulli:2.13.4
+    container_name: tautulli
+    restart: unless-stopped
+    networks:
+      - applications
+    volumes:
+      - tautulli_config:/config
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=America/Sao_Paulo
+
+  jellyfin:
+    image: linuxserver/jellyfin:10.8.13
+    container_name: jellyfin
+    restart: unless-stopped
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=America/Sao_Paulo
+    networks:
+      - applications
+    volumes:
+      - jellyfin_config:/config
+      - /archive/media:/data/
+    devices:
+      - /dev/dri:/dev/dri
+
+  jellystat-db:
+    image: postgres:15.5
+    container_name: jellystat-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: jellystat
+      POSTGRES_PASSWORD: ${JELLYSTAT_DB_PASSWORD}
+    volumes:
+      - jellystat_db:/var/lib/postgresql/data
+    networks:
+      - applications
+
+  jellystat:
+    image: cyfershepard/jellystat:1.0.9
+    container_name: jellystat
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: jellystat
+      POSTGRES_PASSWORD: ${JELLYSTAT_DB_PASSWORD}
+      POSTGRES_IP: jellystat-db
+      POSTGRES_PORT: 5432
+      JWT_SECRET: ${JELLYSTAT_JWT_SECRET}
+      TZ: America/Sao_Paulo
+    depends_on:
+      - jellystat-db
+    networks:
+      - applications
