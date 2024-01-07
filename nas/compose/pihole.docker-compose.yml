@@ -4,7 +4,7 @@ volumes:
 
 services:
   pihole:
-    image: pihole/pihole:2023.11.0
+    image: pihole/pihole:2024.01.0
     container_name: pihole
     restart: always
     network_mode: host
