@@ -12,7 +12,7 @@ networks:
 services:
   immich-server:
     container_name: immich-server
-    image: ghcr.io/immich-app/immich-server:v1.91.4
+    image: ghcr.io/immich-app/immich-server:v1.93.3
     command: ["start-server.sh"]
     environment:
       - DB_HOSTNAME=immich-postgres
@@ -32,7 +32,7 @@ services:
 
   immich-microservices:
     container_name: immich-microservices
-    image: ghcr.io/immich-app/immich-server:v1.91.4
+    image: ghcr.io/immich-app/immich-server:v1.93.3
     command: ["start-microservices.sh"]
     environment:
       - DB_HOSTNAME=immich-postgres
