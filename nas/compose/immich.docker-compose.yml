@@ -29,7 +29,10 @@ services:
       - immich
       - applications
     restart: unless-stopped
-    cpu_percent: 80
+    deploy:
+      resources:
+        limits:
+          cpus: "10"
 
   immich-microservices:
     container_name: immich-microservices
@@ -51,7 +54,10 @@ services:
       - immich
     devices:
       - /dev/dri:/dev/dri # Enable GPU access for hw encoding
-    cpu_percent: 80
+    deploy:
+      resources:
+        limits:
+          cpus: "10"
 
   immich-machine-learning:
     container_name: immich-machine-learning
@@ -62,7 +68,10 @@ services:
     restart: unless-stopped
     networks:
       - immich
-    cpu_percent: 80
+    deploy:
+      resources:
+        limits:
+          cpus: "10"
 
   redis:
     container_name: immich-redis
