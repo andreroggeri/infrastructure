@@ -12,7 +12,7 @@ networks:
 services:
   immich-server:
     container_name: immich-server
-    image: ghcr.io/immich-app/immich-server:v1.91.4
+    image: ghcr.io/immich-app/immich-server:v1.93.3
     command: ["start-server.sh"]
     environment:
       - DB_HOSTNAME=immich-postgres
@@ -29,10 +29,11 @@ services:
       - immich
       - applications
     restart: unless-stopped
+    cpu_percent: 80
 
   immich-microservices:
     container_name: immich-microservices
-    image: ghcr.io/immich-app/immich-server:v1.91.4
+    image: ghcr.io/immich-app/immich-server:v1.93.3
     command: ["start-microservices.sh"]
     environment:
       - DB_HOSTNAME=immich-postgres
@@ -50,17 +51,18 @@ services:
       - immich
     devices:
       - /dev/dri:/dev/dri # Enable GPU access for hw encoding
+    cpu_percent: 80
 
   immich-machine-learning:
     container_name: immich-machine-learning
-    image: ghcr.io/immich-app/immich-machine-learning:v1.91.4
+    image: ghcr.io/immich-app/immich-machine-learning:v1.93.3
     volumes:
       - ${IMMICH_UPLOAD_LOCATION}:/usr/src/app/upload
       - immich_model_cache:/cache
     restart: unless-stopped
     networks:
       - immich
-
+    cpu_percent: 80
 
   redis:
     container_name: immich-redis
