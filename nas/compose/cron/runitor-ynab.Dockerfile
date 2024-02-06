@@ -6,7 +6,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install --upgrade pip
 
-RUN pip3 install git+https://github.com/andreroggeri/br-to-ynab.git@57df4d793d352e2d2fa1849a81ed7729fae56c5b
+RUN pip3 install git+https://github.com/andreroggeri/br-to-ynab.git@26f81ca17957b69fdf825c5ec46ce587a68ad825
 
 RUN locale-gen pt_BR.UTF-8
 
