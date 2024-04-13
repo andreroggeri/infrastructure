@@ -84,7 +84,7 @@ services:
       - overseerr_config:/config
 
   prowlarr:
-    image: linuxserver/prowlarr:1.11.4
+    image: linuxserver/prowlarr:1.15.0
     container_name: prowlarr
     restart: unless-stopped
     networks:
