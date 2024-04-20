@@ -18,6 +18,7 @@ services:
     restart: unless-stopped
     networks:
       - monitoring
+      - applications
     volumes:
       - /archive/data/nas/prometheus:/etc/prometheus
       - prometheus-data:/prometheus
