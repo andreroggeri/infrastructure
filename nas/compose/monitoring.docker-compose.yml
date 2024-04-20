@@ -23,8 +23,8 @@ services:
       - /archive/data/nas/prometheus:/etc/prometheus
       - prometheus-data:/prometheus
     command:
+      - "--web.enable-remote-write-receiver"
       - "--config.file=/etc/prometheus/prometheus.yml"
-      - "--web.enable-remote-write-receive"
 
   grafana:
     image: grafana/grafana:10.4.2
