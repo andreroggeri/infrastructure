@@ -24,6 +24,7 @@ services:
       - prometheus-data:/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--enable-remote-write-receive"
 
   grafana:
     image: grafana/grafana:10.4.2
