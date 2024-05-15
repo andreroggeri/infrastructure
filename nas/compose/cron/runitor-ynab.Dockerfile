@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y python3 python3-pip git locales curl pi
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install git+https://github.com/andreroggeri/br-to-ynab.git@3dba48509eaf5ae832710f6f20fc03347c8ee13c
+RUN pip3 install git+https://github.com/andreroggeri/br-to-ynab.git@96771de6d481850f5bbeb4b54ba991846fec55b4
 
 RUN locale-gen pt_BR.UTF-8
 
