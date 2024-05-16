@@ -26,6 +26,8 @@ services:
       - 1883:1883/udp
       - 554:554/tcp
       - 554:554/udp
+      - 51413:51413/tcp
+      - 51413:51413/udp
 
   cloudflared:
     image: cloudflare/cloudflared:2024.4.0
