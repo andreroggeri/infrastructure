@@ -30,7 +30,7 @@ services:
       - 51413:51413/udp
 
   cloudflared:
-    image: cloudflare/cloudflared:2024.4.0
+    image: cloudflare/cloudflared:2024.6.1
     container_name: cloudflared
     restart: unless-stopped
     command: "tunnel --no-autoupdate run --token $CLOUDFLARE_TOKEN"
