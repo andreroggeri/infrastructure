@@ -44,6 +44,7 @@ services:
       - PUID=1001
       - PGID=1001
       - TZ=America/Sao_Paulo
+      - DOCKER_MODS=linuxserver/mods:jellyfin-opencl-intel
     networks:
       - applications
     volumes:
