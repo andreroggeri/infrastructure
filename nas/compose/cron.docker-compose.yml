@@ -78,7 +78,7 @@ services:
       - restic_cache:/cache
 
   ofelia:
-    image: mcuadros/ofelia:0.3.11
+    image: mcuadros/ofelia:0.3.13
     restart: unless-stopped
     container_name: ofelia
     depends_on:
