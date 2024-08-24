@@ -11,6 +11,8 @@ volumes:
   overseerr_config:
   bazarr_config:
   prowlarr_config:
+  qbittorrent_config:
+
 
 services:
   transmission:
@@ -27,6 +29,20 @@ services:
       - /archive/torrents:/data/torrents
       - transmission_config:/config
       - /archive/torrents/downloads:/downloads
+
+  qbittorrent:
+    image: linuxserver/qbittorrent:4.6.6
+    container_name: qbittorrent
+    restart: unless-stopped
+    networks:
+      - applications
+    environment:
+      - PGID=1001
+      - PUID=1001
+      - TZ="America/Sao_Paulo"
+    volumes:
+      - qbittorrent_config:/config
+      - /archive/torrents:/data
 
   radarr:
     image: linuxserver/radarr:5.8.3
