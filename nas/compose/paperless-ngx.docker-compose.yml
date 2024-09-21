@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     volumes:
       - paperless_redisdata:/data
+    networks:
+      - paperless
 
   db:
     image: docker.io/library/postgres:16.4
@@ -16,6 +18,8 @@ services:
       POSTGRES_DB: paperless
       POSTGRES_USER: paperless
       POSTGRES_PASSWORD: ${PAPERLESS_DB_PASSWORD}
+    networks:
+      - paperless
 
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:2.12.1
@@ -38,9 +42,17 @@ services:
       PAPERLESS_OCR_LANGUAGE: por
       PAPERLESS_OCR_LANGUAGES: por en
       PAPERLESS_TIME_ZONE: America/Sao_Paulo
+    networks:
+      - paperless
+      - applications
 
 volumes:
   paperless_data:
   paperless_media:
   paperless_pgdata:
   paperless_redisdata:
+
+networks:
+  applications:
+    external: true
+  paperless:
