@@ -1,12 +1,14 @@
 services:
   broker:
     image: docker.io/library/redis:7.4.0
+    container_name: paperless-redis
     restart: unless-stopped
     volumes:
       - paperless_redisdata:/data
 
   db:
     image: docker.io/library/postgres:16.4
+    container_name: paperless-postgres
     restart: unless-stopped
     volumes:
       - paperless_pgdata:/var/lib/postgresql/data
@@ -17,6 +19,7 @@ services:
 
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:2.12.1
+    container_name: paperless-webserver
     restart: unless-stopped
     depends_on:
       - db
@@ -29,8 +32,8 @@ services:
       - /archive/data/paperless/export:/usr/src/paperless/export
       - /archive/data/paperless/consume:/usr/src/paperless/consume
     environment:
-      PAPERLESS_REDIS: redis://broker:6379
-      PAPERLESS_DBHOST: db
+      PAPERLESS_REDIS: redis://paperless-redis:6379
+      PAPERLESS_DBHOST: paperless-postgres
       PAPERLESS_DB_PASS: ${PAPERLESS_DB_PASSWORD}
       PAPERLESS_OCR_LANGUAGE: por
       PAPERLESS_OCR_LANGUAGES: por en
