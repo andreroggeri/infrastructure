@@ -38,7 +38,7 @@ services:
     environment:
       PAPERLESS_REDIS: redis://paperless-redis:6379
       PAPERLESS_DBHOST: paperless-postgres
-      PAPERLESS_DB_PASS: ${PAPERLESS_DB_PASSWORD}
+      PAPERLESS_DBPASS: ${PAPERLESS_DB_PASSWORD}
       PAPERLESS_OCR_LANGUAGE: por
       PAPERLESS_OCR_LANGUAGES: por en
       PAPERLESS_TIME_ZONE: America/Sao_Paulo
