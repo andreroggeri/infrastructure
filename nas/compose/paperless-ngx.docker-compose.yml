@@ -1,0 +1,71 @@
+# Docker Compose file for running paperless from the Docker Hub.
+# This file contains everything paperless needs to run.
+# Paperless supports amd64, arm and arm64 hardware.
+#
+# All compose files of paperless configure paperless in the following way:
+#
+# - Paperless is (re)started on system boot, if it was running before shutdown.
+# - Docker volumes for storing data are managed by Docker.
+# - Folders for importing and exporting files are created in the same directory
+#   as this file and mounted to the correct folders inside the container.
+# - Paperless listens on port 8000.
+#
+# In addition to that, this Docker Compose file adds the following optional
+# configurations:
+#
+# - Instead of SQLite (default), PostgreSQL is used as the database server.
+#
+# To install and update paperless with this file, do the following:
+#
+# - Copy this file as 'docker-compose.yml' and the files 'docker-compose.env'
+#   and '.env' into a folder.
+# - Run 'docker compose pull'.
+# - Run 'docker compose run --rm webserver createsuperuser' to create a user.
+# - Run 'docker compose up -d'.
+#
+# For more extensive installation and update instructions, refer to the
+# documentation.
+
+services:
+  broker:
+    image: docker.io/library/redis:7
+    restart: unless-stopped
+    volumes:
+      - paperless_redisdata:/data
+
+  db:
+    image: docker.io/library/postgres:16
+    restart: unless-stopped
+    volumes:
+      - paperless_pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: ${PAPERLESS_DB_PASSWORD}
+
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+      - broker
+    ports:
+      - "8000:8000"
+    volumes:
+      - paperless_data:/usr/src/paperless/data
+      - paperless_media:/usr/src/paperless/media
+      - /archive/data/paperless/export:/usr/src/paperless/export
+      - /archive/data/paperless/consume:/usr/src/paperless/consume
+    environment:
+      PAPERLESS_REDIS: redis://broker:6379
+      PAPERLESS_DBHOST: db
+      PAPERLESS_DB_PASS: ${PAPERLESS_DB_PASSWORD}
+      PAPERLESS_OCR_LANGUAGE: por
+      PAPERLESS_OCR_LANGUAGES: por en
+      PAPERLESS_TIME_ZONE: America/Sao_Paulo
+
+volumes:
+  paperless_data:
+  paperless_media:
+  paperless_pgdata:
+  paperless_redisdata:
