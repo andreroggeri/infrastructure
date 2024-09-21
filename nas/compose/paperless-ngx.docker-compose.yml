@@ -40,6 +40,7 @@ services:
       PAPERLESS_OCR_LANGUAGE: por
       PAPERLESS_OCR_LANGUAGES: por en
       PAPERLESS_TIME_ZONE: America/Sao_Paulo
+      PAPERLESS_URL: ${PAPERLESS_URL}
     networks:
       - paperless
       - applications
