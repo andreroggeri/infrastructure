@@ -21,6 +21,7 @@ services:
     network_mode: host
     environment:
       - TZ="America/Sao_Paulo"
+
   mosquitto:
     container_name: mosquitto
     image: eclipse-mosquitto:2
