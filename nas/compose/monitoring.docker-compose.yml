@@ -112,6 +112,8 @@ services:
       - applications
     environment:
       - MQTT_ADDRESS=mosquitto
+      - MQTT_USERNAME=${MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
       - TZ="America/Sao_Paulo"
       - PROMETHEUS_PREFIX=sensor_
       - TOPIC_LABEL=sensor
