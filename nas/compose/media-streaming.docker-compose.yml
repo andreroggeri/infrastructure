@@ -23,6 +23,7 @@ services:
     volumes:
       - plex_config:/config
       - /archive/media:/data/
+      - /data/plex_transcoding:/transcoding
     restart: unless-stopped
 
   tautulli:
