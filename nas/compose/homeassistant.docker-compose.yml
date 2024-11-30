@@ -37,7 +37,7 @@ services:
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
-    image: koenkk/zigbee2mqtt:1.39.1
+    image: koenkk/zigbee2mqtt:1.41.0
     restart: unless-stopped
     networks:
       - applications
