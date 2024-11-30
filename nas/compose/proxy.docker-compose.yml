@@ -8,7 +8,7 @@ networks:
 
 services:
   nginx_proxy_manager:
-    image: jc21/nginx-proxy-manager:2.11.3
+    image: jc21/nginx-proxy-manager:2.12.1
     container_name: nginx_proxy_manager2
     restart: unless-stopped
     networks:
