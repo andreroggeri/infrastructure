@@ -92,7 +92,7 @@ services:
       - "-config.file=/loki/config.yml"
 
   promtail:
-    image: grafana/promtail:2.9.9
+    image: grafana/promtail:2.9.10
     container_name: promtail
     restart: unless-stopped
     networks:
