@@ -69,7 +69,7 @@ services:
       - applications
 
   jellystat:
-    image: cyfershepard/jellystat:1.1.0
+    image: cyfershepard/jellystat:1.1.3
     container_name: jellystat
     restart: unless-stopped
     environment:
