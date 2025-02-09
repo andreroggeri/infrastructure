@@ -7,27 +7,46 @@ networks:
     external: true
 
 services:
-  nginx_proxy_manager:
-    image: jc21/nginx-proxy-manager:2.12.1
-    container_name: nginx_proxy_manager2
+  # nginx_proxy_manager:
+  #   image: jc21/nginx-proxy-manager:2.11.3
+  #   container_name: nginx_proxy_manager2
+  #   restart: unless-stopped
+  #   networks:
+  #     - applications
+  #   volumes:
+  #     - nginx_proxy_manager_data:/data
+  #     - nginx_proxy_manager_letsencrypt:/etc/letsencrypt
+  #   environment:
+  #     - TZ=America/Sao_Paulo
+  #   ports:
+  #     - 443:443
+  #     - 80:80
+  #     - 8081:81
+  #     - 1883:1883/tcp
+  #     - 1883:1883/udp
+  #     - 554:554/tcp
+  #     - 554:554/udp
+  #     - 51413:51413/tcp
+  #     - 51413:51413/udp
+
+  traefik:
+    image: traefik:v3.3.3
+    container_name: traefik
     restart: unless-stopped
+    command: 
+      --providers.docker
+      --providers.docker.exposedByDefault=false
+      --entrypoints.web.address=:80
+      --entrypoints.websecure.address=:443
+      --providers.docker.network=applications
     networks:
       - applications
-    volumes:
-      - nginx_proxy_manager_data:/data
-      - nginx_proxy_manager_letsencrypt:/etc/letsencrypt
-    environment:
-      - TZ=America/Sao_Paulo
     ports:
-      - 443:443
       - 80:80
-      - 8081:81
-      - 1883:1883/tcp
-      - 1883:1883/udp
-      - 554:554/tcp
-      - 554:554/udp
-      - 51413:51413/tcp
-      - 51413:51413/udp
+      - 8080:8080
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
   cloudflared:
     image: cloudflare/cloudflared:2024.11.1

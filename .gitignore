@@ -2,6 +2,8 @@
 **/*.tfstate
 **/*.tfstate.backup
 
+**/*.terraform
+
 # Keys
 **/key
 **/key.pub
