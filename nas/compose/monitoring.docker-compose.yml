@@ -20,8 +20,6 @@ services:
       - traefik.enable=true
       - traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN}`)
       - traefik.http.services.prometheus.loadbalancer.server.port=9090
-      - traefik.http.routers.prometheus.tls=true
-      - traefik.http.services.prometheus.loadbalancer.server.port=9090
     networks:
       - monitoring
       - applications
@@ -35,12 +33,16 @@ services:
   grafana:
     image: grafana/grafana:10.4.13
     container_name: grafana
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN}`)
+      - traefik.http.services.grafana.loadbalancer.server.port=3000
     networks:
       - monitoring
       - applications
     volumes:
       - grafana-data:/var/lib/grafana
-    restart: unless-stopped
 
   node_exporter:
     image: quay.io/prometheus/node-exporter:v1.8.2
