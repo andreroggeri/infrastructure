@@ -1,6 +1,7 @@
 volumes:
   nginx_proxy_manager_data:
   nginx_proxy_manager_letsencrypt:
+  traefik-letsencrypt:
 
 networks:
   applications:
@@ -41,7 +42,13 @@ services:
       --providers.docker.exposedByDefault=false
       --entrypoints.web.address=:80
       --entrypoints.websecure.address=:443
+      --entrypoints.http.redirections.entryPoint.to=websecure
+      --entrypoints.http.redirections.entryPoint.scheme=https
+      --entrypoints.http.redirections.entryPoint.permanent=true
       --providers.docker.network=applications
+      --certificatesresolvers.letencrypt.acme.email=${CF_API_EMAIL}
+      --certificatesresolvers.letencrypt.acme.storage=/etc/letsencrypt/acme.json
+      --certificatesresolvers.letencrypt.acme.dnschallenge.provider=cloudflare
     networks:
       - applications
     ports:
@@ -50,6 +57,7 @@ services:
       - 443:443
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-letsencrypt:/etc/letsencrypt
 
   cloudflared:
     image: cloudflare/cloudflared:2024.11.1
