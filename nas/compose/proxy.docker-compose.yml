@@ -37,16 +37,26 @@ services:
     environment:
       - TZ=America/Sao_Paulo
     command: 
-      --providers.docker
-      --log.level=DEBUG
-      --providers.docker.exposedByDefault=false
-      --entrypoints.web.address=:80
-      --entrypoints.websecure.address=:443
-      --providers.docker.network=applications
-      --certificatesresolvers.letsencrypt.acme.dnschallenge=true
-      --certificatesresolvers.letsencrypt.acme.email=${CF_API_EMAIL}
-      --certificatesresolvers.letsencrypt.acme.storage=/etc/letsencrypt/acme.json
-      --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare
+      - --providers.docker
+      - --log.level=DEBUG
+      - --providers.docker.network=applications
+      - --providers.docker.exposedByDefault=false
+      # TLS Configuration
+      - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
+      - --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.letsencrypt.acme.email=${CF_API_EMAIL}
+      - --certificatesresolvers.letsencrypt.acme.storage=/etc/letsencrypt/acme.json
+      # Entrypoints
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.http.tls=true
+      - --entrypoints.websecure.http.tls.certResolver=letsencrypt
+      - --entrypoints.websecure.http.tls.domains[0].main=${DOMAIN}
+      - --entrypoints.websecure.http.tls.domains[0].sans=*.${DOMAIN}
+      # Redirections
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
     networks:
       - applications
     ports:
