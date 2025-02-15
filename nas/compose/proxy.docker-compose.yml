@@ -33,7 +33,7 @@ services:
       - --entrypoints.websecure.http.tls.certResolver=letsencrypt
       - --entrypoints.websecure.http.tls.domains[0].main=${DOMAIN}
       - --entrypoints.websecure.http.tls.domains[0].sans=*.${DOMAIN}
-      - --entrypoints.mqtt.address=:8883
+      - --entrypoints.mqtt.address=:1883
       # Redirections
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
@@ -44,6 +44,7 @@ services:
       - 80:80
       - 8080:8080
       - 443:443
+      - 1883:1883
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-letsencrypt:/etc/letsencrypt
