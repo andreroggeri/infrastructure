@@ -17,6 +17,10 @@ services:
       - homeassistant_config:/config
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.homeassistant.rule=Host(`ha.${DOMAIN}`)
+      - traefik.http.routers.homeassistant.entrypoints=websecure
     privileged: true
     network_mode: host
     environment:
