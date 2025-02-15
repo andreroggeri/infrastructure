@@ -8,28 +8,6 @@ networks:
     external: true
 
 services:
-  nginx_proxy_manager:
-    image: jc21/nginx-proxy-manager:2.11.3
-    container_name: nginx_proxy_manager2
-    restart: unless-stopped
-    networks:
-      - applications
-    volumes:
-      - nginx_proxy_manager_data:/data
-      - nginx_proxy_manager_letsencrypt:/etc/letsencrypt
-    environment:
-      - TZ=America/Sao_Paulo
-  #   ports:
-  #     - 443:443
-  #     - 80:80
-  #     - 8081:81
-  #     - 1883:1883/tcp
-  #     - 1883:1883/udp
-  #     - 554:554/tcp
-  #     - 554:554/udp
-  #     - 51413:51413/tcp
-  #     - 51413:51413/udp
-
   traefik:
     image: traefik:v3.3.3
     container_name: traefik
@@ -68,6 +46,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-letsencrypt:/etc/letsencrypt
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   cloudflared:
     image: cloudflare/cloudflared:2024.11.1
