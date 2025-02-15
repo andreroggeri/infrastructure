@@ -52,6 +52,10 @@ services:
     container_name: zigbee2mqtt
     image: koenkk/zigbee2mqtt:1.41.0
     restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.zigbee2mqtt.rule=Host(`zigbee2mqtt.${DOMAIN}`)
+      - traefik.http.routers.zigbee2mqtt.entrypoints=websecure
     networks:
       - applications
     environment:
