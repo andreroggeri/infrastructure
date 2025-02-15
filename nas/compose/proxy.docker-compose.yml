@@ -42,9 +42,6 @@ services:
       --providers.docker.exposedByDefault=false
       --entrypoints.web.address=:80
       --entrypoints.websecure.address=:443
-      --entrypoints.web.http.redirections.entryPoint.to=websecure
-      --entrypoints.web.http.redirections.entryPoint.scheme=https
-      --entrypoints.web.http.redirections.entryPoint.permanent=true
       --providers.docker.network=applications
       --certificatesresolvers.letencrypt.acme.email=${CF_API_EMAIL}
       --certificatesresolvers.letencrypt.acme.storage=/etc/letsencrypt/acme.json
