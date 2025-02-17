@@ -4,9 +4,7 @@ networks:
 
 volumes:
   plex_config:
-  tautulli_config:
   jellyfin_config:
-  jellystat_db:
 
 services:
   plex:
@@ -25,19 +23,10 @@ services:
       - /archive/media:/data/
       - /data/plex_transcoding:/transcoding
     restart: unless-stopped
-
-  tautulli:
-    image: linuxserver/tautulli:2.14.3
-    container_name: tautulli
-    restart: unless-stopped
-    networks:
-      - applications
-    volumes:
-      - tautulli_config:/config
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=America/Sao_Paulo
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.plex.rule=Host(`plex.${DOMAIN}`)
+      - traefik.http.routers.plex.entrypoints=websecure
 
   jellyfin:
     image: linuxserver/jellyfin:10.9.8
@@ -55,31 +44,8 @@ services:
       - /archive/media:/data/
     devices:
       - /dev/dri:/dev/dri
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.jellyfin.rule=Host(`jellyfin.${DOMAIN}`)
+      - traefik.http.routers.jellyfin.entrypoints=websecure
 
-  jellystat-db:
-    image: postgres:15.6
-    container_name: jellystat-db
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: jellystat
-      POSTGRES_PASSWORD: ${JELLYSTAT_DB_PASSWORD}
-    volumes:
-      - jellystat_db:/var/lib/postgresql/data
-    networks:
-      - applications
-
-  jellystat:
-    image: cyfershepard/jellystat:1.1.0
-    container_name: jellystat
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: jellystat
-      POSTGRES_PASSWORD: ${JELLYSTAT_DB_PASSWORD}
-      POSTGRES_IP: jellystat-db
-      POSTGRES_PORT: 5432
-      JWT_SECRET: ${JELLYSTAT_JWT_SECRET}
-      TZ: America/Sao_Paulo
-    depends_on:
-      - jellystat-db
-    networks:
-      - applications
