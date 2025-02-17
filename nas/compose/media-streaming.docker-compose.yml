@@ -40,7 +40,7 @@ services:
       - TZ=America/Sao_Paulo
 
   jellyfin:
-    image: linuxserver/jellyfin:10.9.8
+    image: linuxserver/jellyfin:10.10.6
     container_name: jellyfin
     restart: unless-stopped
     environment:
