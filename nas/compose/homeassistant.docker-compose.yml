@@ -19,8 +19,7 @@ services:
     restart: unless-stopped
     labels:
       - traefik.enable=true
-      - traefik.http.routers.homeassistant.rule=Host(`ha.${DOMAIN}`)
-      - traefik.http.routers.homeassistant.rule=Host(`ha.local.${DOMAIN}`)
+      - traefik.http.routers.homeassistant.rule=Host(`ha.${DOMAIN}`) || Host(`ha.local.${DOMAIN}`)
       - traefik.http.routers.homeassistant.entrypoints=websecure
       - traefik.http.services.homeassistant.loadbalancer.server.url=http://host.docker.internal
       - traefik.http.services.homeassistant.loadbalancer.server.port=8123
