@@ -20,6 +20,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.homeassistant.rule=Host(`ha.${DOMAIN}`)
+      - traefik.http.routers.homeassistant.rule=Host(`ha.local.${DOMAIN}`)
       - traefik.http.routers.homeassistant.entrypoints=websecure
       - traefik.http.services.homeassistant.loadbalancer.server.url=http://host.docker.internal
       - traefik.http.services.homeassistant.loadbalancer.server.port=8123
@@ -34,7 +35,7 @@ services:
     restart: unless-stopped
     labels:
       - traefik.enable=true
-      - traefik.tcp.routers.mqtt.rule=HostSNI(`mqtt.${DOMAIN}`)
+      - traefik.tcp.routers.mqtt.rule=HostSNI(`mqtt.local.${DOMAIN}`)
       - traefik.tcp.routers.mqtt.entrypoints=mqtt
       - traefik.tcp.routers.mqtt.tls=true
       - traefik.tcp.routers.mqtt.service=mqtt

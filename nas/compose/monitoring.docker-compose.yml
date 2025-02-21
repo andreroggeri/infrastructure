@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
     labels:
       - traefik.enable=true
-      - traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN}`)
+      - traefik.http.routers.prometheus.rule=Host(`prometheus.local.${DOMAIN}`)
       - traefik.http.routers.prometheus.entrypoints=websecure
     networks:
       - monitoring
@@ -36,7 +36,7 @@ services:
     restart: unless-stopped
     labels:
       - traefik.enable=true
-      - traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN}`)
+      - traefik.http.routers.grafana.rule=Host(`grafana.local.${DOMAIN}`)
       - traefik.http.routers.grafana.entrypoints=websecure
     networks:
       - monitoring

@@ -26,6 +26,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.plex.rule=Host(`plex.${DOMAIN}`)
+      - traefik.http.routers.plex.rule=Host(`plex.local.${DOMAIN}`)
       - traefik.http.routers.plex.entrypoints=websecure
       - traefik.http.services.plex.loadbalancer.server.port=32400
 
@@ -48,5 +49,6 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.jellyfin.rule=Host(`jellyfin.${DOMAIN}`)
+      - traefik.http.routers.jellyfin.rule=Host(`jellyfin.local.${DOMAIN}`)
       - traefik.http.routers.jellyfin.entrypoints=websecure
 
