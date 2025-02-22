@@ -18,6 +18,10 @@ services:
     image: linuxserver/transmission:4.0.5
     container_name: transmission
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.transmission.entrypoints=websecure"
+      - "traefik.http.routers.transmission.rule=Host(`transmission.local.${DOMAIN}`)"
     networks:
       - applications
     environment:
@@ -33,6 +37,10 @@ services:
     image: linuxserver/radarr:5.8.3
     container_name: radarr
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarr.entrypoints=websecure"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.local.${DOMAIN}`)"
     networks:
       - applications
     environment:
@@ -47,6 +55,10 @@ services:
     image: linuxserver/sonarr:4.0.8
     container_name: sonarr
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr.entrypoints=websecure"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.local.${DOMAIN}`)"
     networks:
       - applications
     environment:
@@ -61,6 +73,10 @@ services:
     image: linuxserver/bazarr:1.4.3
     container_name: bazarr
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bazarr.entrypoints=websecure"
+      - "traefik.http.routers.bazarr.rule=Host(`bazarr.local.${DOMAIN}`)"
     networks:
       - applications
     environment:
@@ -75,6 +91,10 @@ services:
     image: linuxserver/overseerr:1.33.2
     container_name: overseerr
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.overseerr.entrypoints=websecure"
+      - "traefik.http.routers.overseerr.rule=Host(`overseerr.local.${DOMAIN}`)"
     networks:
       - applications
     environment:
@@ -88,6 +108,10 @@ services:
     image: linuxserver/prowlarr:1.21.2
     container_name: prowlarr
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prowlarr.entrypoints=websecure"
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.local.${DOMAIN}`)"
     networks:
       - applications
     environment:
