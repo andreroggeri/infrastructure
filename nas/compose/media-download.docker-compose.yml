@@ -22,6 +22,10 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.transmission.entrypoints=websecure"
       - "traefik.http.routers.transmission.rule=Host(`transmission.local.${DOMAIN}`)"
+      - "traefik.udp.routers.transmission-udp.entrypoints=transmission-udp"
+      - "traefik.udp.routers.transmission-udp.service=transmission-udp"
+      - "traefik.udp.services.transmission-udp.loadbalancer.server.port=51413"
+      
     networks:
       - applications
     environment:
