@@ -1,0 +1,12 @@
+---
+- name: Create system groups
+  group:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - ansible
+    - docker
+    - admin
+    - samba-backup
+    - agendaodonto_staging
+    - agendaodonto_production

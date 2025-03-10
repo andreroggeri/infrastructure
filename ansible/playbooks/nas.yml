@@ -1,0 +1,6 @@
+---
+- name: Configure NAS
+  hosts: nas
+  become: true
+  roles:
+    - init

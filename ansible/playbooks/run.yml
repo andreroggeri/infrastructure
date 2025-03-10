@@ -1,0 +1,12 @@
+---
+- name: Include NAS playbook
+  ansible.builtin.import_playbook: nas.yml
+  when: "'nas' in group_names"
+
+# - name: Include VPS playbook
+#   ansible.builtin.import_playbook: vps.yml
+#   when: "'vps' in group_names"
+
+# - name: Include common playbook
+#   ansible.builtin.import_playbook: common.yml
+#   when: "'common' in group_names"

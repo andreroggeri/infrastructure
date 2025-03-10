@@ -1,0 +1,12 @@
+---
+password_salt: "{{ lookup('community.general.onepassword', 'Password salt', field='password', vault='Infrastructure') }}"
+# Login users
+maintenance_user: "{{ lookup('community.general.onepassword', 'Maintenance User', field='username', vault='Personal') }}"
+maintenance_password: "{{ lookup('community.general.onepassword', 'Maintenance User', field='password', vault='Personal') }}"
+login_user: "{{ lookup('community.general.onepassword', 'Login User', field='username', vault='Personal') }}"
+login_password: "{{ lookup('community.general.onepassword', 'Login User', field='password', vault='Personal') }}"
+# Samba users
+agendaodonto_staging_user: "{{ lookup('community.general.onepassword', 'Agendaodonto samba staging', field='username', vault='Infrastructure') }}"
+agendaodonto_staging_password: "{{ lookup('community.general.onepassword', 'Agendaodonto samba staging', field='password', vault='Infrastructure') }}"
+agendaodonto_production_user: "{{ lookup('community.general.onepassword', 'Agendaodonto samba production', field='username', vault='Infrastructure') }}"
+agendaodonto_production_password: "{{ lookup('community.general.onepassword', 'Agendaodonto samba production', field='password', vault='Infrastructure') }}"
