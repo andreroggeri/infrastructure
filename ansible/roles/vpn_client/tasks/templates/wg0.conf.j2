@@ -1,0 +1,22 @@
+# {{ ansible_managed}} 
+# Generated on {{ now(utc=true, fmt='%Y-%m-%d %H:%M:%S') }}
+
+[Interface]
+PrivateKey= {{ wg_private_key }}
+Address = {{ wg_private_ip }}/32
+
+# Ping the vpn server to ensure the tunnel is initialized
+PostUp = ping -c1 10.8.0.1
+
+[Peer]
+# VPN server's wireguard public key
+PublicKey = {{ wg_server_public_key }}
+
+Endpoint = {{ wg_server_endpoint }}
+
+# Peer connection + OCI Private network + OCI Public network + Local network
+AllowedIPs = 10.8.0.0/24,10.0.0.0/28,10.0.1.0/28{% if inventory_hostname != 'nas' %},192.168.15.0/24{% endif %}
+
+# To keep a connection open from the server to this client
+# (Use if you're behind a NAT, e.g. on a home network, and
+# want peers to be able to connect to you.)

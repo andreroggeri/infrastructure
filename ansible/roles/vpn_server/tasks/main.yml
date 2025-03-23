@@ -1,0 +1,27 @@
+---
+- name: Install WireGuard
+  apt:
+    name: wireguard
+    state: present
+
+- name: enable and persist ip forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    state: present
+    sysctl_set: yes
+    reload: yes
+
+- name: Configure WireGuard server
+  template:
+    src: wg0.conf.j2
+    dest: /etc/wireguard/wg0.conf
+    mode: "0600"
+    owner: root
+    group: root
+
+- name: Enable and start WireGuard service
+  systemd:
+    name: wg-quick@wg0
+    state: restarted
+    enabled: true

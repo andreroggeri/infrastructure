@@ -1,3 +1,25 @@
-nas:
+vpn_clients_static:
   hosts:
-    192.168.15.4:
+    nas:
+      ansible_host: 192.168.15.4
+      wg_private_ip: 10.8.0.2
+      wg_public_key: "{{ wg_nas_public_key }}"
+      wg_private_key: "{{ wg_nas_private_key }}"
+
+# TODO: Read from terraform
+vpn_clients_dynamic:
+  hosts:
+    agendaodonto-staging:
+      ansible_host: 134.65.26.46
+      wg_private_ip: 10.8.0.13
+    agendaodonto:
+      ansible_host: 204.216.135.129
+      wg_private_ip: 10.8.0.10
+    gateway:
+      ansible_host: 204.216.132.96
+      wg_private_ip: 10.8.0.7
+
+vpn_server:
+  hosts:
+    vpn-server:
+      ansible_host: 204.216.165.63

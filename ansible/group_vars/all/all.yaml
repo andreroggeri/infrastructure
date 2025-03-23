@@ -10,3 +10,21 @@ agendaodonto_staging_user: "{{ lookup('community.general.onepassword', 'Agendaod
 agendaodonto_staging_password: "{{ lookup('community.general.onepassword', 'Agendaodonto samba staging', field='password', vault='Infrastructure') }}"
 agendaodonto_production_user: "{{ lookup('community.general.onepassword', 'Agendaodonto samba production', field='username', vault='Infrastructure') }}"
 agendaodonto_production_password: "{{ lookup('community.general.onepassword', 'Agendaodonto samba production', field='password', vault='Infrastructure') }}"
+
+# Wireguard Credentials
+wg_nas_public_key: "{{ lookup('community.general.onepassword', 'Wireguard Nas Keys', field='username', vault='Infrastructure') }}"
+wg_nas_private_key: "{{ lookup('community.general.onepassword', 'Wireguard Nas Keys', field='password', vault='Infrastructure') }}"
+wg_mac_public_key: "{{ lookup('community.general.onepassword', 'Wireguard Mac Keys', field='username', vault='Infrastructure') }}"
+wg_mac_private_key: "{{ lookup('community.general.onepassword', 'Wireguard Mac Keys', field='password', vault='Infrastructure') }}"
+wg_s22_public_key: "{{ lookup('community.general.onepassword', 'Wireguard Andre phone keys', field='username', vault='Infrastructure') }}"
+wg_s22_private_key: "{{ lookup('community.general.onepassword', 'Wireguard Andre phone keys', field='password', vault='Infrastructure') }}"
+wg_github_actions_public_key: "{{ lookup('community.general.onepassword', 'Wireguard GHA Keys', field='username', vault='Infrastructure') }}"
+wg_github_actions_private_key: "{{ lookup('community.general.onepassword', 'Wireguard GHA Keys', field='password', vault='Infrastructure') }}"
+wg_ipad_public_key: "{{ lookup('community.general.onepassword', 'Wireguard iPad Keys', field='username', vault='Infrastructure') }}"
+wg_ipad_private_key: "{{ lookup('community.general.onepassword', 'Wireguard iPad Keys', field='password', vault='Infrastructure') }}"
+wg_raspberry_pi_office_public_key: "{{ lookup('community.general.onepassword', 'Wireguard Raspberry Pi Office Keys', field='username', vault='Infrastructure') }}"
+wg_raspberry_pi_office_private_key: "{{ lookup('community.general.onepassword', 'Wireguard Raspberry Pi Office Keys', field='password', vault='Infrastructure') }}"
+
+wg_server_public_key: "{{ lookup('community.general.onepassword', 'Wireguard Server Keys', field='username', vault='Infrastructure') }}"
+wg_server_private_key: "{{ lookup('community.general.onepassword', 'Wireguard Server Keys', field='password', vault='Infrastructure') }}"
+wg_server_endpoint: "{{ lookup('community.general.onepassword', 'Wireguard Server Keys', field='host', vault='Infrastructure') }}"

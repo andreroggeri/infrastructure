@@ -1,0 +1,15 @@
+---
+- name: Generate WireGuard keys for dynamic clients
+  hosts: vpn_clients_dynamic
+  roles:
+    - vpn_client_keys
+
+- name: Configure VPN Server
+  hosts: vpn_server
+  roles:
+    - vpn_server
+
+- name: Configure VPN Clients
+  hosts: [vpn_clients_static, vpn_clients_dynamic]
+  roles:
+    - vpn_client

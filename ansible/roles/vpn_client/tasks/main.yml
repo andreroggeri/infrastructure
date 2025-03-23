@@ -1,0 +1,37 @@
+---
+- name: Install WireGuard
+  apt:
+    name: wireguard
+    state: present
+
+- name: Read private key
+  when: "'vpn_clients_dynamic' in group_names"
+  slurp:
+    src: /etc/wireguard/keys/private.key
+  register: private_key_content
+
+- name: Read public key
+  when: "'vpn_clients_dynamic' in group_names"
+  slurp:
+    src: /etc/wireguard/keys/public.key
+  register: public_key_content
+
+- name: Set key facts
+  when: "'vpn_clients_dynamic' in group_names"
+  set_fact:
+    wg_private_key: "{{ private_key_content.content | b64decode }}"
+    wg_public_key: "{{ public_key_content.content | b64decode }}"
+
+- name: Configure WireGuard client
+  template:
+    src: wg0.conf.j2
+    dest: /etc/wireguard/wg0.conf
+    mode: "0600"
+    owner: root
+    group: root
+
+- name: Enable and start WireGuard service
+  systemd:
+    name: wg-quick@wg0
+    state: restarted
+    enabled: true

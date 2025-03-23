@@ -1,0 +1,46 @@
+---
+- name: Ensure WireGuard key directory exists
+  file:
+    path: /etc/wireguard/keys
+    state: directory
+    mode: "0700"
+    owner: root
+    group: root
+
+- name: Generate WireGuard private key if not exists
+  command: wg genkey
+  register: wg_private_key_output
+  args:
+    creates: /etc/wireguard/keys/private.key
+
+- name: Save private key if generated
+  copy:
+    content: "{{ wg_private_key_output.stdout }}"
+    dest: /etc/wireguard/keys/private.key
+    mode: "0600"
+    owner: root
+    group: root
+  when: wg_private_key_output.changed
+
+- name: Read existing private key
+  slurp:
+    src: /etc/wireguard/keys/private.key
+  register: private_key_content
+
+- name: Generate public key from private key
+  shell: echo "{{ private_key_content.content | b64decode }}" | wg pubkey
+  register: wg_public_key_output
+  changed_when: false
+
+- name: Save public key
+  copy:
+    content: "{{ wg_public_key_output.stdout }}"
+    dest: /etc/wireguard/keys/public.key
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Register keys as facts
+  set_fact:
+    wg_private_key: "{{ private_key_content.content | b64decode }}"
+    wg_public_key: "{{ wg_public_key_output.stdout }}"
