@@ -7,6 +7,3 @@
     - ansible
     - docker
     - admin
-    - samba-backup
-    - agendaodonto_staging
-    - agendaodonto_production

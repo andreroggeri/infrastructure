@@ -5,6 +5,11 @@ vpn_clients_static:
       wg_private_ip: 10.8.0.2
       wg_public_key: "{{ wg_nas_public_key }}"
       wg_private_key: "{{ wg_nas_private_key }}"
+    office-pi:
+      ansible_host: 192.168.15.137
+      wg_private_ip: 10.8.0.7
+      wg_public_key: "{{ wg_raspberry_pi_office_public_key }}"
+      wg_private_key: "{{ wg_raspberry_pi_office_private_key }}"
 
 # TODO: Read from terraform
 vpn_clients_dynamic:
@@ -17,7 +22,7 @@ vpn_clients_dynamic:
       wg_private_ip: 10.8.0.10
     gateway:
       ansible_host: 204.216.132.96
-      wg_private_ip: 10.8.0.7
+      wg_private_ip: 10.8.0.11
 
 vpn_server:
   hosts:

@@ -1,0 +1,15 @@
+---
+- name: Shared Initialization
+  hosts: all
+  become: true
+  roles:
+    - shared_init
+    - geerlingguy.security
+    - name: moreati.term.terminfo
+      become: true
+
+- name: NAS Initialization
+  hosts: nas
+  become: true
+  roles:
+    - nas_init

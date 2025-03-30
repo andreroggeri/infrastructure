@@ -1,0 +1,24 @@
+---
+- name: Create login users
+  user:
+    name: "{{ item.username }}"
+    state: present
+    update_password: on_create
+    password: "{{ item.password  }}"
+    groups:
+      - docker
+      - admin # Allow passwordless sudo
+  loop:
+    - {
+        username: "{{ login_user }}",
+        password: "{{ login_password  | password_hash('sha512', password_salt) }}",
+      }
+    - {
+        username: "{{ maintenance_user }}",
+        password: "{{ maintenance_password  | password_hash('sha512', password_salt) }}",
+      }
+
+- name: Authorize Maintenance SSH key
+  authorized_key:
+    user: "{{ maintenance_user }}"
+    key: "{{ maintenance_ssh_public_key }}"

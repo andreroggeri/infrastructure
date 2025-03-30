@@ -1,0 +1,9 @@
+---
+- name: Create system groups
+  group:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - samba-backup
+    - agendaodonto_staging
+    - agendaodonto_production

@@ -1,0 +1,16 @@
+---
+- name: Create samba users
+  user:
+    name: "{{ item.username }}"
+    state: present
+    update_password: on_create
+    password: "{{ item.password  }}"
+  loop:
+    - {
+        username: "{{ agendaodonto_staging_user }}",
+        password: "{{ agendaodonto_staging_password  | password_hash('sha512', password_salt) }}",
+      }
+    - {
+        username: "{{ agendaodonto_production_user }}",
+        password: "{{ agendaodonto_production_password  | password_hash('sha512', password_salt) }}",
+      }

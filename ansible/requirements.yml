@@ -1,3 +1,11 @@
 ---
 collections:
-  - community.general 
+  - community.general
+  - name: moreati.term
+    version: 0.0.2
+
+roles:
+  - name: geerlingguy.security
+    version: 3.0.0
+  - name: geerlingguy.docker
+    version: 7.4.7
