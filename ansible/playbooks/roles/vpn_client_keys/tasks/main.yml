@@ -1,4 +1,9 @@
 ---
+- name: Install WireGuard
+  apt:
+    name: wireguard
+    state: present
+
 - name: Ensure WireGuard key directory exists
   file:
     path: /etc/wireguard/keys

@@ -14,8 +14,8 @@ vpn_clients_static:
 # TODO: Read from terraform
 vpn_clients_dynamic:
   hosts:
-    agendaodonto-staging:
-      ansible_host: 134.65.26.46
+    k3s-node-01:
+      ansible_host: 193.123.106.26
       wg_private_ip: 10.8.0.13
     agendaodonto:
       ansible_host: 204.216.135.129
@@ -28,3 +28,14 @@ vpn_server:
   hosts:
     vpn-server:
       ansible_host: 204.216.165.63
+
+k3s_cluster:
+  children:
+    server:
+      hosts:
+        10.8.0.2:
+        10.8.0.13:
+    agents:
+      hosts:
+        # TODO: Add agents
+        #

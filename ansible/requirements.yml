@@ -3,6 +3,9 @@ collections:
   - community.general
   - name: moreati.term
     version: 0.0.2
+  - name: k3s.orchestration
+    type: git
+    source: git+https://github.com/k3s-io/k3s-ansible
 
 roles:
   - name: geerlingguy.security
