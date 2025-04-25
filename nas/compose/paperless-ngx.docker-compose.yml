@@ -25,6 +25,11 @@ services:
     image: ghcr.io/paperless-ngx/paperless-ngx:2.12.1
     container_name: paperless-webserver
     restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.paperless.rule=Host(`docs.local.${DOMAIN}`)
+      - traefik.http.routers.paperless.entrypoints=websecure
+      - traefik.http.services.paperless.loadbalancer.server.port=8000
     depends_on:
       - db
       - broker
