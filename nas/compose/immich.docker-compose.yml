@@ -13,6 +13,11 @@ services:
   immich-server:
     container_name: immich-server
     image: ghcr.io/immich-app/immich-server:v1.111.0
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.immich-server.rule=Host(`photos.local.${DOMAIN}`)
+      - traefik.http.routers.immich-server.entrypoints=websecure
+      - traefik.http.services.immich-server.loadbalancer.server.port=2283
     environment:
       - DB_HOSTNAME=immich-postgres
       - DB_USERNAME=${IMMICH_DB_USERNAME}
