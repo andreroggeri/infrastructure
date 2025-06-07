@@ -12,12 +12,12 @@ networks:
 services:
   immich-server:
     container_name: immich-server
-    image: ghcr.io/immich-app/immich-server:v1.111.0
+    image: ghcr.io/immich-app/immich-server:v1.134.0
     labels:
       - traefik.enable=true
       - traefik.http.routers.immich-server.rule=Host(`photos.local.${DOMAIN}`)
       - traefik.http.routers.immich-server.entrypoints=websecure
-      - traefik.http.services.immich-server.loadbalancer.server.port=2283
+      - traefik.http.services.immich-server.loadbalancer.server.port=3001
     environment:
       - DB_HOSTNAME=immich-postgres
       - DB_USERNAME=${IMMICH_DB_USERNAME}
@@ -38,7 +38,7 @@ services:
 
   immich-machine-learning:
     container_name: immich-machine-learning
-    image: ghcr.io/immich-app/immich-machine-learning:v1.111.0
+    image: ghcr.io/immich-app/immich-machine-learning:v1.134.0
     volumes:
       - ${IMMICH_UPLOAD_LOCATION}:/usr/src/app/upload
       - immich_model_cache:/cache
@@ -59,7 +59,7 @@ services:
 
   database:
     container_name: immich-postgres
-    image: tensorchord/pgvecto-rs:pg14-v0.2.0
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.3.0-pgvectors0.2.0
     environment:
       POSTGRES_PASSWORD: ${IMMICH_DB_PASSWORD}
       POSTGRES_USER: ${IMMICH_DB_USERNAME}
