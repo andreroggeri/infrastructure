@@ -17,7 +17,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.immich-server.rule=Host(`photos.local.${DOMAIN}`)
       - traefik.http.routers.immich-server.entrypoints=websecure
-      - traefik.http.services.immich-server.loadbalancer.server.port=3001
+      - traefik.http.services.immich-server.loadbalancer.server.port=2283
     environment:
       - DB_HOSTNAME=immich-postgres
       - DB_USERNAME=${IMMICH_DB_USERNAME}
