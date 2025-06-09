@@ -1,0 +1,9 @@
+# my-homelab-gitops/infrastructure/nfs-provisioner/values.yaml
+nfs:
+  server: 10.8.0.2
+  path: /data/share/k3s
+storageClass:
+  create: true
+  name: nfs-client
+  defaultClass: true
+  reclaimPolicy: Retain # Do not delete the data when the PVC is deleted

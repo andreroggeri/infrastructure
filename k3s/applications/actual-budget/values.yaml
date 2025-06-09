@@ -1,0 +1,16 @@
+persistence:
+  enabled: true
+  storageClass: nfs-client
+  size: 5Gi
+
+service:
+  type: ClusterIP
+  port: 5006
+
+ingress:
+  enabled: true
+  hosts:
+    - host: budget.local.roggeri.com.br
+      paths:
+        - path: /
+          pathType: Prefix
