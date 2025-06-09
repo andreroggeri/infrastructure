@@ -1,0 +1,54 @@
+---
+- name: Install nfs-kernel-server
+  apt:
+    name: nfs-kernel-server
+    state: present
+
+- name: Install nfs-common
+  apt:
+    name: nfs-common
+    state: present
+
+- name: Create share folder
+  file:
+    path: /data/share
+    state: directory
+    mode: "2770"
+    owner: root
+    group: nfsshare
+
+- name: Create k3s share folder
+  file:
+    path: /data/share/k3s
+    state: directory
+    mode: "2770"
+    owner: root
+    group: nfsshare
+
+- name: Configure export
+  lineinfile:
+    path: /etc/exports
+    line: "/data/share/k3s 10.8.0.0/24(rw,sync,no_subtree_check,no_root_squash)"
+    create: yes
+    state: present
+  register: exports_changed
+
+- name: Allow maintenance and login users to access the share
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: nfsshare
+    append: yes
+  loop:
+    - "{{ maintenance_user }}"
+    - "{{ login_user }}"
+
+- name: Export shares
+  shell:
+    cmd: "exportfs -a"
+  when: exports_changed.changed
+
+- name: Restart nfs-kernel-server
+  systemd:
+    name: nfs-kernel-server
+    state: restarted
+  when: exports_changed.changed

@@ -6,6 +6,8 @@ collections:
   - name: k3s.orchestration
     type: git
     source: git+https://github.com/k3s-io/k3s-ansible
+  - name: kubernetes.core
+    version: 5.2.0
 
 roles:
   - name: geerlingguy.security
