@@ -25,6 +25,8 @@ wg_ipad_public_key: "{{ lookup('community.general.onepassword', 'Wireguard iPad 
 wg_ipad_private_key: "{{ lookup('community.general.onepassword', 'Wireguard iPad Keys', field='password', vault='Infrastructure') }}"
 wg_raspberry_pi_office_public_key: "{{ lookup('community.general.onepassword', 'Wireguard Raspberry Pi Office Keys', field='username', vault='Infrastructure') }}"
 wg_raspberry_pi_office_private_key: "{{ lookup('community.general.onepassword', 'Wireguard Raspberry Pi Office Keys', field='password', vault='Infrastructure') }}"
+wg_opi_1_public_key: "{{ lookup('community.general.onepassword', 'Wireguard OPI 1 Keys', field='username', vault='Infrastructure') }}"
+wg_opi_1_private_key: "{{ lookup('community.general.onepassword', 'Wireguard OPI 1 Keys', field='password', vault='Infrastructure') }}"
 
 wg_server_public_key: "{{ lookup('community.general.onepassword', 'Wireguard Server Keys', field='username', vault='Infrastructure') }}"
 wg_server_private_key: "{{ lookup('community.general.onepassword', 'Wireguard Server Keys', field='password', vault='Infrastructure') }}"
