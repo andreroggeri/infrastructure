@@ -4,7 +4,7 @@ init:
 	poetry run ansible-playbook playbooks/init.yml
 
 vpn:
-	poetry run ansible-playbook playbooks/init.yml
+	poetry run ansible-playbook playbooks/vpn.yml
 
 k3s:
 	poetry run ansible-playbook k3s.orchestration.site
