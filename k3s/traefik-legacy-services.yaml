@@ -1,0 +1,717 @@
+# Legacy services running on plain docker compose
+
+# Home Assistant Stack
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homeassistant-ha-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: ha.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: homeassistant-ha-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`ha.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: homeassistant-ha-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: homeassistant-ha-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`ha.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: homeassistant-ha-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homeassistant-ha-public-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: ha.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: homeassistant-ha-public-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`ha.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: homeassistant-ha-public-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: homeassistant-ha-public-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`ha.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: homeassistant-ha-public-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homeassistant-mosquitto-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: mqtt.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homeassistant-z2m-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: zigbee2mqtt.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: homeassistant-z2m-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`zigbee2mqtt.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: homeassistant-z2m-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: homeassistant-z2m-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`zigbee2mqtt.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: homeassistant-z2m-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: homeassistant-mosquitto-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`mqtt.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: homeassistant-mosquitto-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: homeassistant-mosquitto-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`mqtt.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: homeassistant-mosquitto-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+
+# Immich
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: photos.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: immich-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`photos.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: immich-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: immich-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`photos.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: immich-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+
+# Media Download
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediadownload-bazarr-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: bazarr.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediadownload-bazarr-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`bazarr.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediadownload-bazarr-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediadownload-bazarr-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`bazarr.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediadownload-bazarr-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediadownload-overseerr-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: overseerr.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediadownload-overseerr-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`overseerr.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediadownload-overseerr-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediadownload-overseerr-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`overseerr.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediadownload-overseerr-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediadownload-prowlarr-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: prowlarr.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediadownload-prowlarr-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`prowlarr.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediadownload-prowlarr-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediadownload-prowlarr-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`prowlarr.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediadownload-prowlarr-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediadownload-radarr-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: radarr.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediadownload-radarr-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`radarr.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediadownload-radarr-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediadownload-radarr-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`radarr.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediadownload-radarr-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediadownload-sonarr-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: sonarr.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediadownload-sonarr-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`sonarr.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediadownload-sonarr-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediadownload-sonarr-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`sonarr.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediadownload-sonarr-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediadownload-transmission-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: transmission.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediadownload-transmission-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`transmission.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediadownload-transmission-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediadownload-transmission-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`transmission.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediadownload-transmission-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+# Media Streaming
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediastreaming-plex-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: plex.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediastreaming-plex-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`plex.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediastreaming-plex-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediastreaming-plex-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`plex.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediastreaming-plex-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediastreaming-jellyfin-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: jellyfin.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+
+# Docs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: docs-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: docs.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: docs-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`docs.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: docs-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: docs-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`docs.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: docs-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+# Pihole
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pihole-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: pihole.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: pihole-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`pihole.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: pihole-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: pihole-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`pihole.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: pihole-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediastreaming-jellyfin-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`jellyfin.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediastreaming-jellyfin-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediastreaming-jellyfin-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`jellyfin.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediastreaming-jellyfin-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+# Grafana
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: grafana.local.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`grafana.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: grafana-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`grafana.local.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: grafana-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
