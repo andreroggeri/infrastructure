@@ -1,0 +1,42 @@
+service:
+  type: LoadBalancer
+
+ingress:
+  enabled: true
+  hosts:
+    - host: mqtt.local.roggeri.com.br
+      paths:
+        - path: /
+          pathType: Prefix
+
+authentication:
+  enabled: true
+  passwordFilePath: /etc/mosquitto/secrets/passwordfile
+
+config: |
+  persistence true
+  persistence_location /mosquitto/data/
+  log_dest stdout
+  listener 1883
+  listener 9090
+  protocol websockets
+  allow_anonymous false
+  password_file /etc/mosquitto/secrets/passwordfile
+
+## Additional volumes.
+extraVolumes:
+  - name: password-secret
+    secret:
+      # This MUST match the name of the secret you created in Kubernetes
+      secretName: mosquitto-passwords
+
+## Additional volumeMounts to the main container.
+extraVolumeMounts:
+  - name: password-secret # This MUST match the volume name from above
+    # This is the directory inside the pod where the secret will be available
+    mountPath: /etc/mosquitto/secrets
+    readOnly: true
+
+persistence:
+  enabled: true
+  storageClass: nfs-client

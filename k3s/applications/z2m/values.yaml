@@ -1,0 +1,51 @@
+hostNetwork: true
+ingress:
+  enabled: true
+  hosts:
+    - host: z2m.local.roggeri.com.br
+      paths:
+        - path: /
+          pathType: Prefix
+
+statefulset:
+  storage:
+    enabled: true
+    storageClassName: nfs-client
+    size: 1Gi
+
+  volumes:
+    - name: serial-devices
+      hostPath:
+        path: /dev/serial
+    - name: udev
+      hostPath:
+        path: /run/udev
+
+  volumeMounts:
+    - name: serial-devices
+      mountPath: /dev/serial
+    - name: udev
+      mountPath: /run/udev
+      readOnly: true
+
+  secrets:
+    name: z2m-passwords
+
+  nodeSelector:
+    kubernetes.io/hostname: ubuntu
+
+service:
+  port: 8081
+
+zigbee2mqtt:
+  serial:
+    port: /dev/ttyUSB0
+  timezone: America/Sao_Paulo
+  mqtt:
+    server: mqtt://mosquitto:1883
+    user: "!secret.yaml mqtt_user"
+    password: "!secret.yaml mqtt_password"
+  frontend:
+    port: 8081
+  advanced:
+    log_level: info

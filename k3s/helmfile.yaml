@@ -3,6 +3,12 @@ repositories:
     url: https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
   - name: community-charts
     url: https://community-charts.github.io/helm-charts
+  - name: home-assistant
+    url: http://pajikos.github.io/home-assistant-helm-chart/
+  - name: t3n
+    url: https://storage.googleapis.com/t3n-helm-charts
+  - name: zigbee2mqtt
+    url: https://charts.zigbee2mqtt.io/
 
 releases:
   - name: nfs-provisioner
@@ -18,5 +24,32 @@ releases:
     version: 1.5.2
     values:
       - ./applications/actual-budget/values.yaml
+    needs:
+      - kube-system/nfs-provisioner
+
+  - name: home-assistant
+    namespace: home-assistant
+    chart: home-assistant/home-assistant
+    version: 0.3.8
+    values:
+      - ./applications/home-assistant/values.yaml
+    needs:
+      - kube-system/nfs-provisioner
+
+  - name: mosquitto
+    namespace: home-assistant
+    chart: t3n/mosquitto
+    version: 2.4.1
+    values:
+      - ./applications/mosquitto/values.yaml
+    needs:
+      - kube-system/nfs-provisioner
+
+  - name: zigbee2mqtt
+    namespace: home-assistant
+    chart: zigbee2mqtt/zigbee2mqtt
+    version: 2.4.0
+    values:
+      - ./applications/z2m/values.yaml
     needs:
       - kube-system/nfs-provisioner
