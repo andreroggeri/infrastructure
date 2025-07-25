@@ -31,7 +31,7 @@ statefulset:
   secrets:
     name: z2m-passwords
 
-  nodeSelector:
+  nodeSelector: # Schedule pod on the node that has the USB dongle
     kubernetes.io/hostname: ubuntu
 
 service:

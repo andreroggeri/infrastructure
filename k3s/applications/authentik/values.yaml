@@ -35,8 +35,9 @@ postgresql:
   enabled: true
   auth:
     existingSecret: authentik-secrets
-  global:
-    defaultStorageClass: "nfs-client"
+
+global:
+  defaultStorageClass: "nfs-client"
 
 redis:
   enabled: true

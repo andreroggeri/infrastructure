@@ -3,10 +3,6 @@ persistence:
   storageClass: nfs-client
   size: 5Gi
 
-# Schedule pod on specific node
-nodeSelector:
-  kubernetes.io/hostname: ubuntu
-
 ingress:
   enabled: true
   hosts:
@@ -23,10 +19,3 @@ configuration:
   forceInit: true
   trusted_proxies:
     - 10.42.0.0/16
-
-additionalVolumes:
-  - hostPath:
-      path: >-
-        /dev/serial/by-id/usb-Silicon_Labs_Sonoff_Zigbee_3.0_USB_Dongle_Plus_0001-if00-port0
-      type: CharDevice
-    name: usb
