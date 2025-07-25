@@ -62,5 +62,8 @@ releases:
     version: 2025.6.3
     values:
       - ./applications/authentik/values.yaml
+      - postgresql:
+          auth:
+            password: '{{ (get (fromSecret "authentik" "authentik-secrets") "password") | b64dec }}'
     needs:
       - kube-system/nfs-provisioner
