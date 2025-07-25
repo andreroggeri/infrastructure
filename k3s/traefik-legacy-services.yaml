@@ -539,6 +539,50 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: mediastreaming-plex-external-proxy-by-dns # This is the name K3s Traefik will use
+  namespace: migration
+spec:
+  type: ExternalName
+  externalName: plex.roggeri.com.br # The FQDN of your Docker Traefik
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediastreaming-plex-external-proxy-http
+  namespace: migration
+spec:
+  entryPoints:
+    - web # HTTP entrypoint - global redirect middleware will handle this
+  routes:
+    - match: Host(`plex.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediastreaming-plex-external-proxy-by-dns
+          port: 4443
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: mediastreaming-plex-external-proxy
+  namespace: migration
+spec:
+  entryPoints:
+    - websecure # Client connects to K3s Traefik via HTTPS
+  routes:
+    - match: Host(`plex.roggeri.com.br`)
+      kind: Rule
+      services:
+        - name: mediastreaming-plex-external-proxy-by-dns # Point to the new ExternalName Service
+          port: 4443 # The port defined in the ExternalName Service
+          scheme: https
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: mediastreaming-jellyfin-proxy-by-dns # This is the name K3s Traefik will use
   namespace: migration
 spec:
@@ -548,7 +592,6 @@ spec:
     - protocol: TCP
       port: 4443
       targetPort: 4443
-
 # Docs
 ---
 apiVersion: v1
