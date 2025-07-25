@@ -1,0 +1,42 @@
+authentik:
+  secret_key: "file:///authentik-secrets/secret_key"
+  # This sends anonymous usage-data, stack traces on errors and
+  # performance data to sentry.io, and is fully opt-in
+  error_reporting:
+    enabled: true
+  postgresql:
+    password: file:///authentik-secrets/password
+
+server:
+  ingress:
+    ingressClassName: traefik
+    enabled: true
+    hosts:
+      - authentik.local.roggeri.com.br
+  volumes:
+    - name: authentik-secrets
+      secret:
+        secretName: authentik-secrets
+  volumeMounts:
+    - name: authentik-secrets
+      mountPath: /authentik-secrets
+      readOnly: true
+worker:
+  volumes:
+    - name: authentik-secrets
+      secret:
+        secretName: authentik-secrets
+  volumeMounts:
+    - name: authentik-secrets
+      mountPath: /authentik-secrets
+      readOnly: true
+
+postgresql:
+  enabled: true
+  auth:
+    existingSecret: authentik-secrets
+  global:
+    defaultStorageClass: "nfs-client"
+
+redis:
+  enabled: true

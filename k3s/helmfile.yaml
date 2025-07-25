@@ -9,6 +9,8 @@ repositories:
     url: https://storage.googleapis.com/t3n-helm-charts
   - name: zigbee2mqtt
     url: https://charts.zigbee2mqtt.io/
+  - name: authentik
+    url: https://charts.goauthentik.io/
 
 releases:
   - name: nfs-provisioner
@@ -51,5 +53,14 @@ releases:
     version: 2.4.0
     values:
       - ./applications/z2m/values.yaml
+    needs:
+      - kube-system/nfs-provisioner
+
+  - name: authentik
+    namespace: authentik
+    chart: authentik/authentik
+    version: 2025.6.3
+    values:
+      - ./applications/authentik/values.yaml
     needs:
       - kube-system/nfs-provisioner
