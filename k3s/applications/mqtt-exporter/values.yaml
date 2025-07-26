@@ -1,0 +1,16 @@
+---
+mqttExporter:
+  mqtt:
+    host: mosquitto.home-assistant.svc.cluster.local
+    port: 1883
+    username: homeassistant
+    clientId: mqtt-exporter
+    connection:
+      address: mosquitto.home-assistant.svc.cluster.local
+      port: 1883
+      authentication:
+        username: homeassistant
+        secret:
+          enabled: true
+          name: mqtt-exporter-secret
+          key: password

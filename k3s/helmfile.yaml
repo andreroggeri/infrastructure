@@ -67,3 +67,10 @@ releases:
             password: '{{ (get (fromSecret "authentik" "authentik-secrets") "password") | b64dec }}'
     needs:
       - kube-system/nfs-provisioner
+
+  - name: mqtt-exporter
+    namespace: home-assistant
+    chart: ./charts/mqtt-exporter
+    version: 0.1.1
+    values:
+      - ./applications/mqtt-exporter/values.yaml
