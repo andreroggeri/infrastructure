@@ -8,7 +8,7 @@ volumes:
 
 services:
   plex:
-    image: linuxserver/plex:1.41.4
+    image: linuxserver/plex:1.42.1
     container_name: plex
     environment:
       - PUID=1001
@@ -30,7 +30,7 @@ services:
       - traefik.http.services.plex.loadbalancer.server.port=32400
 
   jellyfin:
-    image: linuxserver/jellyfin:10.10.6
+    image: linuxserver/jellyfin:10.10.7
     container_name: jellyfin
     restart: unless-stopped
     environment:
