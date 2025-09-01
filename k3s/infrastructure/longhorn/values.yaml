@@ -1,0 +1,9 @@
+service:
+  ui:
+    type: LoadBalancer
+    port: 80
+    targetPort: 80
+
+ingress:
+  enabled: true
+  host: longhorn.local.roggeri.com.br

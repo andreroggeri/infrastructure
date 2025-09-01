@@ -37,6 +37,9 @@ statefulset:
 service:
   port: 8081
 
+image:
+  tag: latest-dev
+
 zigbee2mqtt:
   serial:
     port: /dev/ttyUSB0
