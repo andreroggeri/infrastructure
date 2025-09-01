@@ -14,7 +14,7 @@ vpn_clients_static:
       wg_private_key: "{{ wg_raspberry_pi_office_private_key }}"
       route_home_network_through_vpn: true
     opi-1:
-      ansible_host: 192.168.15.50
+      ansible_host: 192.168.15.13
       wg_private_ip: 10.8.0.8
       wg_public_key: "{{ wg_opi_1_public_key }}"
       wg_private_key: "{{ wg_opi_1_private_key }}"
@@ -57,4 +57,4 @@ k3s_cluster:
     ansible_user: "{{ maintenance_user }}"
     token: "{{ k3s_token }}"
     api_endpoint: "{{ hostvars[groups['server'][0]]['ansible_host'] | default(groups['server'][0]) }}"
-    extra_server_args: "--tls-san 10.8.0.2,10.8.0.13,10.8.0.8 --flannel-iface=wg0 --node-ip={{ ansible_host }} --advertise-address={{ ansible_host }}"
+    extra_server_args: "--tls-san 10.8.0.2,10.8.0.13,10.8.0.8 --flannel-iface=wg0 --node-ip={{ ansible_host }} --flannel-backend=wireguard-native --advertise-address={{ ansible_host }}"

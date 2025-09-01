@@ -11,6 +11,8 @@ repositories:
     url: https://charts.zigbee2mqtt.io/
   - name: authentik
     url: https://charts.goauthentik.io/
+  - name: longhorn
+    url: https://charts.longhorn.io
 
 releases:
   - name: nfs-provisioner
@@ -19,6 +21,14 @@ releases:
     version: 4.0.18
     values:
       - ./infrastructure/nfs-provisioner/values.yaml
+
+  - name: longhorn
+    namespace: longhorn-system
+    createNamespace: true
+    chart: longhorn/longhorn
+    version: 1.9.1
+    values:
+      - ./infrastructure/longhorn/values.yaml
 
   - name: actual-budget
     namespace: actual-budget

@@ -5,8 +5,10 @@
 Address = 10.8.0.1/24
 ListenPort = 51820
 PrivateKey = {{ wg_server_private_key }}
-PostUp = iptables -t nat -A PREROUTING -d 192.168.15.4 -j DNAT --to-destination 10.8.0.2;iptables -I INPUT -p udp --dport 51820 -j ACCEPT; iptables -t nat -I POSTROUTING 1 -s 10.8.0.0/24 -o ens3 -j MASQUERADE; iptables -I INPUT 1 -i wg0 -j ACCEPT; iptables -I FORWARD 1 -i ens3 -o wg0 -j ACCEPT; iptables -I FORWARD 1 -i wg0 -o ens3 -j ACCEPT;iptables -I FORWARD 1 -i wg0 -s 10.8.0.0/24 -j ACCEPT;iptables -I FORWARD 2 -i ens3 -o wg0 -j ACCEPT;
-PostDown = iptables -D FORWARD -i wg0 -o ens3 -j ACCEPT; iptables -D FORWARD -i ens3 -o wg0 -j ACCEPT; iptables -D INPUT -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -s 10.8.0.0/24 -o ens3 -j MASQUERADE; iptables -D INPUT -p udp --dport 51820 -j ACCEPT; iptables -t nat -D PREROUTING -d 192.168.15.4 -j DNAT --to-destination 10.8.0.2;iptables -D FORWARD -i wg0 -s 10.8.0.0/24 -j ACCEPT;iptables -D FORWARD -i ens3 -o wg0 -j ACCEPT;
+# PostUp = iptables -t nat -A PREROUTING -d 192.168.15.4 -j DNAT --to-destination 10.8.0.2;iptables -I INPUT -p udp --dport 51820 -j ACCEPT; iptables -t nat -I POSTROUTING 1 -s 10.8.0.0/24 -o ens3 -j MASQUERADE; iptables -I INPUT 1 -i wg0 -j ACCEPT; iptables -I FORWARD 1 -i ens3 -o wg0 -j ACCEPT; iptables -I FORWARD 1 -i wg0 -o ens3 -j ACCEPT;iptables -I FORWARD 1 -i wg0 -s 10.8.0.0/24 -j ACCEPT;iptables -I FORWARD 2 -i ens3 -o wg0 -j ACCEPT;
+# PostDown = iptables -D FORWARD -i wg0 -o ens3 -j ACCEPT; iptables -D FORWARD -i ens3 -o wg0 -j ACCEPT; iptables -D INPUT -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -s 10.8.0.0/24 -o ens3 -j MASQUERADE; iptables -D INPUT -p udp --dport 51820 -j ACCEPT; iptables -t nat -D PREROUTING -d 192.168.15.4 -j DNAT --to-destination 10.8.0.2;iptables -D FORWARD -i wg0 -s 10.8.0.0/24 -j ACCEPT;iptables -D FORWARD -i ens3 -o wg0 -j ACCEPT;
+PostUp = iptables -t nat -A PREROUTING -d 192.168.15.4 -j DNAT --to-destination 10.8.0.2; iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o ens3 -j MASQUERADE
+PostDown = iptables -t nat -D PREROUTING -d 192.168.15.4 -j DNAT --to-destination 10.8.0.2; iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o ens3 -j MASQUERADE
 MTU = 1420
 
 # Static peers
