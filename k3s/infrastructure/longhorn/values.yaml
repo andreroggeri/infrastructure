@@ -1,8 +1,6 @@
 service:
   ui:
-    type: LoadBalancer
-    port: 80
-    targetPort: 80
+    type: ClusterIP
 
 ingress:
   enabled: true
