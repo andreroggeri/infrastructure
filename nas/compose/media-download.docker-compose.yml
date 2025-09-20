@@ -74,7 +74,7 @@ services:
       - /archive:/data
 
   bazarr:
-    image: linuxserver/bazarr:1.4.3
+    image: linuxserver/bazarr:1.5.3
     container_name: bazarr
     restart: unless-stopped
     labels:
