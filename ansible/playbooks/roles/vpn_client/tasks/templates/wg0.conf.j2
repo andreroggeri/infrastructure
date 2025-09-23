@@ -14,8 +14,8 @@ PublicKey = {{ wg_server_public_key }}
 
 Endpoint = {{ wg_server_endpoint }}
 
-# Peer connection + OCI Private network + OCI Public network + Local network + Flannel 
-AllowedIPs = 10.8.0.0/24,10.0.0.0/28,10.0.1.0/28{% if route_home_network_through_vpn %},192.168.15.0/24{% endif %},10.42.0.0/16,10.43.0.0/16
+# Peer connection + OCI Private network + OCI Public network + Local network
+AllowedIPs = 10.8.0.0/24,10.0.0.0/28,10.0.1.0/28{% if route_home_network_through_vpn %},192.168.15.0/24{% endif %}
 
 # To keep a connection open from the server to this client
 # (Use if you're behind a NAT, e.g. on a home network, and

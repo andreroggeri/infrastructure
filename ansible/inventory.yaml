@@ -14,7 +14,7 @@ vpn_clients_static:
       wg_private_key: "{{ wg_raspberry_pi_office_private_key }}"
       route_home_network_through_vpn: true
     opi-1:
-      ansible_host: 192.168.15.13
+      ansible_host: 192.168.15.12
       wg_private_ip: 10.8.0.8
       wg_public_key: "{{ wg_opi_1_public_key }}"
       wg_private_key: "{{ wg_opi_1_private_key }}"
