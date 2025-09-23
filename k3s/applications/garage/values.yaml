@@ -1,0 +1,29 @@
+persistence:
+  meta:
+    storageClass: longhorn
+    size: 1Gi
+  data:
+    storageClass: longhorn
+    size: 10Gi
+
+image:
+  repository: dxflrs/garage
+
+ingress:
+  s3:
+    api:
+      enabled: true
+      className: traefik
+      hosts:
+        - host: api.s3.local.roggeri.com.br
+          paths:
+            - path: /
+              pathType: Prefix
+    web:
+      enabled: true
+      className: traefik
+      hosts:
+        - host: "*.s3.local.roggeri.com.br"
+          paths:
+            - path: /
+              pathType: Prefix

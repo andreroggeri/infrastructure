@@ -13,6 +13,8 @@ repositories:
     url: https://charts.goauthentik.io/
   - name: longhorn
     url: https://charts.longhorn.io
+  - name: garage
+    url: git+https://git.deuxfleurs.fr/Deuxfleurs/garage.git@script/helm/garage?ref=main-v1
 
 releases:
   - name: nfs-provisioner
@@ -84,3 +86,11 @@ releases:
     version: 0.1.1
     values:
       - ./applications/mqtt-exporter/values.yaml
+
+  - name: garage
+    namespace: garage
+    createNamespace: true
+    chart: garage/garage
+    version: 0.7.1
+    values:
+      - ./applications/garage/values.yaml
