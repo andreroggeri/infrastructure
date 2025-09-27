@@ -14,3 +14,6 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
+
+image:
+  tag: v25.9.0

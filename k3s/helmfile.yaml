@@ -91,6 +91,5 @@ releases:
     namespace: garage
     createNamespace: true
     chart: garage/garage
-    version: 0.7.1
     values:
       - ./applications/garage/values.yaml
