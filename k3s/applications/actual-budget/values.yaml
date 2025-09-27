@@ -16,4 +16,5 @@ ingress:
           pathType: Prefix
 
 image:
-  tag: v25.9.0
+  repository: andreroggeri/actual
+  tag: payee-name-fix
