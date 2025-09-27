@@ -7,18 +7,21 @@ vpn_clients_static:
       wg_public_key: "{{ wg_nas_public_key }}"
       wg_private_key: "{{ wg_nas_private_key }}"
       route_home_network_through_vpn: false
+      route_oci_networks_through_vpn: true
     office-pi:
       ansible_host: 192.168.15.137
       wg_private_ip: 10.8.0.7
       wg_public_key: "{{ wg_raspberry_pi_office_public_key }}"
       wg_private_key: "{{ wg_raspberry_pi_office_private_key }}"
       route_home_network_through_vpn: true
+      route_oci_networks_through_vpn: true
     opi-1:
-      ansible_host: 192.168.15.12
+      ansible_host: 192.168.15.2
       wg_private_ip: 10.8.0.8
       wg_public_key: "{{ wg_opi_1_public_key }}"
       wg_private_key: "{{ wg_opi_1_private_key }}"
       route_home_network_through_vpn: false
+      route_oci_networks_through_vpn: true
 
 # TODO: Read from terraform
 vpn_clients_dynamic:
@@ -27,14 +30,17 @@ vpn_clients_dynamic:
       ansible_host: 193.123.106.26
       wg_private_ip: 10.8.0.13
       route_home_network_through_vpn: true
+      route_oci_networks_through_vpn: false
     agendaodonto:
       ansible_host: 204.216.135.129
       wg_private_ip: 10.8.0.10
       route_home_network_through_vpn: true
+      route_oci_networks_through_vpn: false
     gateway:
       ansible_host: 204.216.132.96
       wg_private_ip: 10.8.0.11
       route_home_network_through_vpn: true
+      route_oci_networks_through_vpn: false
 
 vpn_server:
   hosts:
@@ -57,4 +63,4 @@ k3s_cluster:
     ansible_user: "{{ maintenance_user }}"
     token: "{{ k3s_token }}"
     api_endpoint: "{{ hostvars[groups['server'][0]]['ansible_host'] | default(groups['server'][0]) }}"
-    extra_server_args: "--tls-san 10.8.0.2,10.8.0.13,10.8.0.8 --flannel-iface=wg0 --node-ip={{ ansible_host }} --flannel-backend=wireguard-native --advertise-address={{ ansible_host }}"
+    extra_server_args: "--tls-san 10.8.0.2,10.8.0.13,10.8.0.8 --flannel-iface=wg0 --node-ip={{ ansible_host }} --advertise-address={{ ansible_host }}"
