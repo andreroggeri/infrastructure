@@ -39,7 +39,7 @@ releases:
     values:
       - ./applications/actual-budget/values.yaml
     needs:
-      - kube-system/nfs-provisioner
+      - longhorn-system/longhorn
 
   - name: home-assistant
     namespace: home-assistant
@@ -93,3 +93,5 @@ releases:
     chart: garage/garage
     values:
       - ./applications/garage/values.yaml
+    needs:
+      - longhorn-system/longhorn

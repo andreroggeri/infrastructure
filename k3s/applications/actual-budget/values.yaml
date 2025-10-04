@@ -1,7 +1,7 @@
 persistence:
   enabled: true
-  storageClass: nfs-client
-  size: 5Gi
+  storageClass: longhorn
+  size: 200Mi
 
 service:
   type: LoadBalancer
