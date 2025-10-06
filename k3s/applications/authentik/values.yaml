@@ -35,9 +35,22 @@ postgresql:
   enabled: true
   auth:
     existingSecret: authentik-secrets
+    secretKeys:
+      userPasswordKey: password
+
+  primary:
+    persistence:
+      enabled: true
+      storageClass: longhorn
+      size: 512Mi
 
 global:
-  defaultStorageClass: "nfs-client"
+  defaultStorageClass: "longhorn"
 
 redis:
   enabled: true
+  master:
+    persistence:
+      enabled: true
+      storageClass: longhorn
+      size: 200Mi

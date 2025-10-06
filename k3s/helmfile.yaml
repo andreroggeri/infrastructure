@@ -71,14 +71,14 @@ releases:
   - name: authentik
     namespace: authentik
     chart: authentik/authentik
-    version: 2025.6.3
+    version: 2025.8.4
     values:
       - ./applications/authentik/values.yaml
-      - postgresql:
-          auth:
-            password: '{{ (get (fromSecret "authentik" "authentik-secrets") "password") | b64dec }}'
-    needs:
-      - kube-system/nfs-provisioner
+      #   - postgresql:
+      #       auth:
+      #         password: '{{ (get (fromSecret "authentik" "authentik-secrets") "password") | b64dec }}'
+      needs:
+      - longhorn-system/longhorn
 
   - name: mqtt-exporter
     namespace: home-assistant
