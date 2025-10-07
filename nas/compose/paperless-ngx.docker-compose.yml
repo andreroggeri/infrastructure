@@ -1,6 +1,6 @@
 services:
   broker:
-    image: docker.io/library/redis:7.4.0
+    image: docker.io/library/redis:7.4.6
     container_name: paperless-redis
     restart: unless-stopped
     volumes:
