@@ -42,7 +42,7 @@ postgresql:
     persistence:
       enabled: true
       storageClass: longhorn
-      size: 512Mi
+      size: 1Gi
 
 global:
   defaultStorageClass: "longhorn"
