@@ -39,4 +39,5 @@ extraVolumeMounts:
 
 persistence:
   enabled: true
-  storageClass: nfs-client
+  storageClass: longhorn
+  size: 300Mi

@@ -10,8 +10,8 @@ ingress:
 statefulset:
   storage:
     enabled: true
-    storageClassName: nfs-client
-    size: 1Gi
+    storageClassName: longhorn
+    size: 500Mi
 
   volumes:
     - name: serial-devices
