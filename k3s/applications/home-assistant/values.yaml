@@ -5,6 +5,7 @@ persistence:
 
 ingress:
   enabled: true
+  className: traefik
   hosts:
     - host: home.local.roggeri.com.br
       paths:
@@ -12,7 +13,7 @@ ingress:
           pathType: Prefix
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
 
 configuration:
   enabled: true

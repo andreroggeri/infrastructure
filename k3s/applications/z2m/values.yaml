@@ -1,6 +1,7 @@
 hostNetwork: true
 ingress:
   enabled: true
+  ingressClassName: traefik
   hosts:
     - host: z2m.local.roggeri.com.br
       paths:
@@ -35,6 +36,7 @@ statefulset:
     kubernetes.io/hostname: ubuntu
 
 service:
+  type: ClusterIP
   port: 8081
 
 image:
