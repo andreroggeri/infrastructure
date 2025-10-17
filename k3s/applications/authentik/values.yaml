@@ -13,6 +13,7 @@ server:
     enabled: true
     hosts:
       - authentik.local.roggeri.com.br
+      - auth.local.roggeri.com.br
   volumes:
     - name: authentik-secrets
       secret:

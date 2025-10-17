@@ -15,6 +15,8 @@ repositories:
     url: https://charts.longhorn.io
   - name: garage
     url: git+https://git.deuxfleurs.fr/Deuxfleurs/garage.git@script/helm/garage?ref=main-v1
+  - name: cnpg
+    url: https://cloudnative-pg.github.io/charts
 
 releases:
   - name: nfs-provisioner
@@ -31,6 +33,12 @@ releases:
     version: 1.9.1
     values:
       - ./infrastructure/longhorn/values.yaml
+
+  - name: cloudnative-pg
+    namespace: cnpg-system
+    chart: cnpg/cloudnative-pg
+    createNamespace: true
+    version: "0.26.0"
 
   - name: actual-budget
     namespace: actual-budget
@@ -94,4 +102,18 @@ releases:
     values:
       - ./applications/garage/values.yaml
     needs:
+      - longhorn-system/longhorn
+
+  - name: n8n
+    namespace: n8n
+    chart: oci://8gears.container-registry.com/library/n8n
+    version: 1.0.15
+    values:
+      - ./applications/n8n/values.yaml
+      - main:
+          secret:
+            n8n:
+              encryption_key: '{{ exec "kubectl" (list "get" "secret" "n8n-encryption-key-secret" "--namespace" .Namespace "-o" "jsonpath={.data.encryption-key}") | b64dec }}'
+    needs:
+      - cnpg-system/cloudnative-pg
       - longhorn-system/longhorn
