@@ -1,0 +1,14 @@
+apiVersion: v2
+name: actual-http-api
+description: A Helm chart for the Actual HTTP API
+# A chart can be either an 'application' or a 'library' chart.
+# Application charts are installable releases of software.
+type: application
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates.
+version: 0.1.0
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application.
+appVersion: "latest"

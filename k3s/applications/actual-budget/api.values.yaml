@@ -1,0 +1,29 @@
+image:
+  tag: 25.9.0
+
+config:
+  actualServerUrl: "http://actual-budget-actualbudget:5006"
+
+service:
+  port: 5007
+  targetPort: 5007
+
+persistence:
+  enabled: true
+  storageClass: longhorn
+  size: 200Mi
+
+secrets:
+  passwordSecretName: "actual-api-secret"
+  passwordSecretKey: "ACTUAL_SERVER_PASSWORD"
+  apiKeySecretName: "actual-api-secret"
+  apiKeySecretKey: "API_KEY"
+
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: api.budget.local.roggeri.com.br
+      paths:
+        - path: /
+          pathType: Prefix

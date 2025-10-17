@@ -49,6 +49,16 @@ releases:
     needs:
       - longhorn-system/longhorn
 
+  - name: actual-http-api
+    namespace: actual-budget
+    chart: ./charts/actual-http-api
+    version: 0.1.0
+    values:
+      - ./applications/actual-budget/api.values.yaml
+    needs:
+      - longhorn-system/longhorn
+      - actual-budget/actual-budget
+
   - name: home-assistant
     namespace: home-assistant
     chart: home-assistant/home-assistant
