@@ -1,0 +1,7 @@
+{{/* Renders extra Kubernetes resources from the values file */}}
+{{- if .Values.extraResources }}
+{{- range .Values.extraResources }}
+---
+{{- tpl . $ | nindent 0 }}
+{{- end }}
+{{- end }}

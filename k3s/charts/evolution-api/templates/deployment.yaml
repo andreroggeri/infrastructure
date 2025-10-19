@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "evolution-api.fullname" . }}
+  labels:
+    {{- include "evolution-api.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.evolutionApi.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "evolution-api.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: api
+  template:
+    metadata:
+      labels:
+        {{- include "evolution-api.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: api
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.evolutionApi.image.repository }}:{{ .Values.evolutionApi.image.tag }}"
+          imagePullPolicy: {{ .Values.evolutionApi.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.evolutionApi.service.port | int }}
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "evolution-api.fullname" . }}-config
+          env:
+            {{- toYaml .Values.evolutionApi.env | nindent 12 }}
+            {{- if .Values.evolutionApi.authSecret.existingSecret }}
+            - name: AUTHENTICATION_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.evolutionApi.authSecret.existingSecret }}
+                  key: AUTHENTICATION_API_KEY
+            {{- else }}
+            - name: AUTHENTICATION_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "evolution-api.fullname" . }}-auth-secret
+                  key: AUTHENTICATION_API_KEY
+            {{- end }}

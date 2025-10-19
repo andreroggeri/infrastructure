@@ -1,0 +1,53 @@
+# Evolution API configuration
+evolutionApi:
+  replicaCount: 1
+  image:
+    repository: atendai/evolution-api
+    pullPolicy: IfNotPresent
+    tag: "latest" # It's recommended to use a specific version
+  service:
+    type: ClusterIP
+    port: 8080
+  # Environment variables for the Evolution API
+  # See: https://doc.evolution-api.com/v2/en/environment_variables
+  env:
+    - name: SERVER_URL
+      value: "http://localhost:8080"
+    - name: SERVER_HOST
+      value: "0.0.0.0"
+    - name: CORS_ORIGIN
+      value: "*"
+    - name: CORS_METHODS
+      value: "GET,HEAD,PUT,PATCH,POST,DELETE"
+  
+  # Authentication secret configuration
+  authSecret:
+    # Set to true to use an existing secret instead of creating a new one
+    existingSecret: ""
+    # API key for authentication (only used if existingSecret is not set)
+    apiKey: "your-secret-api-key-here"
+
+
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "traefik"
+  annotations: {}
+  hosts:
+    - host: evolution-api.yourdomain.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: evolution-api
+
+# Redis configuration
+redis:
+  replicaCount: 1
+  image:
+    repository: redis
+    pullPolicy: IfNotPresent
+    tag: "alpine"
+  service:
+    type: ClusterIP
+    port: 6379

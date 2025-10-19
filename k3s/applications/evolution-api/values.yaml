@@ -1,0 +1,51 @@
+evolutionApi:
+  image: 
+    tag: v2.2.3
+  service:
+    port: 8080
+  env:
+    - name: DATABASE_ENABLED
+      value: "true"
+    - name: DATABASE_PROVIDER
+      value: "postgresql"
+    - name: DATABASE_CONNECTION_URI
+      valueFrom:
+        secretKeyRef:
+          name: evolution-db-app
+          key: uri
+    - name: CACHE_REDIS_ENABLED
+      value: "true"
+    - name: CACHE_REDIS_URI
+      value: "redis://redis:6379"
+    - name: CONFIG_SESSION_PHONE_VERSION
+      value: "2.3000.1028401180"
+  
+
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: "traefik"
+  hosts:
+    - host: evolution-api.local.roggeri.com.br
+      paths:
+        - path: /
+          pathType: Prefix
+          service: evolution-api
+
+extraResources: 
+- |
+  apiVersion: postgresql.cnpg.io/v1
+  kind: Cluster
+  metadata:
+    name: evolution-db
+    namespace: {{ .Release.Namespace }}
+  spec:
+    instances: 1
+    primaryUpdateStrategy: unsupervised
+    storage:
+      size: 500Mi
+    bootstrap:
+      initdb:
+        database: evolution_api
+        owner: evolution_user

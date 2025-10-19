@@ -127,3 +127,13 @@ releases:
     needs:
       - cnpg-system/cloudnative-pg
       - longhorn-system/longhorn
+
+  - name: evolution-api
+    namespace: evolution-api
+    chart: ./charts/evolution-api
+    version: 0.1.0
+    values:
+      - ./applications/evolution-api/values.yaml
+    needs:
+      - cnpg-system/cloudnative-pg
+      - longhorn-system/longhorn
