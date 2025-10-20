@@ -62,7 +62,7 @@ releases:
   - name: home-assistant
     namespace: home-assistant
     chart: home-assistant/home-assistant
-    version: 0.3.8
+    version: 0.3.26
     values:
       - ./applications/home-assistant/values.yaml
     needs:
