@@ -16,7 +16,6 @@ main:
           enabled: true
           reject_Unauthorized: true
           ca_file: "/home/ssl/certs/postgresql/ca.crt"
-
     external:
       hook:
         files: "/home/node/.n8n/hooks.js"
@@ -34,6 +33,10 @@ main:
     size: 1Gi
 
   extraEnv:
+    WEBHOOK_URL:
+      value: "https://n8n.local.roggeri.com.br"
+    N8N_PROXY_HOPS:
+      value: "1"
     DB_POSTGRESDB_PASSWORD:
       valueFrom:
         secretKeyRef:
