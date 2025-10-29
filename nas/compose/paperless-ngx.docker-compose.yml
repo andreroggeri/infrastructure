@@ -22,7 +22,7 @@ services:
       - paperless
 
   webserver:
-    image: ghcr.io/paperless-ngx/paperless-ngx:2.12.1
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.19.3
     container_name: paperless-webserver
     restart: unless-stopped
     labels:
