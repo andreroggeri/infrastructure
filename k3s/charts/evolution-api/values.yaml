@@ -2,7 +2,7 @@
 evolutionApi:
   replicaCount: 1
   image:
-    repository: atendai/evolution-api
+    repository: evoapicloud/evolution-api
     pullPolicy: IfNotPresent
     tag: "latest" # It's recommended to use a specific version
   service:
