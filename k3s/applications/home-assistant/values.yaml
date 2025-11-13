@@ -11,6 +11,10 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
+    - host: home.roggeri.com.br
+      paths:
+        - path: /
+          pathType: Prefix
 
 service:
   type: ClusterIP

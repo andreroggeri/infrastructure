@@ -17,6 +17,8 @@ repositories:
     url: git+https://git.deuxfleurs.fr/Deuxfleurs/garage.git@script/helm/garage?ref=main-v1
   - name: cnpg
     url: https://cloudnative-pg.github.io/charts
+  - name: wrsys
+    url: https://wrsys.github.io/helm-charts/
 
 releases:
   - name: nfs-provisioner
@@ -136,4 +138,14 @@ releases:
       - ./applications/evolution-api/values.yaml
     needs:
       - cnpg-system/cloudnative-pg
+      - longhorn-system/longhorn
+
+  - name: cloudflared
+    createNamespace: true
+    namespace: cloudflared
+    chart: wrsys/cloudflare-tunnel-remote
+    version: 0.9.0
+    values:
+      - ./applications/cloudflared/values.yaml
+    needs:
       - longhorn-system/longhorn
