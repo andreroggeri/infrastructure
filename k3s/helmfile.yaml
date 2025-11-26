@@ -20,6 +20,7 @@ repositories:
   - name: wrsys
     url: https://wrsys.github.io/helm-charts/
 
+
 releases:
   - name: nfs-provisioner
     namespace: kube-system
@@ -147,5 +148,15 @@ releases:
     version: 0.9.0
     values:
       - ./applications/cloudflared/values.yaml
+    needs:
+      - longhorn-system/longhorn
+
+  - name: trilium
+    namespace: trilium
+    createNamespace: true
+    chart: ./charts/trilium
+    version: 0.1.0
+    values:
+      - ./applications/trilium/values.yaml
     needs:
       - longhorn-system/longhorn

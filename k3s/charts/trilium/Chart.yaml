@@ -1,0 +1,6 @@
+apiVersion: v2
+name: trilium
+description: A Helm chart for Trilium Notes
+type: application
+version: 0.1.0
+appVersion: "0.99.4"

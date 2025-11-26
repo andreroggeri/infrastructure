@@ -1,0 +1,25 @@
+persistence:
+  enabled: true
+  storageClass: longhorn
+  size: 2Gi
+
+ingress:
+  enabled: true
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: "authentik-ak-outpost-authentik-embedded-outpost@kubernetescrd"
+  hosts:
+    - host: notes.local.roggeri.com.br
+      paths:
+        - path: /
+          pathType: Prefix
+env:
+  - name: TRILIUM_GENERAL_NOAUTHENTICATION
+    value: "true"
+  - name: TRILIUM_NETWORK_TRUSTEDREVERSEPROXY
+    value: "10.42.0.0/16"
+
+serverTransport:
+  enabled: true
+
+image:
+  tag: v0.99.5
