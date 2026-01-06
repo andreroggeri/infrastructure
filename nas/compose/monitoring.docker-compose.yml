@@ -57,9 +57,13 @@ services:
       - "/:/host:ro,rslave"
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.51.0
+    image: gcr.io/cadvisor/cadvisor:v0.55.1
     container_name: cadvisor
     restart: unless-stopped
+    command:
+      - "-housekeeping_interval=15s"
+      - "-disable_metrics=disk,diskIO,tcp,udp,percpu,sched,process"
+      - "-docker_only=true"
     networks:
       - monitoring
     volumes:
