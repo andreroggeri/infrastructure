@@ -1,0 +1,55 @@
+ingress:
+  enabled: true
+  class: traefik
+  host: openwebui.local.roggeri.com.br
+  # Chart does not expose paths config, defaults to /
+
+persistence:
+  enabled: true
+  storageClass: longhorn
+  accessMode: ReadWriteOnce
+  size: 2Gi
+  
+ollama:
+  enabled: false
+
+pipelines:
+  enabled: true
+  persistence:
+    enabled: true
+    storageClass: longhorn
+    size: 500Mi
+  # If you need to point to your external llama.cpp (which typically uses OpenAI compatible API):
+  extraEnvVars: []
+
+# Main application environment variables
+extraEnvVars:
+  - name: OPENAI_API_BASE_URL
+    value: "http://192.168.15.90:8080/v1"
+  - name: OPENAI_API_KEY
+    value: "sk-no-key-required"
+  - name: ENABLE_OAUTH_SIGNUP
+    value: "true"
+  - name: OAUTH_MERGE_ACCOUNTS_BY_EMAIL
+    value: "true"
+  - name: OAUTH_PROVIDER_NAME
+    value: "Authentik"
+  - name: OPENID_PROVIDER_URL
+    value: "https://auth.local.roggeri.com.br/application/o/open-web-ui/.well-known/openid-configuration"
+  - name: OAUTH_SCOPES
+    value: "openid email profile"
+  - name: OPENID_REDIRECT_URI
+    value: "https://openwebui.local.roggeri.com.br/oauth/callback"  
+
+  
+
+  - name: OAUTH_CLIENT_ID
+    valueFrom:
+      secretKeyRef:
+        name: openwebui-secret
+        key: OAUTH_CLIENT_ID
+  - name: OAUTH_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: openwebui-secret
+        key: OAUTH_CLIENT_SECRET

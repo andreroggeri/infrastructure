@@ -1,0 +1,14 @@
+{{- if and .Values.configMap.enabled (not .Values.configMap.name) .Values.configMap.data }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "garage-webui.configMapName" . }}
+  labels:
+    {{- include "garage-webui.labels" . | nindent 4 }}
+data:
+  {{- range $key, $value := .Values.configMap.data }}
+  {{ $key }}: |
+{{ $value | indent 4 }}
+  {{- end }}
+{{- end }}
+

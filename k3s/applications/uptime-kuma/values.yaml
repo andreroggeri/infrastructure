@@ -1,0 +1,16 @@
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: uptime.local.roggeri.com.br
+      paths:
+        - path: /
+          pathType: Prefix
+
+persistence:
+  enabled: true
+  storageClass: longhorn
+  accessMode: ReadWriteOnce
+  size: 500Mi
+  mountPath: /app/data
+

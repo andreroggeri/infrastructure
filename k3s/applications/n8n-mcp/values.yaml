@@ -1,0 +1,36 @@
+env:
+  # Set these in your secrets or use external secret management if needed
+  # AUTH_TOKEN: "CHANGE_ME" 
+  N8N_API_URL: "http://n8n.n8n.svc.cluster.local"
+  # N8N_API_KEY: "CHANGE_ME"
+  # MCP_LOG_LEVEL: "debug"
+  # USE_FIXED_HTTP: "true"
+
+extraEnv: 
+  - name: AUTH_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: n8n-mcp-secrets
+        key: auth-token
+  - name: N8N_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: n8n-mcp-secrets
+        key: n8n-api-key
+
+image:
+  tag: 2.31.9
+
+envFrom: []
+
+persistence:
+  enabled: false
+  size: 1Gi
+  storageClass: "longhorn" 
+
+service:
+  type: ClusterIP
+  port: 3000
+
+ingress:
+  enabled: false

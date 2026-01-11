@@ -1,6 +1,6 @@
 image:
   repository: n8nio/n8n
-  tag: 1.115.2
+  tag: 1.121.3
 
 main:
   config:
@@ -42,6 +42,10 @@ main:
         secretKeyRef:
           name: db-app
           key: password
+    QUEUE_BULL_REDIS_HOST:
+      value: "n8n-redis-leader"
+    QUEUE_BULL_REDIS_PORT:
+      value: "6379"
   # Mount the CNPG CA Cert into N8N container
   extraVolumeMounts:
     - name: db-ca-cert
@@ -94,3 +98,23 @@ extraManifests:
       storage:
         size: 1Gi
         storageClass: longhorn
+
+  - apiVersion: redis.redis.opstreelabs.in/v1beta2
+    kind: Redis
+    metadata:
+      name: redis
+      namespace: n8n
+    spec:
+      kubernetesConfig:
+        image: quay.io/opstree/redis:v7.0.12
+        redisSecret:
+          name: redis-secret
+          key: password
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 500Mi

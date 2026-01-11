@@ -19,6 +19,12 @@ repositories:
     url: https://cloudnative-pg.github.io/charts
   - name: wrsys
     url: https://wrsys.github.io/helm-charts/
+  - name: ot-helm
+    url: https://ot-container-kit.github.io/helm-charts/
+  - name: dirsigler
+    url: https://dirsigler.github.io/uptime-kuma-helm
+  - name: open-webui
+    url: https://helm.openwebui.com/
 
 
 releases:
@@ -42,6 +48,12 @@ releases:
     chart: cnpg/cloudnative-pg
     createNamespace: true
     version: "0.26.0"
+
+  - name: redis-operator
+    namespace: redis-operator-system
+    createNamespace: true
+    chart: ot-helm/redis-operator
+    version: 0.18.2
 
   - name: actual-budget
     namespace: actual-budget
@@ -124,11 +136,10 @@ releases:
     values:
       - ./applications/n8n/values.yaml
       - main:
-          secret:
-            n8n:
               encryption_key: '{{ exec "kubectl" (list "get" "secret" "n8n-encryption-key-secret" "--namespace" .Namespace "-o" "jsonpath={.data.encryption-key}") | b64dec }}'
     needs:
       - cnpg-system/cloudnative-pg
+      - redis-operator-system/redis-operator
       - longhorn-system/longhorn
 
   - name: evolution-api
@@ -158,5 +169,34 @@ releases:
     version: 0.1.0
     values:
       - ./applications/trilium/values.yaml
+    needs:
+      - longhorn-system/longhorn
+
+  - name: uptime-kuma
+    namespace: uptime-kuma
+    createNamespace: true
+    chart: dirsigler/uptime-kuma
+    version: 2.24.0
+    values:
+      - ./applications/uptime-kuma/values.yaml
+    needs:
+      - longhorn-system/longhorn
+
+  - name: open-webui
+    namespace: open-webui
+    createNamespace: true
+    chart: open-webui/open-webui
+    version: 9.0.0
+    values:
+      - ./applications/open-webui/values.yaml
+    needs:
+      - longhorn-system/longhorn
+
+  - name: n8n-mcp
+    namespace: n8n
+    chart: ./charts/n8n-mcp
+    version: 0.1.0
+    values:
+      - ./applications/n8n-mcp/values.yaml
     needs:
       - longhorn-system/longhorn
