@@ -12,7 +12,6 @@ volumes:
   bazarr_config:
   prowlarr_config:
 
-
 services:
   transmission:
     image: linuxserver/transmission:4.0.5
@@ -25,7 +24,11 @@ services:
       - "traefik.udp.routers.transmission-udp.entrypoints=transmission-udp"
       - "traefik.udp.routers.transmission-udp.service=transmission-udp"
       - "traefik.udp.services.transmission-udp.loadbalancer.server.port=51413"
-      
+      - "traefik.tcp.routers.transmission-tcp.entrypoints=transmission-tcp"
+      - "traefik.tcp.routers.transmission-tcp.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.transmission-tcp.service=transmission-tcp"
+      - "traefik.tcp.services.transmission-tcp.loadbalancer.server.port=51413"
+
     networks:
       - applications
     environment:

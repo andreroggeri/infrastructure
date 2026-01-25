@@ -16,7 +16,7 @@ services:
       - TZ=America/Sao_Paulo
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
-    command: 
+    command:
       - --providers.docker
       - --log.level=DEBUG
       - --providers.docker.network=applications
@@ -34,6 +34,7 @@ services:
       - --entrypoints.websecure.http.tls.domains[0].main=${DOMAIN}
       - --entrypoints.websecure.http.tls.domains[0].sans=*.${DOMAIN}
       - --entrypoints.mqtt.address=:1883
+      - --entrypoints.transmission-tcp.address=:51413/tcp
       - --entrypoints.transmission-udp.address=:51413/udp
       # Redirections
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
@@ -46,7 +47,8 @@ services:
       - 8081:8080
       - 4443:443
       - 1883:1883
-      - 51413:51413
+      - 51413:51413/tcp
+      - 51413:51413/udp
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-letsencrypt:/etc/letsencrypt
