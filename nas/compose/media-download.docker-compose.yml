@@ -14,7 +14,7 @@ volumes:
 
 services:
   transmission:
-    image: linuxserver/transmission:4.0.5
+    image: linuxserver/transmission:4.1.0
     container_name: transmission
     restart: unless-stopped
     labels:
