@@ -26,7 +26,6 @@ repositories:
   - name: open-webui
     url: https://helm.openwebui.com/
 
-
 releases:
   - name: nfs-provisioner
     namespace: kube-system
@@ -58,7 +57,7 @@ releases:
   - name: actual-budget
     namespace: actual-budget
     chart: community-charts/actualbudget
-    version: 1.5.2
+    version: 1.8.7
     values:
       - ./applications/actual-budget/values.yaml
     needs:
@@ -136,7 +135,7 @@ releases:
     values:
       - ./applications/n8n/values.yaml
       - main:
-              encryption_key: '{{ exec "kubectl" (list "get" "secret" "n8n-encryption-key-secret" "--namespace" .Namespace "-o" "jsonpath={.data.encryption-key}") | b64dec }}'
+          encryption_key: '{{ exec "kubectl" (list "get" "secret" "n8n-encryption-key-secret" "--namespace" .Namespace "-o" "jsonpath={.data.encryption-key}") | b64dec }}'
     needs:
       - cnpg-system/cloudnative-pg
       - redis-operator-system/redis-operator

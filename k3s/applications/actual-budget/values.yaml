@@ -1,3 +1,6 @@
+strategy:
+  type: Recreate
+
 persistence:
   enabled: true
   storageClass: longhorn
@@ -17,4 +20,4 @@ ingress:
 
 image:
   repository: andreroggeri/actual
-  tag: payee-name-fix
+  tag: 2026-01-07.1
