@@ -1,5 +1,5 @@
 image:
-  tag: 25.9.0
+  tag: 26.2.0
 
 config:
   actualServerUrl: "http://actual-budget-actualbudget:5006"
@@ -11,7 +11,7 @@ service:
 persistence:
   enabled: true
   storageClass: longhorn
-  size: 200Mi
+  size: 512Mi
 
 secrets:
   passwordSecretName: "actual-api-secret"
