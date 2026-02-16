@@ -1,5 +1,5 @@
 image:
-  repository: ghcr.io/triliumnext/trilium
+  repository: neosmemo/memos
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -29,21 +29,12 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
-  # runAsUser: 1000
 
 env: []
 
 service:
   type: ClusterIP
-  port: 8080
-  annotations: {}
-
-serverTransport:
-  enabled: false
-  forwardingTimeouts:
-    dialTimeout: 300s
-    responseHeaderTimeout: 300s
-    idleConnTimeout: 300s
+  port: 5230
 
 ingress:
   enabled: false

@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "trilium.fullname" . }}
+  name: {{ include "memos.fullname" . }}
   labels:
-    {{- include "trilium.labels" . | nindent 4 }}
+    {{- include "memos.labels" . | nindent 4 }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}

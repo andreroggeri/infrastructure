@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "trilium.fullname" . }}
+  name: {{ include "memos.fullname" . }}
   labels:
-    {{- include "trilium.labels" . | nindent 4 }}
+    {{- include "memos.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "trilium.selectorLabels" . | nindent 6 }}
+      {{- include "memos.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -16,13 +16,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "trilium.selectorLabels" . | nindent 8 }}
+        {{- include "memos.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "trilium.serviceAccountName" . }}
+      serviceAccountName: {{ include "memos.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -32,14 +32,14 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: TRILIUM_PORT
-              value: "8080"
+            - name: MEMOS_PORT
+              value: "5230"
             {{- with .Values.env }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 5230
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -61,11 +61,11 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: data
-              mountPath: /home/node/trilium-data
+              mountPath: /var/opt/memos
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{ else }}{{ include "trilium.fullname" . }}{{ end }}
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{ else }}{{ include "memos.fullname" . }}{{ end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

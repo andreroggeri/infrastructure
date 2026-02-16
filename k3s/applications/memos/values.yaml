@@ -1,0 +1,12 @@
+persistence:
+  enabled: true
+  storageClass: longhorn
+  size: 1Gi
+
+ingress:
+  enabled: true
+  hosts:
+    - host: notes.local.roggeri.com.br
+      paths:
+        - path: /
+          pathType: Prefix
