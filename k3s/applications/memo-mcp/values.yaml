@@ -1,0 +1,15 @@
+memo:
+  server_url: "http://memos.memos.svc.cluster.local:5230"
+  existingSecretName: "memo-secrets"
+  existingSecretKey: "access_token"
+
+image:
+  tag: 0.4.0
+
+ingress:
+  enabled: true
+  hosts:
+    - host: notes.local.roggeri.com.br
+      paths:
+        - path: /mcp
+          pathType: Prefix

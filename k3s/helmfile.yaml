@@ -25,6 +25,8 @@ repositories:
     url: https://dirsigler.github.io/uptime-kuma-helm
   - name: open-webui
     url: https://helm.openwebui.com/
+  - name: memo-mcp
+    url: https://andreroggeri.github.io/memo-mcp/
 
 releases:
   - name: nfs-provisioner
@@ -199,3 +201,12 @@ releases:
       - ./applications/memos/values.yaml
     needs:
       - longhorn-system/longhorn
+
+  - name: memo-mcp
+    namespace: memos
+    chart: memo-mcp/memo-mcp
+    version: 0.2.0
+    values:
+      - ./applications/memo-mcp/values.yaml
+    needs:
+      - memos/memos
