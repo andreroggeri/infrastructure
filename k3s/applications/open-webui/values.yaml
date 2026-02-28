@@ -1,3 +1,6 @@
+image:
+  tag: 0.8.5
+
 ingress:
   enabled: true
   class: traefik
@@ -9,7 +12,7 @@ persistence:
   storageClass: longhorn
   accessMode: ReadWriteOnce
   size: 2Gi
-  
+
 ollama:
   enabled: false
 
@@ -39,10 +42,7 @@ extraEnvVars:
   - name: OAUTH_SCOPES
     value: "openid email profile"
   - name: OPENID_REDIRECT_URI
-    value: "https://openwebui.local.roggeri.com.br/oauth/callback"  
-
-  
-
+    value: "https://openwebui.local.roggeri.com.br/oauth/oidc/callback"
   - name: OAUTH_CLIENT_ID
     valueFrom:
       secretKeyRef:
