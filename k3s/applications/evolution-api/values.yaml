@@ -1,6 +1,6 @@
 evolutionApi:
-  image: 
-    tag: v2.3.6
+  image:
+    tag: v2.3.7
   service:
     port: 8080
   env:
@@ -17,8 +17,6 @@ evolutionApi:
       value: "true"
     - name: CACHE_REDIS_URI
       value: "redis://redis:6379"
-  
-
 
 # Ingress configuration
 ingress:
@@ -31,19 +29,19 @@ ingress:
           pathType: Prefix
           service: evolution-api
 
-extraResources: 
-- |
-  apiVersion: postgresql.cnpg.io/v1
-  kind: Cluster
-  metadata:
-    name: evolution-db
-    namespace: {{ .Release.Namespace }}
-  spec:
-    instances: 1
-    primaryUpdateStrategy: unsupervised
-    storage:
-      size: 500Mi
-    bootstrap:
-      initdb:
-        database: evolution_api
-        owner: evolution_user
+extraResources:
+  - |
+    apiVersion: postgresql.cnpg.io/v1
+    kind: Cluster
+    metadata:
+      name: evolution-db
+      namespace: {{ .Release.Namespace }}
+    spec:
+      instances: 1
+      primaryUpdateStrategy: unsupervised
+      storage:
+        size: 500Mi
+      bootstrap:
+        initdb:
+          database: evolution_api
+          owner: evolution_user
