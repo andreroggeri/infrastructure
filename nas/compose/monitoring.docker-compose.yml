@@ -76,7 +76,7 @@ services:
       - /dev/kmsg
 
   speedtest:
-    image: jraviles/prometheus_speedtest:0.9.14
+    image: jraviles/prometheus_speedtest:v0.9.17
     container_name: speedtest
     restart: unless-stopped
     networks:
