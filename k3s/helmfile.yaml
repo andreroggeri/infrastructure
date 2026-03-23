@@ -78,7 +78,7 @@ releases:
   - name: home-assistant
     namespace: home-assistant
     chart: home-assistant/home-assistant
-    version: 0.3.26
+    version: 0.3.50
     values:
       - ./applications/home-assistant/values.yaml
     needs:
@@ -205,7 +205,7 @@ releases:
   - name: memo-mcp
     namespace: memos
     chart: memo-mcp/memo-mcp
-    version: 0.2.0
+    version: 0.5.0
     values:
       - ./applications/memo-mcp/values.yaml
     needs:
