@@ -210,3 +210,14 @@ releases:
       - ./applications/memo-mcp/values.yaml
     needs:
       - memos/memos
+
+  - name: paperclip
+    namespace: paperclip
+    createNamespace: true
+    chart: ./charts/paperclip
+    version: 0.1.0
+    values:
+      - ./applications/paperclip/values.yaml
+    needs:
+      - cnpg-system/cloudnative-pg
+      - longhorn-system/longhorn
