@@ -1,3 +1,5 @@
+paperclipPublicUrl: "http://localhost:3100"
+
 image:
   repository: ghcr.io/paperclipai/paperclip
   pullPolicy: IfNotPresent
@@ -60,3 +62,8 @@ tolerations: []
 affinity: {}
 
 extraManifests: []
+
+extraInitContainers: []
+extraContainers: []
+extraVolumeMounts: []
+extraVolumes: []

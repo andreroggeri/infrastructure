@@ -1,11 +1,12 @@
+paperclipPublicUrl: "https://paperclip.local.roggeri.com.br"
+
 image:
   repository: ghcr.io/paperclipai/paperclip
   tag: "latest"
 
 persistence:
   enabled: true
-  storageClass: longhorn
-  size: 5Gi
+  existingClaim: paperclip-nfs
 
 service:
   type: ClusterIP
@@ -21,6 +22,12 @@ ingress:
           pathType: Prefix
 
 env:
+  - name: PATH
+    value: "/paperclip/.local/bin:/paperclip/.npm-global/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  - name: DOCKER_HOST
+    value: "tcp://localhost:2375"
+  - name: DOCKER_CONFIG
+    value: "/paperclip/.docker"
   - name: HOST
     value: "0.0.0.0"
   - name: PORT
@@ -29,18 +36,24 @@ env:
     value: "production"
   - name: PAPERCLIP_HOME
     value: "/paperclip"
+  - name: PAPERCLIP_INSTANCE_ID
+    value: "default"
+  - name: PAPERCLIP_CONFIG
+    value: "/paperclip/instances/default/config.json"
   - name: SERVE_UI
     value: "true"
   - name: PAPERCLIP_DEPLOYMENT_MODE
     value: "authenticated"
   - name: PAPERCLIP_DEPLOYMENT_EXPOSURE
-    value: "private"
+    value: "public"
   - name: PAPERCLIP_PUBLIC_URL
     value: "https://paperclip.local.roggeri.com.br"
   - name: PAPERCLIP_MIGRATION_AUTO_APPLY
     value: "true"
   - name: HEARTBEAT_SCHEDULER_ENABLED
     value: "true"
+  - name: PAPERCLIP_BIND
+    value: "lan"
   - name: DATABASE_URL
     valueFrom:
       secretKeyRef:
@@ -82,3 +95,70 @@ extraManifests:
       storage:
         size: 2Gi
         storageClass: longhorn
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  readOnlyRootFilesystem: true
+
+extraVolumes:
+  - name: tmp
+    emptyDir: {}
+
+extraVolumeMounts:
+  - name: tmp
+    mountPath: /tmp
+
+extraInitContainers:
+  - name: install-docker-cli
+    image: docker:latest
+    command:
+      - sh
+      - -c
+      - |
+        mkdir -p /paperclip/.local/bin /paperclip/.docker/cli-plugins
+        if [ ! -f /paperclip/.local/bin/docker ]; then
+          cp /usr/local/bin/docker /paperclip/.local/bin/docker
+        fi
+        if [ ! -f /paperclip/.docker/cli-plugins/docker-compose ]; then
+          cp /usr/local/libexec/docker/cli-plugins/docker-compose /paperclip/.docker/cli-plugins/docker-compose
+        fi
+    volumeMounts:
+      - name: data
+        mountPath: /paperclip
+
+extraContainers:
+  - name: dind
+    image: docker:dind
+    securityContext:
+      privileged: true
+    args:
+      - --host=unix:///var/run/docker.sock
+      - --host=tcp://0.0.0.0:2375
+    env:
+      - name: DOCKER_TLS_CERTDIR
+        value: ""
+    resources:
+      limits:
+        memory: 1024Mi
+      requests:
+        memory: 256Mi
+  - name: chrome
+    image: zenika/alpine-chrome:latest
+    args:
+      - --no-sandbox
+      - --headless
+      - --disable-gpu
+      - --remote-debugging-address=0.0.0.0
+      - --remote-debugging-port=9222
+      - --remote-debugging-allow-origins=*
+      - about:blank
+    ports:
+      - name: cdp
+        containerPort: 9222
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        memory: 256Mi
