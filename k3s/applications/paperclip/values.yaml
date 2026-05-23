@@ -72,9 +72,14 @@ env:
 
 resources:
   limits:
-    memory: 4096Mi
+    memory: 8192Mi
+    cpu: "2"
   requests:
-    memory: 1024Mi
+    memory: 8192Mi
+    cpu: "2"
+
+nodeSelector:
+  kubernetes.io/hostname: alexandria
 
 extraManifests:
   - apiVersion: postgresql.cnpg.io/v1
