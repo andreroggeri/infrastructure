@@ -5,6 +5,9 @@
 PrivateKey= {{ wg_private_key }}
 Address = {{ wg_private_ip }}/32
 MTU = 1420
+{% if wg_listen_port is defined %}
+ListenPort = {{ wg_listen_port }}
+{% endif %}
 
 # Ping the vpn server to ensure the tunnel is initialized
 PostUp = ping -c1 10.8.0.1
@@ -22,3 +25,12 @@ AllowedIPs = 10.8.0.0/24{% if route_oci_networks_through_vpn %},10.0.0.0/28,10.0
 # (Use if you're behind a NAT, e.g. on a home network, and
 # want peers to be able to connect to you.)
 PersistentKeepalive = 25
+{% if wg_direct_peer_host is defined %}
+
+[Peer]
+# {{ wg_direct_peer_host }} — direct LAN peer, bypasses relay
+PublicKey = {{ hostvars[wg_direct_peer_host]['wg_public_key'] }}
+Endpoint = {{ hostvars[wg_direct_peer_host]['ansible_host'] }}:{{ hostvars[wg_direct_peer_host]['wg_listen_port'] }}
+AllowedIPs = {{ hostvars[wg_direct_peer_host]['wg_private_ip'] }}/32,{{ hostvars[wg_direct_peer_host]['wg_pod_cidr'] }}
+PersistentKeepalive = 25
+{% endif %}
