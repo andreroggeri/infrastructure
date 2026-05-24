@@ -1,3 +1,6 @@
+image:
+  tag: "0.28.0"
+
 persistence:
   enabled: true
   storageClass: longhorn
