@@ -2,7 +2,7 @@ paperclipPublicUrl: "https://paperclip.local.roggeri.com.br"
 
 image:
   repository: ghcr.io/paperclipai/paperclip
-  tag: "latest"
+  tag: "sha-f4bed4a"  # v2026.513.0 — latest (v2026.517.0) has broken node user in image
 
 persistence:
   enabled: true
