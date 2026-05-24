@@ -17,7 +17,4 @@ kubectl exec -n paperclip "$POD" -- chown node:node \
   /paperclip/.pi/agent/models.json \
   /paperclip/.config/opencode/opencode.json
 
-echo "Installing pi..."
-kubectl exec -n paperclip "$POD" -- npm install -g @earendil-works/pi-coding-agent
-
 echo "✓ Done"
