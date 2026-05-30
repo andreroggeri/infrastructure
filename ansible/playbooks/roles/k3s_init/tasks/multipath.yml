@@ -1,0 +1,7 @@
+---
+- name: Disable multipathd (conflicts with Longhorn iSCSI volumes)
+  systemd:
+    name: multipathd
+    state: stopped
+    enabled: false
+    masked: true
