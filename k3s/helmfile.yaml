@@ -221,3 +221,13 @@ releases:
     needs:
       - cnpg-system/cloudnative-pg
       - longhorn-system/longhorn
+
+  - name: apprise
+    namespace: apprise
+    createNamespace: true
+    chart: ./charts/apprise
+    version: 0.1.0
+    values:
+      - ./applications/apprise/values.yaml
+    needs:
+      - longhorn-system/longhorn

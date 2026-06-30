@@ -1,0 +1,16 @@
+image:
+  tag: "latest"
+
+persistence:
+  enabled: true
+  storageClass: longhorn
+  size: 256Mi
+
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: notifications.local.roggeri.com.br
+      paths:
+        - path: /
+          pathType: Prefix
