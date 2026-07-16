@@ -222,9 +222,11 @@ def _open_threshold(cfg: Config) -> datetime:
 
 def run_once(s, cfg) -> int:
     thr = _open_threshold(cfg)
-    within = _now().date() >= thr.date()
-    log(f"heartbeat: target {cfg.target_date} opens ~{thr.date()} "
-        f"(within window now: {within})")
+    days = (thr.date() - _now().date()).days
+    status = "window is OPEN now" if days <= 0 else f"opens {thr.date()} ({days} days to go)"
+    log(f"heartbeat: target {cfg.target_date}; {status}")
+    notify(cfg, "Booker healthy",
+           f"Logged in OK. {cfg.nome_area} for {cfg.target_date}: {status}.")
     return 0
 
 
@@ -260,6 +262,9 @@ def _poll_book(s, cfg):
 
 def run_watch(s, cfg) -> int:
     log(f"watch: booking {cfg.target_date} area {cfg.area_id} the instant it opens")
+    notify(cfg, "Booker armed",
+           f"Watching {cfg.nome_area} for {cfg.target_date}, polling every "
+           f"{cfg.poll_interval}s. Will book the instant it opens.")
     r, booked = _poll_book(s, cfg)
     if r is None:
         notify(cfg, "Booker FAILED", f"{cfg.target_date} never opened before deadline")
