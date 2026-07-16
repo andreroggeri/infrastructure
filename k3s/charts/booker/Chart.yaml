@@ -1,0 +1,6 @@
+apiVersion: v2
+name: booker
+description: Salao de Festas auto-booker (Superlogica). Short-lived MVP.
+type: application
+version: 0.1.0
+appVersion: "1"

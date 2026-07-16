@@ -1,0 +1,20 @@
+{{- if .Values.probe.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "booker.fullname" . }}-probe
+  labels:
+    {{- include "booker.labels" . | nindent 4 }}
+  annotations:
+    # bump this to re-run the probe (Job specs are immutable)
+    booker/probe-target: {{ .Values.probe.targetDate | quote }}
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: {{ .Values.probe.activeDeadlineSeconds }}
+  template:
+    metadata:
+      labels:
+        {{- include "booker.labels" . | nindent 8 }}
+    spec:
+      {{- include "booker.podspec" (dict "ctx" . "mode" "probe" "extraEnv" (dict "TARGET_DATE" .Values.probe.targetDate "DEADLINE_SECONDS" (.Values.probe.pollDeadlineSeconds | toString) "POLL_INTERVAL_SECONDS" (.Values.probe.pollIntervalSeconds | toString))) | nindent 6 }}
+{{- end }}

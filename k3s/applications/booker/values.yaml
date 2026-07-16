@@ -1,0 +1,21 @@
+# Booker release overrides. Chart defaults cover the rest (charts/booker/values.yaml).
+config:
+  TARGET_DATE: "11/01/2026"      # Nov 1 2026, opens Aug 3 2026
+  AREA_ID: "766"                 # Salao de Festas
+  UNIT_ID: "6471"
+  CONDO_ID: "58"
+  NOME_AREA: "SALAO DE FESTAS - 10H as 24hH"
+  POLL_INTERVAL_SECONDS: "2"
+
+heartbeat:
+  enabled: true
+  schedule: "0 9 * * *"
+
+watch:
+  enabled: true
+  schedule: "50 23 2 8 *"        # Aug 2 23:50; adjust after probe pins the open time
+
+# Flip to true, set targetDate, `helmfile apply`, read logs, then flip back.
+probe:
+  enabled: false
+  targetDate: "10/15/2026"

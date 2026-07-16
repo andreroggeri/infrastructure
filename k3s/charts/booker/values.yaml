@@ -1,0 +1,50 @@
+# Stock Python image; deps are pip-installed at start (no custom image / registry).
+image:
+  repository: python
+  tag: "3.12-slim"
+  pullPolicy: IfNotPresent
+
+# Non-secret config -> ConfigMap env. Secrets (credentials, apprise) come from the
+# SealedSecret named in existingSecret.
+config:
+  TARGET_DATE: "11/01/2026"      # MM/DD/YYYY
+  AREA_ID: "766"
+  UNIT_ID: "6471"
+  CONDO_ID: "58"
+  NOME_AREA: "SALAO DE FESTAS - 10H as 24hH"
+  POLL_INTERVAL_SECONDS: "2"
+
+existingSecret: booker-secrets   # provides SUPERLOGICA_EMAIL/SENHA, APPRISE_URLS
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi
+
+# Daily auth heartbeat (mode=once).
+heartbeat:
+  enabled: true
+  schedule: "0 9 * * *"
+  deadlineSeconds: 120
+
+# The real run (mode=watch). Fires just before Nov 1 enters the 90-day window.
+# Nov 1 2026 opens Aug 3 2026. Adjust the schedule after the probe pins the time.
+watch:
+  enabled: true
+  schedule: "50 23 2 8 *"        # Aug 2, 23:50 America/Sao_Paulo
+  activeDeadlineSeconds: 3600
+  pollDeadlineSeconds: 3000      # ~50 min of polling through midnight
+
+# One-off probe (mode=probe): book+cancel a throwaway date to pin the open time.
+# Enable, set targetDate to the date under test, apply, read logs, then disable.
+probe:
+  enabled: false
+  targetDate: "10/15/2026"
+  activeDeadlineSeconds: 5400
+  pollDeadlineSeconds: 5400
+  pollIntervalSeconds: "2"
+
+timeZone: America/Sao_Paulo

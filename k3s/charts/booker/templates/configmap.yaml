@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "booker.fullname" . }}-script
+  labels:
+    {{- include "booker.labels" . | nindent 4 }}
+data:
+  reservar.py: |
+{{ .Files.Get "files/reservar.py" | indent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "booker.fullname" . }}-config
+  labels:
+    {{- include "booker.labels" . | nindent 4 }}
+data:
+  {{- range $k, $v := .Values.config }}
+  {{ $k }}: {{ $v | quote }}
+  {{- end }}

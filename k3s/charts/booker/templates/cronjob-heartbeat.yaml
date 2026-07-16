@@ -1,0 +1,24 @@
+{{- if .Values.heartbeat.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "booker.fullname" . }}-heartbeat
+  labels:
+    {{- include "booker.labels" . | nindent 4 }}
+spec:
+  timeZone: {{ .Values.timeZone | quote }}
+  schedule: {{ .Values.heartbeat.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: {{ .Values.heartbeat.deadlineSeconds }}
+      template:
+        metadata:
+          labels:
+            {{- include "booker.labels" . | nindent 12 }}
+        spec:
+          {{- include "booker.podspec" (dict "ctx" . "mode" "once") | nindent 10 }}
+{{- end }}

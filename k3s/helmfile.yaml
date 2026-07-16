@@ -29,6 +29,11 @@ repositories:
     url: https://andreroggeri.github.io/memo-mcp/
 
 releases:
+  - name: sealed-secrets-manifests
+    namespace: kube-system
+    chart: ./charts/sealed-secrets-manifests
+    version: 0.1.0
+
   - name: nfs-provisioner
     namespace: kube-system
     chart: nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
@@ -231,3 +236,11 @@ releases:
       - ./applications/apprise/values.yaml
     needs:
       - longhorn-system/longhorn
+
+  - name: booker
+    namespace: booker
+    createNamespace: true
+    chart: ./charts/booker
+    version: 0.1.0
+    values:
+      - ./applications/booker/values.yaml

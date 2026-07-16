@@ -1,0 +1,25 @@
+{{- if .Values.watch.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "booker.fullname" . }}-watch
+  labels:
+    {{- include "booker.labels" . | nindent 4 }}
+spec:
+  timeZone: {{ .Values.timeZone | quote }}
+  schedule: {{ .Values.watch.schedule | quote }}
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 120
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: {{ .Values.watch.activeDeadlineSeconds }}
+      template:
+        metadata:
+          labels:
+            {{- include "booker.labels" . | nindent 12 }}
+        spec:
+          {{- include "booker.podspec" (dict "ctx" . "mode" "watch" "extraEnv" (dict "DEADLINE_SECONDS" (.Values.watch.pollDeadlineSeconds | toString))) | nindent 10 }}
+{{- end }}
