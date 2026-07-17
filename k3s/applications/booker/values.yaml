@@ -13,7 +13,12 @@ heartbeat:
 
 watch:
   enabled: true
-  schedule: "50 23 2 8 *"        # Aug 2 23:50; adjust after probe pins the open time
+  # Probe (2026-07-17) pinned the flip to exactly 00:00 Sao Paulo. Fire 23:50 on
+  # Aug 2 (polls through the midnight Aug 3 flip -> books Nov 1) plus Aug 3-5 as a
+  # daily re-arm safety net: if a night's pod fails, later nights re-grab Nov 1
+  # (stays open after Aug 3). reservar.py is idempotent - a re-arm run that finds
+  # the date already ours notifies "Salao still secured" and exits without dupe.
+  schedule: "50 23 2-5 8 *"      # Aug 2,3,4,5 at 23:50 America/Sao_Paulo
 
 # Flip to true, set targetDate, `helmfile apply`, read logs, then flip back.
 probe:

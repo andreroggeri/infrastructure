@@ -37,6 +37,11 @@ WINDOW_DAYS = 90
 # keeps this file 100% ASCII, which matters: Helm .Files.Get truncates at the first
 # non-ASCII byte when embedding the script into a ConfigMap.
 NOT_OPEN_MARKERS = ("ainda nao esta disponivel", "nao esta disponivel")
+# Server response when this unit already holds the date. Raw (with accents):
+# "Essa unidade ja reservou nesse dia." Accent-stripped before matching, so keep
+# markers ASCII. This is the idempotency signal for re-arm runs: if we already
+# secured the date, /put returns this instead of booking a duplicate.
+ALREADY_BOOKED_MARKERS = ("ja reservou nesse dia", "reservou nesse dia")
 
 
 @dataclass
@@ -215,6 +220,11 @@ def _is_not_open(msg: str) -> bool:
     return any(k in m for k in NOT_OPEN_MARKERS)
 
 
+def _is_already_ours(msg: str) -> bool:
+    m = _strip_accents(msg)
+    return any(k in m for k in ALREADY_BOOKED_MARKERS)
+
+
 def _open_threshold(cfg: Config) -> datetime:
     tgt = datetime.strptime(cfg.target_date, "%m/%d/%Y")
     return tgt - timedelta(days=WINDOW_DAYS)
@@ -231,8 +241,10 @@ def run_once(s, cfg) -> int:
 
 
 def _poll_book(s, cfg):
-    """Poll attempt_book until success/deadline. Returns the final result dict
-    plus a 'booked' flag. Retries only on the not-open marker."""
+    """Poll attempt_book until success/deadline. Returns (result_dict, outcome)
+    where outcome is one of: 'booked' (we booked it now), 'already' (this unit
+    already holds the date), 'rejected' (non-retryable server error), or None
+    (deadline hit with no booking). Retries only on the not-open marker."""
     deadline = time.monotonic() + cfg.deadline_seconds
     attempts = 0
     while time.monotonic() < deadline:
@@ -248,16 +260,19 @@ def _poll_book(s, cfg):
         if r["ok"]:
             log(f"BOOKED after {attempts} attempts: {r['msg']} "
                 f"id={r['raw'].get('id_reserva_res')} fila={r['raw'].get('nm_fila_res')}")
-            return r, True
+            return r, "booked"
+        if _is_already_ours(r["msg"]):
+            log(f"already booked by this unit: {r['msg']}")
+            return r, "already"
         if _is_not_open(r["msg"]):
             if attempts == 1 or attempts % 20 == 0:
                 log(f"not open yet (attempt {attempts}): {r['msg']}")
             time.sleep(cfg.poll_interval)
             continue
         log(f"non-retryable response: {r['msg']}")
-        return r, False
+        return r, "rejected"
     log("deadline reached without booking")
-    return None, False
+    return None, None
 
 
 def run_watch(s, cfg) -> int:
@@ -265,11 +280,15 @@ def run_watch(s, cfg) -> int:
     notify(cfg, "Booker armed",
            f"Watching {cfg.nome_area} for {cfg.target_date}, polling every "
            f"{cfg.poll_interval}s. Will book the instant it opens.")
-    r, booked = _poll_book(s, cfg)
-    if r is None:
+    r, outcome = _poll_book(s, cfg)
+    if outcome == "already":
+        notify(cfg, "Salao still secured",
+               f"{cfg.target_date} already reserved by this unit. Nothing to do.")
+        return 0
+    if outcome is None or r is None:
         notify(cfg, "Booker FAILED", f"{cfg.target_date} never opened before deadline")
         return 1
-    if booked:
+    if outcome == "booked":
         fila = r["raw"].get("nm_fila_res")
         rid = r["raw"].get("id_reserva_res")
         first = str(fila) in ("1", "")
@@ -283,8 +302,8 @@ def run_watch(s, cfg) -> int:
 def run_probe(s, cfg) -> int:
     log(f"probe: pinning open time for {cfg.target_date} area {cfg.area_id} "
         f"(will book then cancel)")
-    r, booked = _poll_book(s, cfg)
-    if r is None or not booked:
+    r, outcome = _poll_book(s, cfg)
+    if outcome != "booked" or r is None:
         msg = "deadline reached" if r is None else r["msg"]
         notify(cfg, "Probe: no open", f"{cfg.target_date}: {msg}")
         return 1
