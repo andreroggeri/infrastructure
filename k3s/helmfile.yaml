@@ -49,6 +49,13 @@ releases:
     values:
       - ./infrastructure/longhorn/values.yaml
 
+  - name: storage-classes
+    namespace: longhorn-system
+    chart: ./charts/storage-classes
+    version: 0.1.0
+    needs:
+      - longhorn-system/longhorn
+
   - name: cloudnative-pg
     namespace: cnpg-system
     chart: cnpg/cloudnative-pg
@@ -130,6 +137,7 @@ releases:
     namespace: garage
     createNamespace: true
     chart: garage/garage
+    version: 0.7.3
     values:
       - ./applications/garage/values.yaml
     needs:

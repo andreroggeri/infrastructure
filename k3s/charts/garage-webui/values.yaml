@@ -54,8 +54,19 @@ ingress:
           pathType: ImplementationSpecific
   tls: []
 
+# The Garage chart's own Service does not carry the admin port, so this chart
+# creates a companion Service for it. Requires being released into the `garage`
+# namespace — a Service selector cannot reach pods in another namespace.
+garageAdmin:
+  createService: true
+  name: garage-admin
+  port: 3903
+  selector:
+    app.kubernetes.io/name: garage
+    app.kubernetes.io/instance: garage
+
 env:
-  API_BASE_URL: "http://garage:3903"
+  API_BASE_URL: "http://garage-admin:3903"
   S3_ENDPOINT_URL: "http://garage:3900"
 extraEnv: []
 extraVolumeMounts: []

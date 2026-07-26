@@ -1,0 +1,24 @@
+{{- if .Values.garageAdmin.createService }}
+# The upstream Garage chart deliberately leaves the admin API (:3903) off its
+# Service — the admin API is per-node and not consistent across a multi-node
+# cluster, so it refuses to load-balance it. The web UI needs that API, so
+# expose it here with a Service that targets the Garage pods directly.
+#
+# NOTE: a Service selector only matches pods in its own namespace, so this
+# chart must be released into the same namespace as Garage (`garage`).
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.garageAdmin.name }}
+  labels:
+    {{- include "garage-webui.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.garageAdmin.port }}
+      targetPort: {{ .Values.garageAdmin.port }}
+      protocol: TCP
+      name: admin
+  selector:
+    {{- toYaml .Values.garageAdmin.selector | nindent 4 }}
+{{- end }}

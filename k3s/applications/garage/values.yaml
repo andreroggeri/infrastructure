@@ -1,13 +1,75 @@
+# Single-node Garage.
+#
+# Redundancy is Longhorn's job here, not Garage's. The cluster is all on one
+# LAN, so running Garage's own 3-way replication on top of Longhorn's 3-way
+# replication would cost 9x on disk for no extra safety. One Garage pod on a
+# replicated Longhorn volume gives the same 3x (2x today) with far less to
+# operate: no cluster layout to manage, and node failure is handled by Longhorn
+# reattaching the volume elsewhere.
+#
+# Trade-off: a single pod means a short outage on node drain. Acceptable here.
+# If that ever stops being true, switch to deployment.replicaCount: 3 with
+# garage.replicationMode "3" on local-path volumes and let Garage own it.
+garage:
+  replicationMode: "1"
+  s3:
+    api:
+      region: "garage"
+      # Use path-style addressing: https://s3.local.roggeri.com.br/<bucket>/<key>
+      #
+      # The API host deliberately sits *outside* `*.s3.local.roggeri.com.br`.
+      # It used to be api.s3.local.roggeri.com.br, which the wildcard web
+      # ingress matched and shadowed in Traefik — every S3 call silently landed
+      # on the website endpoint (:3902) and came back as an HTML 404.
+      rootDomain: ".s3.local.roggeri.com.br"
+    web:
+      # Matches the wildcard web ingress below, so a bucket with website access
+      # enabled is served at https://<bucket>.s3.local.roggeri.com.br
+      rootDomain: ".s3.local.roggeri.com.br"
+      index: "index.html"
+
+deployment:
+  kind: StatefulSet
+  replicaCount: 1
+
 persistence:
   meta:
-    storageClass: longhorn
+    # LMDB preallocates — the old 100Mi meta volume was already ~80% full with
+    # zero objects stored.
+    storageClass: longhorn-r2
     size: 1Gi
   data:
-    storageClass: longhorn
+    # Actual data across every Longhorn volume in the cluster is ~7.5GiB, so
+    # 10Gi holds a full backup with room to spare. Longhorn allows volume
+    # expansion — grow this when it's actually needed, not before.
+    storageClass: longhorn-r2
     size: 10Gi
 
 image:
+  # Multi-arch manifest — the chart default (dxflrs/amd64_garage) does not run
+  # on the arm64 nodes.
   repository: dxflrs/garage
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    memory: 1Gi
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 3903
+  initialDelaySeconds: 10
+  periodSeconds: 30
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 3903
+  initialDelaySeconds: 5
+  periodSeconds: 15
 
 ingress:
   s3:
@@ -15,7 +77,7 @@ ingress:
       enabled: true
       className: traefik
       hosts:
-        - host: api.s3.local.roggeri.com.br
+        - host: s3.local.roggeri.com.br
           paths:
             - path: /
               pathType: Prefix

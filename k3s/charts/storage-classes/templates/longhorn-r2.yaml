@@ -1,0 +1,32 @@
+# Two-replica Longhorn class.
+#
+# The default `longhorn` class asks for 3 replicas, but k3s-node-01 (Oracle
+# Cloud) only has ~10Gi free, so any sizeable volume can never place its third
+# replica and sits permanently Degraded. Until a third *local* node joins,
+# workloads that want real redundancy without the noise use this class and get
+# one replica on alexandria and one on ubuntu.
+#
+# Once the third local node is up, move consumers back to `longhorn`.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-r2
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "2"
+  # Pin replicas to the two home nodes. Today k3s-node-01 is excluded anyway
+  # because it sits at the storage-minimal-available-percentage floor, but that
+  # is luck, not intent: free up disk there and Longhorn would happily place a
+  # replica in Oracle Cloud, putting synchronous block writes across the
+  # WireGuard link. The tag makes the exclusion explicit.
+  nodeSelector: "home"
+  staleReplicaTimeout: "30"
+  dataEngine: "v1"
+  dataLocality: "disabled"
+  disableRevisionCounter: "true"
+  fsType: "ext4"
+  unmapMarkSnapChainRemoved: "ignored"
+  backupTargetName: "default"

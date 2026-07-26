@@ -5,5 +5,7 @@ nfs:
 storageClass:
   create: true
   name: nfs-client
-  defaultClass: true
+  # Longhorn is the cluster default; opting out here keeps PVCs that omit a
+  # storageClassName from landing on NFS by accident.
+  defaultClass: false
   reclaimPolicy: Retain # Do not delete the data when the PVC is deleted
