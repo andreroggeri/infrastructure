@@ -1,0 +1,91 @@
+---
+# The OCI Ubuntu images ship a saved iptables ruleset that ends with a catch-all
+# REJECT in both INPUT and FORWARD, restored on every boot by
+# netfilter-persistent. Rules therefore have to be *inserted* above that REJECT,
+# and they have to be saved to /etc/iptables/rules.v4 to survive a reboot —
+# which is exactly what the old wg-quick PostUp hooks failed to do.
+
+- name: Install iptables-persistent
+  apt:
+    name: iptables-persistent
+    state: present
+
+- name: Enable netfilter-persistent so the ruleset is restored at boot
+  systemd:
+    name: netfilter-persistent
+    enabled: true
+
+# Rules left behind by the old PostUp hooks and by hand-applied `iptables -I`
+# fixes. They carry no --comment, so they are distinct from the rules declared
+# below and this stays a no-op once the host is clean. Deleting in a loop
+# because the same rule was inserted several times by hand.
+- name: Purge legacy and hand-applied WireGuard rules
+  shell: |
+    n=0
+    while [ "$n" -lt 20 ] && iptables -t {{ item.table | default('filter') }} -C {{ item.spec }} 2>/dev/null; do
+      iptables -t {{ item.table | default('filter') }} -D {{ item.spec }} || break
+      n=$((n+1))
+    done
+    echo "removed=$n"
+  register: wg_rule_purge
+  changed_when: "'removed=0' not in (wg_rule_purge.stdout | default('removed=0'))"
+  loop:
+    - spec: "INPUT -p udp --dport {{ wg_server_listen_port }} -j ACCEPT"
+    - spec: "INPUT -i {{ wg_interface }} -j ACCEPT"
+    - spec: "FORWARD -i {{ wg_interface }} -j ACCEPT"
+    - spec: "FORWARD -i {{ wg_interface }} -s {{ wg_subnet }} -j ACCEPT"
+    - spec: "POSTROUTING -o {{ wg_wan_interface }} -j MASQUERADE"
+      table: nat
+
+- name: Accept inbound WireGuard handshakes
+  iptables:
+    action: insert
+    chain: INPUT
+    protocol: udp
+    destination_port: "{{ wg_server_listen_port }}"
+    jump: ACCEPT
+    comment: "wireguard: listen port"
+
+- name: Accept traffic from peers to this host
+  iptables:
+    action: insert
+    chain: INPUT
+    in_interface: "{{ wg_interface }}"
+    jump: ACCEPT
+    comment: "wireguard: peers -> server"
+
+- name: Forward traffic between peers and to/from the internet
+  iptables:
+    action: insert
+    chain: FORWARD
+    in_interface: "{{ item.in }}"
+    out_interface: "{{ item.out }}"
+    jump: ACCEPT
+    comment: "wireguard: {{ item.in }} -> {{ item.out }}"
+  loop:
+    - { in: "{{ wg_interface }}", out: "{{ wg_interface }}" }
+    - { in: "{{ wg_interface }}", out: "{{ wg_wan_interface }}" }
+    - { in: "{{ wg_wan_interface }}", out: "{{ wg_interface }}" }
+
+- name: Masquerade peer traffic leaving through the WAN interface
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    source: "{{ wg_subnet }}"
+    out_interface: "{{ wg_wan_interface }}"
+    jump: MASQUERADE
+    comment: "wireguard: egress nat"
+
+- name: Redirect inbound traffic into the tunnel
+  iptables:
+    table: nat
+    chain: PREROUTING
+    destination: "{{ item.destination }}"
+    jump: DNAT
+    to_destination: "{{ item.to }}"
+  loop: "{{ wg_dnat_rules }}"
+
+- name: Persist the ruleset across reboots
+  community.general.iptables_state:
+    state: saved
+    path: /etc/iptables/rules.v4

@@ -12,16 +12,39 @@
     sysctl_set: yes
     reload: yes
 
+- name: Configure firewall
+  include_tasks: firewall.yml
+
 - name: Configure WireGuard server
   template:
     src: wg0.conf.j2
-    dest: /etc/wireguard/wg0.conf
+    dest: /etc/wireguard/{{ wg_interface }}.conf
     mode: "0600"
     owner: root
     group: root
 
+- name: Ensure WireGuard unit override directory exists
+  file:
+    path: /etc/systemd/system/wg-quick@{{ wg_interface }}.service.d
+    state: directory
+    mode: "0755"
+
+# netfilter-persistent restores the saved ruleset at boot. Ordering the tunnel
+# after it guarantees the restore never wipes rules out from under a live wg0.
+- name: Start WireGuard after the firewall has been restored
+  copy:
+    dest: /etc/systemd/system/wg-quick@{{ wg_interface }}.service.d/10-after-netfilter.conf
+    mode: "0644"
+    content: |
+      # Ansible managed
+      [Unit]
+      After=netfilter-persistent.service
+      Wants=netfilter-persistent.service
+  register: wg_unit_dropin
+
 - name: Enable and start WireGuard service
   systemd:
-    name: wg-quick@wg0
+    name: wg-quick@{{ wg_interface }}
     state: restarted
     enabled: true
+    daemon_reload: "{{ wg_unit_dropin.changed }}"

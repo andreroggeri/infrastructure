@@ -1,0 +1,15 @@
+---
+wg_interface: wg0
+wg_server_address: 10.8.0.1/24
+wg_server_listen_port: 51820
+wg_subnet: 10.8.0.0/24
+wg_mtu: 1420
+
+# Internet-facing NIC, used for MASQUERADE and inbound DNAT.
+wg_wan_interface: "{{ ansible_default_ipv4.interface }}"
+
+# Traffic arriving on this host for these addresses is pushed into the tunnel,
+# so the peer behind the VPN answers it.
+wg_dnat_rules:
+  - destination: 192.168.15.4
+    to: 10.8.0.2

@@ -28,6 +28,13 @@ wg_raspberry_pi_office_private_key: "{{ lookup('community.general.onepassword', 
 wg_opi_1_public_key: "{{ lookup('community.general.onepassword', 'Wireguard OPI 1 Keys', field='username', vault='Infrastructure') }}"
 wg_opi_1_private_key: "{{ lookup('community.general.onepassword', 'Wireguard OPI 1 Keys', field='password', vault='Infrastructure') }}"
 
+# Dynamic clients generate their own keypair on the host, so only the public key
+# is stored here — cached so the server config renders even when a client is
+# offline. The vpn_client_keys role overrides it with a set_fact when reachable.
+wg_k3s_node_01_public_key: "{{ lookup('community.general.onepassword', 'Wireguard K3s Node 01 Keys', field='username', vault='Infrastructure') }}"
+wg_agendaodonto_public_key: "{{ lookup('community.general.onepassword', 'Wireguard Agendaodonto Keys', field='username', vault='Infrastructure') }}"
+wg_gateway_public_key: "{{ lookup('community.general.onepassword', 'Wireguard Gateway Keys', field='username', vault='Infrastructure') }}"
+
 wg_server_public_key: "{{ lookup('community.general.onepassword', 'Wireguard Server Keys', field='username', vault='Infrastructure') }}"
 wg_server_private_key: "{{ lookup('community.general.onepassword', 'Wireguard Server Keys', field='password', vault='Infrastructure') }}"
 wg_server_endpoint: "{{ lookup('community.general.onepassword', 'Wireguard Server Keys', field='host', vault='Infrastructure') }}"

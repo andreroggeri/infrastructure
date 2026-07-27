@@ -30,21 +30,25 @@ vpn_clients_static:
       wg_direct_peer_host: nas
 
 # TODO: Read from terraform
+#
 vpn_clients_dynamic:
   hosts:
     k3s-node-01:
       ansible_host: 193.123.106.26
       wg_private_ip: 10.8.0.13
+      wg_public_key: "{{ wg_k3s_node_01_public_key }}"
       route_home_network_through_vpn: true
       route_oci_networks_through_vpn: false
     agendaodonto:
       ansible_host: 204.216.135.129
       wg_private_ip: 10.8.0.10
+      wg_public_key: "{{ wg_agendaodonto_public_key }}"
       route_home_network_through_vpn: true
       route_oci_networks_through_vpn: false
     gateway:
       ansible_host: 204.216.132.96
       wg_private_ip: 10.8.0.11
+      wg_public_key: "{{ wg_gateway_public_key }}"
       route_home_network_through_vpn: true
       route_oci_networks_through_vpn: false
 

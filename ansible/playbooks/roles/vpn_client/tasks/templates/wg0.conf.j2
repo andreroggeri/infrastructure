@@ -1,5 +1,6 @@
-# {{ ansible_managed}} 
-# Generated on {{ now(utc=true, fmt='%Y-%m-%d %H:%M:%S') }}
+# {{ ansible_managed }}
+# No generation timestamp on purpose — it would make this file differ on every
+# run, restarting wg-quick and bouncing the tunnel for no reason.
 
 [Interface]
 PrivateKey= {{ wg_private_key }}
