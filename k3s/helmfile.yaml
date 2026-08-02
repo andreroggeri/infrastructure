@@ -224,17 +224,6 @@ releases:
     needs:
       - memos/memos
 
-  - name: paperclip
-    namespace: paperclip
-    createNamespace: true
-    chart: ./charts/paperclip
-    version: 0.1.0
-    values:
-      - ./applications/paperclip/values.yaml
-    needs:
-      - cnpg-system/cloudnative-pg
-      - longhorn-system/longhorn
-
   - name: apprise
     namespace: apprise
     createNamespace: true
