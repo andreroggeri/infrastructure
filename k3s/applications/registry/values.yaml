@@ -1,0 +1,15 @@
+image:
+  tag: "3"
+
+auth:
+  existingSecret: registry-auth
+
+# Two Longhorn replicas across the two schedulable local storage nodes. 10Gi holds the
+# Mixuruca amd64 + arm64 image manifests and leaves room for future releases.
+persistence:
+  storageClass: longhorn-r2
+  size: 10Gi
+
+ingress:
+  className: traefik
+  host: registry.local.roggeri.com.br

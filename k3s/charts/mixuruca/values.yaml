@@ -1,0 +1,46 @@
+server:
+  image:
+    repository: registry.local.roggeri.com.br/mixuruca-server
+    tag: ""
+    pullPolicy: IfNotPresent
+
+worker:
+  image:
+    repository: registry.local.roggeri.com.br/mixuruca-worker
+    tag: ""
+    pullPolicy: IfNotPresent
+
+novnc:
+  image:
+    repository: registry.local.roggeri.com.br/mixuruca-novnc
+    tag: ""
+    pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+# Optional OpenAI-compatible LLM fallback. Leave baseUrl empty to use the
+# database-backed settings only.
+llm:
+  baseUrl: ""
+  model: ""
+  timeoutMs: null
+
+persistence:
+  storageClass: longhorn
+  accessMode: ReadWriteOnce
+  size: 5Gi
+
+service:
+  type: ClusterIP
+  httpPort: 3000
+  novncPort: 6080
+
+ingress:
+  className: traefik
+  dashboardHost: compras.local.roggeri.com.br
+  novncHost: vnc.compras.local.roggeri.com.br
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

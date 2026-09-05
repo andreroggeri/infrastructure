@@ -1,0 +1,33 @@
+# Publish all three images together from the mixuruca source revision below,
+# including linux/amd64 and linux/arm64. Keep the tag immutable so the server,
+# worker and noVNC stay compatible on every rollout.
+server:
+  image:
+    tag: dc6ddae
+
+worker:
+  image:
+    tag: dc6ddae
+
+novnc:
+  image:
+    tag: dc6ddae
+
+imagePullSecrets:
+  - name: registry-pull
+
+llm:
+  baseUrl: http://192.168.15.5:8080
+  model: gemma-4-31B-it-qat-UD-Q4_K_XL
+  timeoutMs: 120000
+
+persistence:
+  storageClass: longhorn
+  # The imported Docker runtime includes a 6.5Gi Chromium profile. Leave room
+  # for profile growth, SQLite history, and Longhorn filesystem overhead.
+  size: 20Gi
+
+ingress:
+  className: traefik
+  dashboardHost: compras.local.roggeri.com.br
+  novncHost: vnc.compras.local.roggeri.com.br

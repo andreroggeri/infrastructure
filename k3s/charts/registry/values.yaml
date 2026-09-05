@@ -1,0 +1,27 @@
+image:
+  repository: registry
+  tag: "3"
+  pullPolicy: IfNotPresent
+
+auth:
+  existingSecret: registry-auth
+  htpasswdKey: htpasswd
+  realm: "Local Registry"
+
+persistence:
+  storageClass: longhorn-r2
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+service:
+  type: ClusterIP
+  port: 5000
+
+ingress:
+  className: traefik
+  host: registry.local.roggeri.com.br
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

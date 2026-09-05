@@ -234,6 +234,26 @@ releases:
     needs:
       - longhorn-system/longhorn
 
+  - name: mixuruca
+    namespace: mixuruca
+    createNamespace: true
+    chart: ./charts/mixuruca
+    version: 0.1.0
+    values:
+      - ./applications/mixuruca/values.yaml
+    needs:
+      - longhorn-system/longhorn
+
+  - name: registry
+    namespace: registry
+    createNamespace: true
+    chart: ./charts/registry
+    version: 0.1.0
+    values:
+      - ./applications/registry/values.yaml
+    needs:
+      - longhorn-system/longhorn
+
   - name: booker
     namespace: booker
     createNamespace: true

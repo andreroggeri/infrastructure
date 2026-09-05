@@ -1,0 +1,6 @@
+apiVersion: v2
+name: registry
+description: Private Docker Distribution registry for homelab workloads
+type: application
+version: 0.1.0
+appVersion: "3"

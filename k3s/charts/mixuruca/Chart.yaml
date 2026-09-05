@@ -1,0 +1,6 @@
+apiVersion: v2
+name: mixuruca
+description: Single-pod dashboard and browser worker for Mixuruca
+type: application
+version: 0.1.0
+appVersion: "dc6ddae"

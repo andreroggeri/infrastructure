@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mixuruca.fullname" . }}
+  labels:
+    {{- include "mixuruca.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "mixuruca.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "mixuruca.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      # Run the forward-only migration before either process opens SQLite. It is
+      # safe on every rollout because already-applied migrations are skipped.
+      initContainers:
+        - name: migrate
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          command: ["node", "apps/server/build/migrate.js", "/data/mixuruca.sqlite"]
+          env:
+            - name: DATABASE_FILE
+              value: /data/mixuruca.sqlite
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      containers:
+        - name: server
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          command: ["node", "apps/server/build/server.js"]
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: DATABASE_FILE
+              value: /data/mixuruca.sqlite
+            {{- with .Values.llm }}
+            {{- if .baseUrl }}
+            - name: LLM_BASE_URL
+              value: {{ .baseUrl | quote }}
+            {{- end }}
+            {{- if .model }}
+            - name: LLM_MODEL
+              value: {{ .model | quote }}
+            {{- end }}
+            {{- if .timeoutMs }}
+            - name: LLM_TIMEOUT_MS
+              value: {{ .timeoutMs | quote }}
+            {{- end }}
+            {{- end }}
+            - name: PORT
+              value: "3000"
+            - name: HOST
+              value: 0.0.0.0
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+        - name: worker
+          image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
+          ports:
+            - name: vnc
+              containerPort: 5900
+          env:
+            - name: DATABASE_FILE
+              value: /data/mixuruca.sqlite
+            {{- with .Values.llm }}
+            {{- if .baseUrl }}
+            - name: LLM_BASE_URL
+              value: {{ .baseUrl | quote }}
+            {{- end }}
+            {{- if .model }}
+            - name: LLM_MODEL
+              value: {{ .model | quote }}
+            {{- end }}
+            {{- if .timeoutMs }}
+            - name: LLM_TIMEOUT_MS
+              value: {{ .timeoutMs | quote }}
+            {{- end }}
+            {{- end }}
+            - name: PLAYWRIGHT_PROFILES_DIR
+              value: /data/profiles
+            - name: DISPLAY
+              value: ":99"
+            - name: LOGIN_DISPLAY
+              value: ":99"
+            - name: SCRAPE_DISPLAY
+              value: ":100"
+            - name: VNC_PORT
+              value: "5900"
+            - name: NOVNC_PUBLIC_URL
+              value: "https://{{ .Values.ingress.novncHost }}/vnc.html?autoconnect=true&resize=scale"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+        - name: novnc
+          image: "{{ .Values.novnc.image.repository }}:{{ .Values.novnc.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.novnc.image.pullPolicy }}
+          ports:
+            - name: novnc
+              containerPort: 6080
+          env:
+            - name: NOVNC_PORT
+              value: "6080"
+            - name: VNC_TARGET_HOST
+              value: localhost
+            - name: VNC_TARGET_PORT
+              value: "5900"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "mixuruca.fullname" . }}-data
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,13 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: registry-pull
+  namespace: mixuruca
+spec:
+  encryptedData:
+    .dockerconfigjson: AgCRd5Z/yK2VAKK0QjD6TAhx65q6w3+S1sXkZLyS5WFpJio2kSIGFpZvvxRb6crNHaTVfPqRzlXIvy9V5Zd/+XAclHhRp/BaEZt+M9R0haRpyDRx2aP09EiblMc9fGjtIy7Mpq6UU1ZusNFj6D21SNPGwP0eAMUQfJsEQGDGsFA2gmkwOMpQ01KKEC7TRMH+ihT1LHGZV8cRUxrnvVsfuYl/5moySUNNDWvZE0sKSpvJnWtLM2CpXlePFQkdE6yKt7vQjgUXmNOSk6k24jelzQlvMWch2yi7ynOfqhqmc1oOSlqRNZpLsCigg2bP3Eq4mrgihtdXjsbCNQ/obyixTyRLZf1YE6gepmD+/hCSl+wZTKj476P65HLLrDgpSoxa+pLMjB5ooOBpyb8eSpYQpFKX3MsE5P6++PjiFe+bphVKOtawBqAfAOIJLCX1upoecC43q5N5I7f6ilI609mAm0thwHMYTTY0x+tvoMVJh+l/NHkeqeSQ3iPfH4+aD+4W8c+78rp0UJ+qmtDPn2GfM0XvlgMKoB5Mv1WudJWOg8SXrILDNpvfG/T7LM9fq0Wy7vMr/ggl0zRAUQYweQvpxVjNiEfGqXCiIwpVF/2i2C2d07tAl5YvOhoyYT0FWx8HHKw7JHs/pxt7M8oveAyF4+Kxfu4hRHvGtSI9QVPzFVsarXJ9d1yqt0fRD+3cV4Pe019gov5T3fOLQABe+5Stms+onWI1nKqdBNgAFaPZhBfJTfdEqmBXgvzQCZPkF1a1f9St5l8J8CqeNwfIBrHGAiCUoXbEzmZruoS7ALX/fFJ8mVj23PrxgpNJ5kRRg6b+FBhf/8mLybKBpLhz1WEcj2uYm/hMfom6XoY0RiNsKUd0EA7Eri2wIgP99SanSqYCGGvmTc4eSWmm2qgC505KypxrRzFX/gAK4VLn7If556c/nG1LkdLi2Cx1sy2iWHGOA2bkaYiBcDNXVEa1agY2eaKq+zCbsEpCAA==
+  template:
+    metadata:
+      name: registry-pull
+      namespace: mixuruca
+    type: kubernetes.io/dockerconfigjson
