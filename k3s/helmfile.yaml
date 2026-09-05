@@ -71,7 +71,7 @@ releases:
   - name: actual-budget
     namespace: actual-budget
     chart: community-charts/actualbudget
-    version: 1.9.3
+    version: 1.9.4
     values:
       - ./applications/actual-budget/values.yaml
     needs:
