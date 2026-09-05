@@ -1,6 +1,6 @@
 image:
   repository: n8nio/n8n
-  tag: 1.121.3
+  tag: 2.10.2
 
 main:
   config:
@@ -46,6 +46,8 @@ main:
       value: "n8n-redis-leader"
     QUEUE_BULL_REDIS_PORT:
       value: "6379"
+    N8N_LOG_LEVEL:
+      value: "debug"
   # Mount the CNPG CA Cert into N8N container
   extraVolumeMounts:
     - name: db-ca-cert
@@ -73,7 +75,8 @@ ingress:
   hosts:
     - host: n8n.local.roggeri.com.br
       paths:
-        - /
+        - path: /
+          pathType: Prefix
 
 # cnpg DB cluster request
 extraManifests:

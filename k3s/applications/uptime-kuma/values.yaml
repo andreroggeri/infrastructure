@@ -7,10 +7,12 @@ ingress:
         - path: /
           pathType: Prefix
 
-persistence:
+volume:
   enabled: true
-  storageClass: longhorn
+  storageClassName: longhorn
   accessMode: ReadWriteOnce
-  size: 500Mi
-  mountPath: /app/data
+  # Matches the PVC already provisioned (chart default, since the old
+  # `persistence:` key was never a real chart field). PVCs can't shrink,
+  # so this stays 4Gi instead of the originally-intended 500Mi.
+  size: 4Gi
 

@@ -9,9 +9,10 @@
 #
 # Trade-off: a single pod means a short outage on node drain. Acceptable here.
 # If that ever stops being true, switch to deployment.replicaCount: 3 with
-# garage.replicationMode "3" on local-path volumes and let Garage own it.
+# garage.replicationFactor "3" on local-path volumes and let Garage own it.
 garage:
-  replicationMode: "1"
+  replicationFactor: "1"
+  consistencyMode: "consistent"
   s3:
     api:
       region: "garage"

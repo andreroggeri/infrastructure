@@ -14,7 +14,7 @@ repositories:
   - name: longhorn
     url: https://charts.longhorn.io
   - name: garage
-    url: git+https://git.deuxfleurs.fr/Deuxfleurs/garage.git@script/helm/garage?ref=main-v1
+    url: git+https://git.deuxfleurs.fr/Deuxfleurs/garage.git@script/helm/garage?ref=main-v2
   - name: cnpg
     url: https://cloudnative-pg.github.io/charts
   - name: wrsys
@@ -45,7 +45,7 @@ releases:
     namespace: longhorn-system
     createNamespace: true
     chart: longhorn/longhorn
-    version: 1.9.1
+    version: 1.12.1
     values:
       - ./infrastructure/longhorn/values.yaml
 
@@ -60,18 +60,18 @@ releases:
     namespace: cnpg-system
     chart: cnpg/cloudnative-pg
     createNamespace: true
-    version: "0.26.0"
+    version: "0.29.0"
 
   - name: redis-operator
     namespace: redis-operator-system
     createNamespace: true
     chart: ot-helm/redis-operator
-    version: 0.18.2
+    version: 0.25.0
 
   - name: actual-budget
     namespace: actual-budget
     chart: community-charts/actualbudget
-    version: 1.8.7
+    version: 1.9.3
     values:
       - ./applications/actual-budget/values.yaml
     needs:
@@ -90,7 +90,7 @@ releases:
   - name: home-assistant
     namespace: home-assistant
     chart: home-assistant/home-assistant
-    version: 0.3.70
+    version: 0.3.74
     values:
       - ./applications/home-assistant/values.yaml
     needs:
@@ -108,7 +108,7 @@ releases:
   - name: zigbee2mqtt
     namespace: home-assistant
     chart: zigbee2mqtt/zigbee2mqtt
-    version: 2.4.0
+    version: 2.13.0
     values:
       - ./applications/z2m/values.yaml
     needs:
@@ -117,7 +117,7 @@ releases:
   - name: authentik
     namespace: authentik
     chart: authentik/authentik
-    version: 2025.8.4
+    version: 2026.5.6
     values:
       - ./applications/authentik/values.yaml
       #   - postgresql:
@@ -137,7 +137,7 @@ releases:
     namespace: garage
     createNamespace: true
     chart: garage/garage
-    version: 0.7.3
+    version: 0.9.3
     values:
       - ./applications/garage/values.yaml
     needs:
@@ -146,7 +146,7 @@ releases:
   - name: n8n
     namespace: n8n
     chart: oci://8gears.container-registry.com/library/n8n
-    version: 1.0.15
+    version: 2.0.1
     values:
       - ./applications/n8n/values.yaml
       - main:
@@ -170,7 +170,7 @@ releases:
     createNamespace: true
     namespace: cloudflared
     chart: wrsys/cloudflare-tunnel-remote
-    version: 0.9.0
+    version: 0.13.0
     values:
       - ./applications/cloudflared/values.yaml
     needs:
@@ -180,7 +180,7 @@ releases:
     namespace: uptime-kuma
     createNamespace: true
     chart: dirsigler/uptime-kuma
-    version: 2.24.0
+    version: 4.2.0
     values:
       - ./applications/uptime-kuma/values.yaml
     needs:
@@ -190,7 +190,7 @@ releases:
     namespace: open-webui
     createNamespace: true
     chart: open-webui/open-webui
-    version: 9.0.0
+    version: 16.0.0
     values:
       - ./applications/open-webui/values.yaml
     needs:
