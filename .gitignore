@@ -11,3 +11,16 @@
 
 # Virtualenv
 **/venv
+
+# DB backups taken before risky migrations
+.backups/
+
+# Local plaintext secrets — never commit (seal them instead)
+.env
+cloudflare-dnschallenge-token
+k3s/cloudflare-secret.yaml
+k3s/secrets/
+k3s/payload.json
+
+# macOS junk
+.DS_Store
