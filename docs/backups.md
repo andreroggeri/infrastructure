@@ -139,7 +139,15 @@ Longhorn backups are not monitored yet.
 
 - Uptime Kuma runs in k3s too. A cluster outage stops the backups and the
   alert about them at the same time. Fix: ping hosted healthchecks.io instead.
-- Restores have not been tested.
+## Restore tests
+
+Last tested 2026-10-21. Repeat after big changes (Longhorn or restic upgrades,
+bucket changes).
+
+| What | How | Result |
+|---|---|---|
+| n8n Postgres (Longhorn) | New PVC from the backup via a temporary StorageClass with `fromBackup`, then Postgres started by hand on it (`ssl=off`, `archive_mode=off`, `chmod 0700 pgdata` first) | Crash recovery ran, workflow/credential/migration counts matched live |
+| Immich files (restic) | `restic restore latest --tag images --include <file>` for 3 random photos | Checksums matched the originals |
 
 ## Adding a new app
 
