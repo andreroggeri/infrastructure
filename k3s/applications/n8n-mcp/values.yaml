@@ -19,7 +19,7 @@ extraEnv:
         key: n8n-api-key
 
 image:
-  tag: 2.31.9
+  tag: 2.94.3
 
 envFrom: []
 

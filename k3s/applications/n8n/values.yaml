@@ -1,6 +1,6 @@
 image:
   repository: n8nio/n8n
-  tag: 2.10.2
+  tag: 2.45.1
 
 main:
   config:
@@ -109,7 +109,7 @@ extraManifests:
       namespace: n8n
     spec:
       kubernetesConfig:
-        image: quay.io/opstree/redis:v7.0.12
+        image: quay.io/opstree/redis:v7.4.11
         redisSecret:
           name: redis-secret
           key: password

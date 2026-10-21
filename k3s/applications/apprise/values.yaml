@@ -1,5 +1,5 @@
 image:
-  tag: "latest"
+  tag: "v2.0.0"
 
 persistence:
   enabled: true
