@@ -5,3 +5,10 @@ service:
 ingress:
   enabled: true
   host: longhorn.local.roggeri.com.br
+
+# Off-site backups to Backblaze B2 (S3 endpoint), next to the restic repo.
+# Credentials: sealed secret `longhorn-b2` (AWS_ACCESS_KEY_ID,
+# AWS_SECRET_ACCESS_KEY, AWS_ENDPOINTS). See docs/backups.md.
+defaultBackupStore:
+  backupTarget: s3://roggeri-nas-backups@us-east-005/longhorn/
+  backupTargetCredentialSecret: longhorn-b2

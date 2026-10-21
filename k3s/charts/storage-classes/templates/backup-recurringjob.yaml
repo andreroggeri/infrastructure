@@ -1,0 +1,20 @@
+# Nightly off-site backup for every volume in the `backup` group.
+#
+# Volumes join the group via the label
+# `recurring-job-group.longhorn.io/backup: enabled`. Which volumes are in and
+# why is documented in docs/backups.md — keep the two in sync.
+#
+# Longhorn evaluates cron in UTC: 06:00 UTC is 03:00 in São Paulo.
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: nightly-backup
+  namespace: longhorn-system
+spec:
+  task: backup
+  cron: "0 6 * * *"
+  groups:
+    - backup
+  retain: 14
+  concurrency: 2
+  labels: {}
