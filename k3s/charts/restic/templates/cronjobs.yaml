@@ -1,0 +1,81 @@
+{{- range $job := list "backup" "prune" }}
+{{- with $ }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-{{ $job }}
+  labels:
+    {{- include "restic.labels" . | nindent 4 }}
+spec:
+  schedule: {{ (index .Values $job).schedule | quote }}
+  timeZone: {{ .Values.timeZone | quote }}
+  # restic locks the repository; overlapping runs would only fail.
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            {{- include "restic.labels" . | nindent 12 }}
+            app.kubernetes.io/component: {{ $job }}
+        spec:
+          restartPolicy: Never
+          nodeSelector:
+            kubernetes.io/hostname: {{ .Values.nodeName }}
+          containers:
+            - name: restic
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command: ["/bin/sh", "/scripts/run.sh", {{ $job | quote }}]
+              envFrom:
+                - secretRef:
+                    name: {{ .Values.existingSecret }}
+              env:
+                - name: RESTIC_CACHE_DIR
+                  value: /cache
+                - name: KUMA_URL
+                  value: {{ .Values.uptimeKuma.url | quote }}
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+              volumeMounts:
+                - name: scripts
+                  mountPath: /scripts
+                - name: cache
+                  mountPath: /cache
+                - name: pings
+                  mountPath: /pings
+                  readOnly: true
+                {{- if eq $job "backup" }}
+                {{- range .Values.backup.targets }}
+                - name: target-{{ .name }}
+                  mountPath: {{ .mountPath }}
+                  readOnly: true
+                {{- end }}
+                {{- end }}
+          volumes:
+            - name: scripts
+              configMap:
+                name: {{ .Release.Name }}-scripts
+            - name: cache
+              hostPath:
+                path: {{ .Values.cacheHostPath }}
+                type: DirectoryOrCreate
+            - name: pings
+              secret:
+                secretName: {{ .Values.uptimeKuma.tokenSecret | default "restic-pings" }}
+                optional: true
+            {{- if eq $job "backup" }}
+            {{- range .Values.backup.targets }}
+            - name: target-{{ .name }}
+              hostPath:
+                path: {{ .hostPath }}
+                type: Directory
+            {{- end }}
+            {{- end }}
+{{- end }}
+{{- end }}

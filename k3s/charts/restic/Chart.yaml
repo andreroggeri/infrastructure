@@ -1,0 +1,6 @@
+apiVersion: v2
+name: restic
+description: Scheduled restic backups of host paths to an off-site repository
+type: application
+version: 0.1.0
+appVersion: "0.19.1"

@@ -261,3 +261,11 @@ releases:
     version: 0.1.0
     values:
       - ./applications/booker/values.yaml
+
+  - name: restic
+    namespace: restic
+    createNamespace: true
+    chart: ./charts/restic
+    version: 0.1.0
+    values:
+      - ./applications/restic/values.yaml

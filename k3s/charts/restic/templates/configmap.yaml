@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-scripts
+  labels:
+    {{- include "restic.labels" . | nindent 4 }}
+data:
+  # Runs a job script, then reports the result to Uptime Kuma if a push token
+  # exists for that job.
+  run.sh: |
+    #!/bin/sh
+    job="$1"
+    sh "/scripts/${job}.sh"
+    rc=$?
+    token="$(cat "/pings/${job}" 2>/dev/null)"
+    if [ -n "$token" ]; then
+      status=up
+      [ "$rc" -eq 0 ] || status=down
+      wget -q -T 10 -O /dev/null "${KUMA_URL}/api/push/${token}?status=${status}&msg=exit+${rc}" \
+        || echo "Uptime Kuma ping failed"
+    fi
+    exit "$rc"
+
+  backup.sh: |
+    #!/bin/sh
+    rc=0
+    {{- range .Values.backup.targets }}
+    echo "Backup {{ .mountPath }}"
+    restic backup {{ .mountPath }} \
+      --tag {{ .tag }} \
+      --host {{ $.Values.host }} \
+      --ignore-inode \
+      {{- range .excludes }}
+      --exclude={{ . | quote }} \
+      {{- end }}
+      --exclude-caches || rc=$?
+    {{- end }}
+    exit "$rc"
+
+  prune.sh: |
+    #!/bin/sh
+    restic forget {{ .Values.prune.args }} --prune

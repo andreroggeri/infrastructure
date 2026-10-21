@@ -1,0 +1,49 @@
+image:
+  repository: restic/restic
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# Node whose host paths are backed up. Jobs are pinned here.
+nodeName: ""
+
+# restic --host. Keep it stable: restic groups snapshots by host + paths, so
+# changing it starts a new history and breaks retention for the old one.
+host: ""
+
+timeZone: America/Sao_Paulo
+
+# Secret with RESTIC_REPOSITORY, RESTIC_PASSWORD, AWS_ACCESS_KEY_ID,
+# AWS_SECRET_ACCESS_KEY.
+existingSecret: ""
+
+# Host directory for restic's local cache, so each run doesn't re-download the
+# repository index.
+cacheHostPath: /data/restic-cache
+
+# Optional Uptime Kuma push monitors. The secret holds one push token per job
+# (keys `backup`, `prune`). A job with no token simply doesn't ping.
+uptimeKuma:
+  url: http://uptime-kuma.uptime-kuma.svc:3001
+  tokenSecret: ""
+
+backup:
+  schedule: "0 22 * * *"
+  # Each target is mounted read-only from the host at mountPath and backed up
+  # with its own tag.
+  targets: []
+  #  - name: data
+  #    hostPath: /data
+  #    mountPath: /mnt/data
+  #    tag: data
+  #    excludes: []
+
+prune:
+  schedule: "0 5 * * 0"
+  args: "--keep-last 5 --keep-monthly 2"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    memory: 2Gi
