@@ -132,15 +132,19 @@ Each restic job reports to an Uptime Kuma push monitor when it finishes (`up`
 on success, `down` with the exit code on failure). Uptime Kuma alerts through
 Telegram on a `down` push or when no push arrives in time.
 
-| Monitor | Expects a push every | Token key |
+| Monitor | Expects a push every | Token |
 |---|---|---|
-| Backup: restic | 25 hours | `backup` |
-| Backup: restic prune | 8 days | `prune` |
+| Backup: restic | 25 hours | `restic/restic-pings`, key `backup` |
+| Backup: restic prune | 8 days | `restic/restic-pings`, key `prune` |
+| Backup: longhorn | 25 hours | `longhorn-system/longhorn-backup-ping` |
 
-The push tokens live in the sealed secret `restic/restic-pings`. Without that
-secret the jobs still run, they just don't report.
+Without the restic token secret the restic jobs still run, they just don't
+report.
 
-Longhorn backups are not monitored yet.
+Longhorn backups are checked by the `backup-check` CronJob in `longhorn-system`
+(04:00 São Paulo, an hour after the backup). It pushes `down` with the names of
+any volumes in the `backup` group whose last backup is older than 25 hours, or
+if the group is empty.
 
 ## Known gaps
 

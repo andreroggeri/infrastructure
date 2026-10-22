@@ -1,0 +1,90 @@
+# Daily check that every volume in the `backup` group has a recent off-site
+# backup, reported to the Uptime Kuma push monitor "Backup: longhorn".
+#
+# Runs at 04:00 São Paulo, an hour after nightly-backup. Pushes `down` (listing
+# the stale volumes) if any backup is older than 25 hours or the group is empty;
+# if the check itself can't run, the missing push alerts after 25 hours.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: backup-check
+  namespace: longhorn-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: backup-check
+  namespace: longhorn-system
+rules:
+  - apiGroups: ["longhorn.io"]
+    resources: ["volumes"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: backup-check
+  namespace: longhorn-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: backup-check
+subjects:
+  - kind: ServiceAccount
+    name: backup-check
+    namespace: longhorn-system
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-check
+  namespace: longhorn-system
+spec:
+  schedule: "0 4 * * *"
+  timeZone: America/Sao_Paulo
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          serviceAccountName: backup-check
+          restartPolicy: Never
+          containers:
+            - name: check
+              image: alpine/k8s:1.36.5
+              env:
+                - name: MAX_AGE_SECONDS
+                  value: "90000"
+                - name: PUSH_URL
+                  value: http://uptime-kuma.uptime-kuma.svc:3001/api/push
+                - name: TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: longhorn-backup-ping
+                      key: token
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -eu
+                  volumes=$(kubectl -n longhorn-system get volumes.longhorn.io \
+                    -l recurring-job-group.longhorn.io/backup=enabled -o json)
+                  total=$(echo "$volumes" | jq '.items | length')
+                  stale=$(echo "$volumes" | jq -r --argjson now "$(date +%s)" --argjson max "$MAX_AGE_SECONDS" '
+                    [.items[]
+                     | select((.status.lastBackupAt // "") == ""
+                              or ($now - (.status.lastBackupAt | fromdateiso8601)) > $max)
+                     | .status.kubernetesStatus.pvcName // .metadata.name]
+                    | join(",")')
+                  if [ "$total" -eq 0 ]; then
+                    status=down; msg="no volumes in backup group"
+                  elif [ -n "$stale" ]; then
+                    status=down; msg="stale: $stale"
+                  else
+                    status=up; msg="$total volumes backed up"
+                  fi
+                  echo "$status: $msg"
+                  curl -fsS -m 10 -G "$PUSH_URL/$TOKEN" \
+                    --data-urlencode "status=$status" --data-urlencode "msg=$msg" >/dev/null

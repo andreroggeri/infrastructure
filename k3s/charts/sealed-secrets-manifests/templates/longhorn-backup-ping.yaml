@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: longhorn-backup-ping
+  namespace: longhorn-system
+spec:
+  encryptedData:
+    token: AgBlp2u1nZKyK81UuFmlcku7JyrkBEFcewb16/mN8N7zOW6OHbx6p4Kwscanvp5xbwzyS0ZXEt7eg1Lb1OlaGs5l4VdbHh3bShY5W3AurvXQeOykwBrGlxuWKuKCMNh750o2CIvi40ilZ3ueE9WYRdAom2XYv9hsAh6nWrb7cHPwJjW2liUQHj+yW6X7nZTOUqyHEZ0dIXziDYgAmetdHo+/R+sIu3lkirLObVL75Td7wzKiWA5M7p53NBgl0DUWFtEtELBHz7KIsfYAt8THFCmQglvtORaEz4rDW57qYIQT3A3BWWpA/+P92e7pb59cPV/+OdR2XDCEkf78eVALDWVBp52ugEaIgQl/Us7nWoWqTojHof6881J/b3RZDQ/ENw2MMBohDn7z2wxjGmVaAK0nImklA2+DXncEjoXUa5kRTTKxDTxqxWC15721qPCDvMtxKB5yHrsFzHI6DbQbeXamvNkOxj1Pz2Y7XEZ6EDhF6frAgZAosj1K/R0OIVV5pV1ONBqNrLnbmToNB1iQN79t66K7Ze7Ifl4ZczbOP+OoPh3o2szBjPB08cYfAz8utN9U4kA+9kt/yLuEV7hqMmX3YBGLUdWwpPJb47cnseyVaYzAOyqyjYS1/BfhkFc2lCcTkiG/12qVplMvfC1BYxnFZreHqTpdRy2n8mU37zhrMZsTN5pXL3VWxiBMzl6RWPTtHcSXhYC09WRg6p+OHlOlKGvH3I1OlOgTNPU6EXTfIg==
+  template:
+    metadata:
+      name: longhorn-backup-ping
+      namespace: longhorn-system
