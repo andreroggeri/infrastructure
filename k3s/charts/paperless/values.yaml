@@ -1,0 +1,64 @@
+image:
+  repository: ghcr.io/paperless-ngx/paperless-ngx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+replicaCount: 1
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+env: []
+
+service:
+  type: ClusterIP
+  port: 8000
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources: {}
+
+# One PVC per entry, named <fullname>-<key> and mounted at mountPath.
+persistence:
+  data:
+    enabled: true
+    mountPath: /usr/src/paperless/data
+    storageClass: ""
+    size: 1Gi
+    # true adds the volume to the nightly Longhorn backup group.
+    backup: false
+  media:
+    enabled: true
+    mountPath: /usr/src/paperless/media
+    storageClass: ""
+    size: 5Gi
+    backup: false
+
+# Host directories mounted into the pod, e.g. a consume folder on the NAS.
+# Requires nodeSelector to pin the pod to that host.
+hostPaths: []
+#  - name: consume
+#    path: /archive/data/paperless/consume
+#    mountPath: /usr/src/paperless/consume
+
+nodeSelector: {}
+
+# Extra resources rendered as-is (CNPG Cluster, Redis, ...).
+extraManifests: []

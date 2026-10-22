@@ -269,3 +269,15 @@ releases:
     version: 0.1.0
     values:
       - ./applications/restic/values.yaml
+
+  - name: paperless
+    namespace: paperless
+    createNamespace: true
+    chart: ./charts/paperless
+    version: 0.1.0
+    values:
+      - ./applications/paperless/values.yaml
+    needs:
+      - cnpg-system/cloudnative-pg
+      - redis-operator-system/redis-operator
+      - longhorn-system/longhorn

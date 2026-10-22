@@ -1,0 +1,115 @@
+image:
+  tag: "2.20.15"
+
+# Pinned to the NAS for the consume/export folders on /archive.
+nodeSelector:
+  kubernetes.io/hostname: alexandria
+
+env:
+  - name: PAPERLESS_URL
+    value: https://docs.local.roggeri.com.br
+  - name: PAPERLESS_TIME_ZONE
+    value: America/Sao_Paulo
+  - name: PAPERLESS_OCR_LANGUAGE
+    value: por
+  # Installed at container start; `eng` ships with the image.
+  - name: PAPERLESS_OCR_LANGUAGES
+    value: por
+  - name: PAPERLESS_REDIS
+    value: redis://redis:6379
+  - name: PAPERLESS_DBHOST
+    value: db-rw
+  - name: PAPERLESS_DBNAME
+    value: paperless
+  - name: PAPERLESS_DBUSER
+    valueFrom:
+      secretKeyRef:
+        name: db-app
+        key: username
+  - name: PAPERLESS_DBPASS
+    valueFrom:
+      secretKeyRef:
+        name: db-app
+        key: password
+  - name: PAPERLESS_SECRET_KEY
+    valueFrom:
+      secretKeyRef:
+        name: paperless-secrets
+        key: secret-key
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    memory: 2Gi
+
+persistence:
+  # Search index and classifier model.
+  data:
+    enabled: true
+    mountPath: /usr/src/paperless/data
+    storageClass: longhorn
+    size: 500Mi
+    backup: true
+  # Original and archived documents, thumbnails.
+  media:
+    enabled: true
+    mountPath: /usr/src/paperless/media
+    storageClass: longhorn
+    size: 1Gi
+    backup: true
+
+hostPaths:
+  - name: consume
+    path: /archive/data/paperless/consume
+    mountPath: /usr/src/paperless/consume
+  - name: export
+    path: /archive/data/paperless/export
+    mountPath: /usr/src/paperless/export
+
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: docs.local.roggeri.com.br
+      paths:
+        - path: /
+          pathType: Prefix
+
+extraManifests:
+  - apiVersion: postgresql.cnpg.io/v1
+    kind: Cluster
+    metadata:
+      name: db
+    spec:
+      instances: 1
+      # Puts the database volume in the nightly Longhorn backup group.
+      inheritedMetadata:
+        labels:
+          recurring-job.longhorn.io/source: enabled
+          recurring-job-group.longhorn.io/backup: enabled
+      bootstrap:
+        initdb:
+          database: paperless
+          owner: paperless
+      postgresql:
+        parameters:
+          shared_buffers: "64MB"
+      resources:
+        requests:
+          memory: "256Mi"
+        limits:
+          memory: "512Mi"
+      storage:
+        size: 1Gi
+        storageClass: longhorn
+
+  # Task queue only; nothing here needs to survive a restart.
+  - apiVersion: redis.redis.opstreelabs.in/v1beta2
+    kind: Redis
+    metadata:
+      name: redis
+    spec:
+      kubernetesConfig:
+        image: quay.io/opstree/redis:v7.4.11

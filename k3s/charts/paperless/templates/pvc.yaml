@@ -1,0 +1,26 @@
+{{- range $name, $vol := .Values.persistence }}
+{{- if and $vol.enabled (not $vol.existingClaim) }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "paperless.fullname" $ }}-{{ $name }}
+  labels:
+    {{- include "paperless.labels" $ | nindent 4 }}
+    {{- if $vol.backup }}
+    # Longhorn copies recurring-job labels from the PVC to its volume, putting
+    # it in the nightly off-site backup group (docs/backups.md).
+    recurring-job.longhorn.io/source: enabled
+    recurring-job-group.longhorn.io/backup: enabled
+    {{- end }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ $vol.size | quote }}
+  {{- if $vol.storageClass }}
+  storageClassName: {{ $vol.storageClass | quote }}
+  {{- end }}
+{{- end }}
+{{- end }}

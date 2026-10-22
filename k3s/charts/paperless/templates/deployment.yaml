@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "paperless.fullname" . }}
+  labels:
+    {{- include "paperless.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  # Two paperless instances must never share the same media and database.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "paperless.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "paperless.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "paperless.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: PAPERLESS_PORT
+              value: "8000"
+            {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          # First start after an upgrade runs database migrations, which can
+          # take a while; the startup probe holds off liveness until then.
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 10
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            {{- range $name, $vol := .Values.persistence }}
+            {{- if $vol.enabled }}
+            - name: {{ $name }}
+              mountPath: {{ $vol.mountPath }}
+            {{- end }}
+            {{- end }}
+            {{- range .Values.hostPaths }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+      volumes:
+        {{- range $name, $vol := .Values.persistence }}
+        {{- if $vol.enabled }}
+        - name: {{ $name }}
+          persistentVolumeClaim:
+            claimName: {{ $vol.existingClaim | default (printf "%s-%s" (include "paperless.fullname" $) $name) }}
+        {{- end }}
+        {{- end }}
+        {{- range .Values.hostPaths }}
+        - name: {{ .name }}
+          hostPath:
+            path: {{ .path }}
+            type: DirectoryOrCreate
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

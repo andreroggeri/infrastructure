@@ -34,8 +34,24 @@ and do not survive a bad upgrade, a deleted volume, or the house losing power.
 Nightly backup at 03:00 São Paulo (06:00 UTC), keep the last 14. The job is
 `nightly-backup` in `k3s/charts/storage-classes`.
 
-A volume is included by labelling its Longhorn volume. The label lives on the
-cluster, not in git, so a recreated PVC must be labelled again:
+A volume is only backed up, and only watched by the `backup-check` alert, if it
+is in the `backup` group. A volume that was never added gets no backup and no
+alert, so **check every new app's volumes land in the group.**
+
+Preferred: label the PVC in the chart. Longhorn copies the labels to the volume
+and the setting lives in git (see `k3s/charts/paperless`):
+
+```yaml
+labels:
+  recurring-job.longhorn.io/source: enabled
+  recurring-job-group.longhorn.io/backup: enabled
+```
+
+For a CNPG database, put the same labels under the Cluster's
+`spec.inheritedMetadata.labels`.
+
+Older volumes were labelled by hand on the Longhorn volume instead. That label
+lives only on the cluster, so a recreated PVC must be labelled again:
 
 ```sh
 pv=$(kubectl -n <namespace> get pvc <pvc> -o jsonpath='{.spec.volumeName}')
@@ -69,6 +85,7 @@ a second system for little gain at this size.
 | open-webui | `open-webui` | Chats and settings |
 | uptime-kuma | `uptime-kuma-pvc` | Monitors and history |
 | garage | `data-garage-0`, `meta-garage-0` | Objects stored in Garage |
+| paperless | `paperless-media`, `paperless-data`, `db-1` | Documents, search index, database. Labelled via the chart |
 
 About 5 GiB of real data in total (2026-10-21).
 
@@ -100,7 +117,7 @@ Host and mount paths match the old NAS job (`--host alexandria`,
 
 | Target | Host path | Why |
 |---|---|---|
-| Docker volumes | `/data/docker/lib/volumes` | NAS compose apps (paperless documents, etc.). Drop once they move to k3s |
+| Docker volumes | `/data/docker/lib/volumes` | NAS compose apps not yet moved to k3s. Drop once none are left |
 | Immich | `/archive/data/nas/immich` | Photos (most also in Google Photos) and extracted courses (only copy) |
 
 Skipped:
