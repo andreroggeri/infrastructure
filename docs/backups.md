@@ -128,9 +128,16 @@ alerted either: `healthchecks.local.andreroggeri.com.br` does not resolve.
 
 ## Alerts
 
-Each job reports to an Uptime Kuma push monitor when it finishes (`up` on
-success, `down` with the exit code on failure). The push tokens live in the
-sealed secret `restic/restic-pings` (keys `backup`, `prune`). Without that
+Each restic job reports to an Uptime Kuma push monitor when it finishes (`up`
+on success, `down` with the exit code on failure). Uptime Kuma alerts through
+Telegram on a `down` push or when no push arrives in time.
+
+| Monitor | Expects a push every | Token key |
+|---|---|---|
+| Backup: restic | 25 hours | `backup` |
+| Backup: restic prune | 8 days | `prune` |
+
+The push tokens live in the sealed secret `restic/restic-pings`. Without that
 secret the jobs still run, they just don't report.
 
 Longhorn backups are not monitored yet.
