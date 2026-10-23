@@ -1,5 +1,5 @@
 image:
-  tag: "2.20.15"
+  tag: "3.3.4"
 
 # Pinned to the NAS for the consume/export folders on /archive.
 nodeSelector:
@@ -17,6 +17,9 @@ env:
     value: por
   - name: PAPERLESS_REDIS
     value: redis://redis:6379
+  # Required since v3; the engine is no longer inferred from DBHOST.
+  - name: PAPERLESS_DBENGINE
+    value: postgresql
   - name: PAPERLESS_DBHOST
     value: db-rw
   - name: PAPERLESS_DBNAME
@@ -31,6 +34,10 @@ env:
       secretKeyRef:
         name: db-app
         key: password
+  # Traefik is the only hop in front; lets login rate limiting see the
+  # real client IP instead of answering 403 (v3 change).
+  - name: PAPERLESS_ALLAUTH_TRUSTED_PROXY_COUNT
+    value: "1"
   - name: PAPERLESS_SECRET_KEY
     valueFrom:
       secretKeyRef:

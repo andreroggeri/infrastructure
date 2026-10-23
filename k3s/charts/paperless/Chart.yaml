@@ -3,4 +3,4 @@ name: paperless
 description: A Helm chart for Paperless-ngx
 type: application
 version: 0.1.0
-appVersion: "2.20.15"
+appVersion: "3.3.4"
