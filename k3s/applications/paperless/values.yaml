@@ -57,6 +57,11 @@ env:
   # The rest of the AI config is set in the UI (Settings → Configuration).
   - name: PAPERLESS_AI_LLM_ALLOW_INTERNAL_ENDPOINTS
     value: "true"
+  # AI features use the local llama.cpp server, which is on a private
+  # address; paperless blocks those by default. Not settable in the UI.
+  # The rest of the AI config is set in the UI (Settings → Configuration).
+  - name: PAPERLESS_AI_LLM_ALLOW_INTERNAL_ENDPOINTS
+    value: "true"
   - name: PAPERLESS_SECRET_KEY
     valueFrom:
       secretKeyRef:
