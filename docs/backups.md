@@ -86,6 +86,7 @@ a second system for little gain at this size.
 | uptime-kuma | `uptime-kuma-pvc` | Monitors and history |
 | garage | `data-garage-0`, `meta-garage-0` | Objects stored in Garage |
 | paperless | `paperless-media`, `paperless-data`, `db-1` | Documents, search index, database. Labelled via the chart |
+| tinyauth | `tinyauth-data` | Sessions and the OIDC signing keys. Losing the keys logs everyone out of every app |
 
 About 5 GiB of real data in total (2026-10-21).
 

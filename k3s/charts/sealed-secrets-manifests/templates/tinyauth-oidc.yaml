@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: tinyauth-oidc
+  namespace: tinyauth
+spec:
+  encryptedData:
+    paperless: AgBoLkR+rOSiEp9OSw9ZTH3MXx7fLG4ugltpOV/wfjxlSJtkrzvGzt/yTpmg2dUCkAPiQWGRMcG56l6vnz1zpPAjh7m7kLShQkJot7BY5WdIGdpgacikNH5JwuVxbK0usIHDaAupwlQbkbZfwNzKx60bGe4sUyZywK33GXO1RhO4Jjk104pweOuOkBDbMbebGulYAK71xTaGYwsAuB6AhjWgkYaloh2Q+QpPNL8+Odeys777qQizFaSbuqg7bitSVsLRNxWNLCMTsFFb6mzhgFmrgtHg/xUpXc2A3uxykDvUd3/C646S8F84HD/kNge83pDXdBID++VWU3h3ruXwjNoyOlnd1XZPjmeUwhyHdg3Vvc2M//VMj8shJYUy3JXY1S4AqN6Gt16DJ/lbe8yhVEhQcIvHzb5YwK7fURBdyHYLzB7y/rs1fpfHGWbwPzQ2hbNXr8bj1qFF7VzeR1+m/F7/2i8pZG09yuPMHzOMEFuJWwsbTeSswwH7hj8foBvgC4KO5382Qe632WH7KTDrnl95lEBUqlfHluVYMkvDxZPwcdlQFyvlapp1paku/7Rb5cVyd/2TnlxzqvVw4wbNgOaXd2GzP4OCWDpLpcUHLv6ZpQ6SwDGgcPWqC3bwaj1hLXHMP93p2rstxwTE/ZzSJTitPZx745Ly6NdAv/2fOHrz53jIFn0mscDIhh5Mk/CgpcbF2Xbv91+cDwRU6UhtSf5YRzjzVA+KWooImg3+Gl4b9xvGxEUwY6aBtESVU/0rUF1PfWR4ZZBJHsv/Eu44EdFl
+  template:
+    metadata:
+      name: tinyauth-oidc
+      namespace: tinyauth

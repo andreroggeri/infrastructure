@@ -27,6 +27,8 @@ repositories:
     url: https://helm.openwebui.com/
   - name: memo-mcp
     url: https://andreroggeri.github.io/memo-mcp/
+  - name: tinyauth
+    url: https://helm.tinyauth.app
 
 releases:
   - name: sealed-secrets-manifests
@@ -280,4 +282,14 @@ releases:
     needs:
       - cnpg-system/cloudnative-pg
       - redis-operator-system/redis-operator
+      - longhorn-system/longhorn
+
+  - name: tinyauth
+    namespace: tinyauth
+    createNamespace: true
+    chart: tinyauth/tinyauth
+    version: 2.2.0
+    values:
+      - ./applications/tinyauth/values.yaml
+    needs:
       - longhorn-system/longhorn

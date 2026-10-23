@@ -1,0 +1,108 @@
+# Login for the cluster apps: OpenID Connect provider (paperless, ...) and
+# Traefik forward-auth. Replaces authentik, app by app.
+#
+# Users live in the sealed secret tinyauth-users (password hash + TOTP, and
+# emails, since this repo is public). Add or change one with
+# utils/tinyauth-user.sh, then restart the deployment.
+
+image:
+  tag: v5.2.0
+
+# SQLite on a single RWO volume: never run two pods at once.
+deploymentStrategy:
+  type: Recreate
+
+tinyauth:
+  appUrl: https://tinyauth.local.roggeri.com.br
+  # Ingress-annotation ACLs need cluster-wide RBAC; access is configured
+  # here instead.
+  labelProvider: none
+  analytics:
+    enabled: false
+  auth:
+    secureCookie: true
+    # Traefik pods; lets tinyauth see the real client IP.
+    trustedProxies: 10.42.0.0/16
+    # Chart defaults contain one empty example entry each; clear them.
+    userAttributes: []
+  apps: []
+  oauth:
+    providers: []
+  oidc:
+    # On the volume, so tokens survive restarts.
+    privateKeyPath: /data/tinyauth_oidc_key
+    publicKeyPath: /data/tinyauth_oidc_key.pub
+    clients:
+      - id: paperless
+        clientId: paperless
+        name: Paperless
+        clientSecretSecretRef:
+          name: tinyauth-oidc
+          key: paperless
+        trustedRedirectUris: https://docs.local.roggeri.com.br/accounts/oidc/tinyauth/login/callback/
+
+env:
+  # The chart only renders this setting when true, so `analytics.enabled:
+  # false` alone leaves tinyauth's default (on). Set it explicitly.
+  - name: TINYAUTH_ANALYTICS_ENABLED
+    value: "false"
+  - name: TINYAUTH_AUTH_USERS
+    valueFrom:
+      secretKeyRef:
+        name: tinyauth-users
+        key: users
+  # Emails are kept out of this public repo. Optional so a user without an
+  # email entry doesn't stop tinyauth from starting.
+  - name: TINYAUTH_AUTH_USERATTRIBUTES_ANDRE_EMAIL
+    valueFrom:
+      secretKeyRef:
+        name: tinyauth-users
+        key: andre-email
+        optional: true
+  - name: TINYAUTH_AUTH_USERATTRIBUTES_LUANA_EMAIL
+    valueFrom:
+      secretKeyRef:
+        name: tinyauth-users
+        key: luana-email
+        optional: true
+
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: tinyauth.local.roggeri.com.br
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  requests:
+    cpu: 20m
+    memory: 32Mi
+  limits:
+    memory: 128Mi
+
+# The chart's own PVC can't carry labels, so the volume is defined here with
+# the Longhorn backup-group labels (docs/backups.md) and mounted below.
+volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: tinyauth-data
+volumeMounts:
+  - name: data
+    mountPath: /data
+
+extraObjects:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: tinyauth-data
+      labels:
+        recurring-job.longhorn.io/source: enabled
+        recurring-job-group.longhorn.io/backup: enabled
+    spec:
+      accessModes: [ReadWriteOnce]
+      storageClassName: longhorn
+      resources:
+        requests:
+          storage: 500Mi
