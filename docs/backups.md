@@ -76,7 +76,7 @@ a second system for little gain at this size.
 |---|---|---|
 | home-assistant | `home-assistant-home-assistant-0` | All HA config, automations, history |
 | home-assistant | `data-volume-zigbee2mqtt-0` | Zigbee network state. Losing it means re-pairing every device |
-| n8n | `n8n` | Data dir, including the patched `hooks.js` for authentik SSO |
+| n8n | `n8n` | Data dir, including the patched `hooks.js` that logs you in from tinyauth's `Remote-Email` header |
 | n8n | `db-1` | Workflows and credentials |
 | evolution-api | `evolution-db-1` | WhatsApp sessions and data |
 | actual-budget | `actual-budget-actualbudget-data` | Budget data |
