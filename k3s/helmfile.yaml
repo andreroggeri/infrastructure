@@ -23,8 +23,6 @@ repositories:
     url: https://ot-container-kit.github.io/helm-charts/
   - name: dirsigler
     url: https://dirsigler.github.io/uptime-kuma-helm
-  - name: open-webui
-    url: https://helm.openwebui.com/
   - name: memo-mcp
     url: https://andreroggeri.github.io/memo-mcp/
   - name: tinyauth
@@ -185,16 +183,6 @@ releases:
     version: 4.2.0
     values:
       - ./applications/uptime-kuma/values.yaml
-    needs:
-      - longhorn-system/longhorn
-
-  - name: open-webui
-    namespace: open-webui
-    createNamespace: true
-    chart: open-webui/open-webui
-    version: 17.0.0
-    values:
-      - ./applications/open-webui/values.yaml
     needs:
       - longhorn-system/longhorn
 

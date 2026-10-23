@@ -38,7 +38,7 @@ env:
   # real client IP instead of answering 403 (v3 change).
   - name: PAPERLESS_ALLAUTH_TRUSTED_PROXY_COUNT
     value: "1"
-  # SSO via authentik (app defined as a blueprint in authentik's values).
+  # SSO via tinyauth (OIDC client "paperless" in tinyauth's values).
   # Regular login stays enabled as a fallback; link an existing account
   # from Profile → Connect, since auto signup is off.
   - name: PAPERLESS_APPS
@@ -52,6 +52,11 @@ env:
     value: "false"
   - name: PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS
     value: "false"
+  # AI features use the local llama.cpp server, which is on a private
+  # address; paperless blocks those by default. Not settable in the UI.
+  # The rest of the AI config is set in the UI (Settings → Configuration).
+  - name: PAPERLESS_AI_LLM_ALLOW_INTERNAL_ENDPOINTS
+    value: "true"
   - name: PAPERLESS_SECRET_KEY
     valueFrom:
       secretKeyRef:

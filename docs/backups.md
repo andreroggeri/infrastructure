@@ -82,7 +82,6 @@ a second system for little gain at this size.
 | evolution-api | `evolution-db-1` | WhatsApp sessions and data |
 | actual-budget | `actual-budget-actualbudget-data` | Budget data |
 | memos | `memos` | Notes |
-| open-webui | `open-webui` | Chats and settings |
 | uptime-kuma | `uptime-kuma-pvc` | Monitors and history |
 | garage | `data-garage-0`, `meta-garage-0` | Objects stored in Garage |
 | paperless | `paperless-media`, `paperless-data`, `db-1` | Documents, search index, database. Labelled via the chart |
@@ -101,7 +100,6 @@ About 5 GiB of real data in total (2026-10-21).
 | authentik | `redis-data-authentik-redis-master-0` | Unused. Current authentik no longer uses Redis |
 | actual-budget | `actual-http-api` | Cache, rebuilt from actual-budget |
 | apprise | `apprise` | Small config, easy to recreate |
-| open-webui | `open-webui-pipelines` | Nothing stored there |
 
 ## NAS files (restic)
 
@@ -182,3 +180,9 @@ bucket changes).
 
 When adding an app to k3s, decide which list its volumes go in and update this
 file. If backed up, add the volume to the `backup` recurring-job group.
+
+## Removed apps
+
+| App | Removed | Last backup in B2 |
+|---|---|---|
+| Open WebUI | 2026-10-23 (unused) | `open-webui` volume, 2026-10-23 06:09 UTC. Restore it in the Longhorn UI (Backups) if ever needed. Old backups of removed volumes are not pruned automatically. |
