@@ -1,0 +1,62 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    deployment:
+      strategy:
+        type: Recreate
+      initContainers:
+        - name: fix-data-perms
+          image: busybox
+          command: ["sh", "-c", "chown -R 65532:65532 /data && chmod 600 /data/acme.json 2>/dev/null || true"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          securityContext:
+            runAsUser: 0
+            runAsNonRoot: false
+    nodeSelector:
+      kubernetes.io/hostname: alexandria
+    additionalArguments:
+      - "--log.level=DEBUG"
+      - "--accesslog=true"
+      - "--certificatesresolvers.cloudflare.acme.storage=/data/acme.json"
+      - "--certificatesresolvers.cloudflare.acme.dnschallenge=true"
+      - "--certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare"
+      - "--providers.kubernetescrd.allowExternalNameServices=true"
+    env:
+      - name: CF_DNS_API_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: cloudflare-api-token
+            key: CF_API_TOKEN
+    # traefik chart >=34 moved per-entrypoint options under ports.<name>.http.
+    # Keeping them at ports.<name>.* silently drops them, which breaks both the
+    # http->https redirect and on-demand ACME for newly added hosts.
+    ports:
+      web:
+        http:
+          middlewares:
+            - kube-system-redirect-to-https@kubernetescrd
+      websecure:
+        http:
+          tls:
+            enabled: true
+            certResolver: cloudflare
+            # One wildcard cert for all internal hosts, so new apps don't
+            # wait on (or count against rate limits for) a per-host cert.
+            domains:
+              - main: local.roggeri.com.br
+                sans:
+                  - "*.local.roggeri.com.br"
+    providers:
+      kubernetesCrd:
+        allowExternalNameServices: true
+    persistence:
+      enabled: true
+      storageClass: longhorn
+      size: 500Mi
+      path: /data
