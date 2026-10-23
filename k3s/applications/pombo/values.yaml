@@ -1,0 +1,31 @@
+# Public image built by github.com/andreroggeri/pombo CI; pin the sha- tag.
+image:
+  tag: "sha-0ef8f99"
+
+paperless:
+  url: http://paperless.paperless.svc:8000
+  publicUrl: https://docs.local.roggeri.com.br
+  tokenSecret:
+    name: pombo-secrets
+    key: paperless-token
+
+resources:
+  requests:
+    cpu: 20m
+    memory: 64Mi
+  limits:
+    memory: 256Mi
+
+persistence:
+  storageClass: longhorn
+  size: 200Mi
+  # WhatsApp session + routing settings. Losing it means re-pairing the phone.
+  backup: true
+
+ingress:
+  enabled: true
+  className: traefik
+  # The dashboard has no login of its own.
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: tinyauth-forward-auth@kubernetescrd
+  host: pombo.local.roggeri.com.br

@@ -1,0 +1,31 @@
+image:
+  repository: ghcr.io/andreroggeri/pombo
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+
+paperless:
+  # API base the bot calls (in-cluster).
+  url: ""
+  # Base for links sent to the chat.
+  publicUrl: ""
+  # Secret holding the API token of the account uploads are made as.
+  tokenSecret:
+    name: ""
+    key: paperless-token
+
+resources: {}
+
+persistence:
+  storageClass: ""
+  size: 200Mi
+  # true adds the volume to the nightly Longhorn backup group.
+  backup: false
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  host: ""

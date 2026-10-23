@@ -277,3 +277,14 @@ releases:
       - ./applications/tinyauth/values.yaml
     needs:
       - longhorn-system/longhorn
+
+  - name: pombo
+    namespace: pombo
+    createNamespace: true
+    chart: ./charts/pombo
+    version: 0.1.0
+    values:
+      - ./applications/pombo/values.yaml
+    needs:
+      - longhorn-system/longhorn
+      - paperless/paperless

@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "pombo.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  # One WhatsApp session and SQLite files on an RWO volume: never run two.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "pombo.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "pombo.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+      containers:
+        - name: pombo
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: POMBO_DATA_DIR
+              value: /data
+            - name: PAPERLESS_URL
+              value: {{ .Values.paperless.url | quote }}
+            - name: PAPERLESS_PUBLIC_URL
+              value: {{ .Values.paperless.publicUrl | quote }}
+            - name: PAPERLESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.paperless.tokenSecret.name }}
+                  key: {{ .Values.paperless.tokenSecret.key }}
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 30
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            # SQLite temp files; the root filesystem is read-only.
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-data
+        - name: tmp
+          emptyDir: {}

@@ -84,6 +84,7 @@ a second system for little gain at this size.
 | uptime-kuma | `uptime-kuma-pvc` | Monitors and history |
 | garage | `data-garage-0`, `meta-garage-0` | Objects stored in Garage |
 | paperless | `paperless-media`, `paperless-data`, `db-1` | Documents, search index, database. Labelled via the chart |
+| pombo | `pombo-data` | WhatsApp session and group routing. Losing it means re-pairing the bot. Labelled via the chart |
 | tinyauth | `tinyauth-data` | Forward-auth sessions |
 | pocket-id | `pocket-id` | Users, passkeys, OIDC clients and signing keys. Losing it logs everyone out and needs passkeys re-registered |
 
