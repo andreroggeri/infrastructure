@@ -40,6 +40,15 @@ tinyauth:
           name: tinyauth-oidc
           key: paperless
         trustedRedirectUris: https://docs.local.roggeri.com.br/accounts/oidc/tinyauth/login/callback/
+      # Memos keeps its side of the SSO config (client secret, endpoints) in
+      # its own database: Settings → SSO in the Memos UI.
+      - id: memos
+        clientId: memos
+        name: Memos
+        clientSecretSecretRef:
+          name: tinyauth-oidc
+          key: memos
+        trustedRedirectUris: https://notes.local.roggeri.com.br/auth/callback
 
 env:
   # The chart only renders this setting when true, so `analytics.enabled:
