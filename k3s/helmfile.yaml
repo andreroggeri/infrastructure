@@ -272,6 +272,16 @@ releases:
       - redis-operator-system/redis-operator
       - longhorn-system/longhorn
 
+  - name: pocket-id
+    namespace: pocket-id
+    createNamespace: true
+    chart: ./charts/pocket-id
+    version: 0.1.0
+    values:
+      - ./applications/pocket-id/values.yaml
+    needs:
+      - longhorn-system/longhorn
+
   - name: tinyauth
     namespace: tinyauth
     createNamespace: true

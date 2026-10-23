@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: pocket-id
+  namespace: pocket-id
+spec:
+  encryptedData:
+    encryption-key: AgAAIBxRF6pt8sfBFzbjDhItcz9YoeMrVgL3zAxP1wpW2shEXrzZIqA7RReyRYiDvQuYpkSWSR/LmzKbHsgqFHKP8PJRMYDbEnSzOlArGJBT2jEHI4ibRYraJ48COYrEjrP82MAq09W/vlDqpjNi0MJtF/4uE5hBfZE52QnvWCdJqC5HKCYQFsb0ZN7e6+M81o5tfPtMR/3p1nH1s1wHTD05pdt4KeSRz9QtFsikZpbcrh0Tbhcw5+aPZ/h2HrxdNyv5XTKPZNANweDRYWzdM0UBmfkEogFe/N2lmn0tImRf3HCITQWgoaUA8m2qkmQSWldCRu9J5+xbfMLBSs5hQE8+21qJZDYjIE7n6zw5g5OcKitpgQv/l1O9a442k2ufSajGn6Roor1AQdgGmTmzVSkGcYEJxYiTVqdrxt2fOOtmDlt//yXVK37CBZF+OlqBc6wmU/g2ugUVAR4DXV2oEzMpz4vaS6V/IX3wsmEU8oF5cWHwRV04FFmw+fnpG47JwWBCCCMvDRshSTzZBmCVRuxd3BYydILvKsWDWo57HguqubmQ50BoBvzDBgzJ7Q5tlJiKmkzJdDqoSi4zZOrRSRidiXE4m3ud285KZO9197Lf3IW0EpGwYZrpWYX4+AeR2jYtFXA397qRdqODUQaFTmy5c3APfZkYZJ0OUBunUbh3wByoesKZ5OP0b8wrvYCqH0G6CxExL8wf5Mfg0BhQ65EhtjPlh6GwXkMvB/Xm3uTcgLQHw4GalkogTkMJzAWCnrRu912veSYyQw4YEti99UJT
+  template:
+    metadata:
+      name: pocket-id
+      namespace: pocket-id
