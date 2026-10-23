@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: tinyauth-pocket-id
+  namespace: tinyauth
+spec:
+  encryptedData:
+    client-secret: AgCutbDJKAQ0Yc6yT0oBZBTlbCMbn7UEVsJ2DemZ53OlrjAEl6myKrOtIDKqIZiNyivMB53XqAVKgzvTul6orn7QRzKTID6rk2bZ8PeOXyBDEP3Thd5rDT5qz+sOgbwgiouE0ml2khH3UeEiITx1ul5gxZoTVop2Hm1vWqiiEy49ik/zRfXkaDvApakbCyofuIdyMEXWUjUd/D8Pqo9ATe4v4Uy6K66xZ8Q3SL4IB0GqkG3kHpySUYisDF1UBbthgIL/WmAMRAD/w+ocKGvwA97FYRaqHit6yDOCWb1+BeWNsMmq53Qqgmo/cqise0DQdAAXwFMft75neLG4UypfhG68YUuc/h2bIsoabyWSEXHOqQYy9hEhB3SCYbyKbgakSMLTF/tFrVmNGqpyFycP77x5Yfgl1W2Tj8PAj/YPujGnCZ6n9sd4o4RueSc/oozJ+v1I/JV+FGNVfX4F0c2bNxw8juBv95GsujJISeYw33lb0L58xkGIJTR8kwTLnDcUGE8DLHU0uO1yQW+g67B9ExvST3I9z0mwZZY0eJVkzrx64L2svs+bu40ZjSsXiJ4cRGBZ1VFhoJTzb04ohrXJgq4FA1b1+qZ4mU7OP90XQC5HLg59AmD0jppDkdjafKeJalrvU8yqBZS2kDlGTAtztDeS5Zx8WUU+RCR7i8kvJtUDQFvc373PUciRGjk/wa7THh5B4FDajM1Wgp1Fu1867wejjWuKWQzcqIo3gmQfQ+NxTw==
+  template:
+    metadata:
+      name: tinyauth-pocket-id
+      namespace: tinyauth

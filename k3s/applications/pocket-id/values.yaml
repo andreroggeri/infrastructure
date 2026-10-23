@@ -20,6 +20,13 @@ env:
       secretKeyRef:
         name: pocket-id
         key: encryption-key
+  # Admin API access for scripting (X-API-Key header). Cluster access
+  # already implies full control, so this adds no new exposure.
+  - name: STATIC_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: pocket-id
+        key: api-key
 
 persistence:
   enabled: true

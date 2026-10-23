@@ -1,9 +1,9 @@
-# Login for the cluster apps: OpenID Connect provider (paperless, ...) and
-# Traefik forward-auth. Replaces authentik, app by app.
+# Traefik forward-auth for apps without their own SSO (n8n). Logins go to
+# Pocket ID, which is the OpenID Connect provider for everything else.
 #
-# Users live in the sealed secret tinyauth-users (password hash + TOTP, and
-# emails, since this repo is public). Add or change one with
-# utils/tinyauth-user.sh, then restart the deployment.
+# Local fallback users live in the sealed secret tinyauth-users (password
+# hash + TOTP, and emails, since this repo is public). Add or change one
+# with utils/tinyauth-user.sh, then restart the deployment.
 
 image:
   tag: v5.2.0
@@ -13,7 +13,7 @@ deploymentStrategy:
   type: Recreate
 
 tinyauth:
-  appUrl: https://tinyauth.local.roggeri.com.br
+  appUrl: https://auth.local.roggeri.com.br
   # Ingress-annotation ACLs need cluster-wide RBAC; access is configured
   # here instead.
   labelProvider: none
@@ -26,38 +26,27 @@ tinyauth:
     # Chart defaults contain one empty example entry each; clear them.
     userAttributes: []
   apps: []
+  # Forward-auth logins go to Pocket ID (OIDC client "tinyauth" there).
+  # Only accounts that exist in Pocket ID can sign in, so no whitelist.
+  # Local users above stay as a fallback at /login.
   oauth:
-    providers: []
+    autoRedirect: pocketid
+    providers:
+      - id: pocketid
+        name: Pocket ID
+        clientId: tinyauth
+        clientSecretSecretRef:
+          name: tinyauth-pocket-id
+          key: client-secret
+        scopes: openid email profile groups
+        authUrl: https://id.local.roggeri.com.br/authorize
+        tokenUrl: https://id.local.roggeri.com.br/api/oidc/token
+        userInfoUrl: https://id.local.roggeri.com.br/api/oidc/userinfo
+        redirectUrl: https://auth.local.roggeri.com.br/api/oauth/callback/pocketid
+  # Pocket ID is the OIDC provider now. The chart default has one empty
+  # example client; clear it.
   oidc:
-    # On the volume, so tokens survive restarts.
-    privateKeyPath: /data/tinyauth_oidc_key
-    publicKeyPath: /data/tinyauth_oidc_key.pub
-    clients:
-      - id: paperless
-        clientId: paperless
-        name: Paperless
-        clientSecretSecretRef:
-          name: tinyauth-oidc
-          key: paperless
-        trustedRedirectUris: https://docs.local.roggeri.com.br/accounts/oidc/tinyauth/login/callback/
-      # Memos keeps its side of the SSO config (client secret, endpoints) in
-      # its own database: Settings → SSO in the Memos UI.
-      - id: memos
-        clientId: memos
-        name: Memos
-        clientSecretSecretRef:
-          name: tinyauth-oidc
-          key: memos
-        trustedRedirectUris: https://notes.local.roggeri.com.br/auth/callback
-      # Actual also keeps its side in its own database (server-files/
-      # account.sqlite, table auth). It matches users by preferred_username.
-      - id: actual
-        clientId: actual
-        name: Actual Budget
-        clientSecretSecretRef:
-          name: tinyauth-oidc
-          key: actual
-        trustedRedirectUris: https://budget.local.roggeri.com.br/openid/callback
+    clients: []
 
 env:
   # The chart only renders this setting when true, so `analytics.enabled:
@@ -88,7 +77,7 @@ ingress:
   enabled: true
   className: traefik
   hosts:
-    - host: tinyauth.local.roggeri.com.br
+    - host: auth.local.roggeri.com.br
       paths:
         - path: /
           pathType: Prefix

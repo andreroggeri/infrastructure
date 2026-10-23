@@ -76,7 +76,6 @@ a second system for little gain at this size.
 |---|---|---|
 | home-assistant | `home-assistant-home-assistant-0` | All HA config, automations, history |
 | home-assistant | `data-volume-zigbee2mqtt-0` | Zigbee network state. Losing it means re-pairing every device |
-| authentik | `data-authentik-postgresql-0` | Users, SSO apps, flows |
 | n8n | `n8n` | Data dir, including the patched `hooks.js` for authentik SSO |
 | n8n | `db-1` | Workflows and credentials |
 | evolution-api | `evolution-db-1` | WhatsApp sessions and data |
@@ -85,7 +84,8 @@ a second system for little gain at this size.
 | uptime-kuma | `uptime-kuma-pvc` | Monitors and history |
 | garage | `data-garage-0`, `meta-garage-0` | Objects stored in Garage |
 | paperless | `paperless-media`, `paperless-data`, `db-1` | Documents, search index, database. Labelled via the chart |
-| tinyauth | `tinyauth-data` | Sessions and the OIDC signing keys. Losing the keys logs everyone out of every app |
+| tinyauth | `tinyauth-data` | Forward-auth sessions |
+| pocket-id | `pocket-id` | Users, passkeys, OIDC clients and signing keys. Losing it logs everyone out and needs passkeys re-registered |
 
 About 5 GiB of real data in total (2026-10-21).
 
@@ -97,7 +97,6 @@ About 5 GiB of real data in total (2026-10-21).
 | registry | `registry-data` | Images can be rebuilt from source |
 | kube-system | `traefik` | Only TLS certificates, which get re-issued |
 | home-assistant | `mosquitto` | Only retained MQTT messages. Devices republish them |
-| authentik | `redis-data-authentik-redis-master-0` | Unused. Current authentik no longer uses Redis |
 | actual-budget | `actual-http-api` | Cache, rebuilt from actual-budget |
 | apprise | `apprise` | Small config, easy to recreate |
 

@@ -9,8 +9,6 @@ repositories:
     url: https://storage.googleapis.com/t3n-helm-charts
   - name: zigbee2mqtt
     url: https://charts.zigbee2mqtt.io/
-  - name: authentik
-    url: https://charts.goauthentik.io/
   - name: longhorn
     url: https://charts.longhorn.io
   - name: garage
@@ -111,18 +109,6 @@ releases:
     version: 2.14.2
     values:
       - ./applications/z2m/values.yaml
-    needs:
-      - longhorn-system/longhorn
-
-  - name: authentik
-    namespace: authentik
-    chart: authentik/authentik
-    version: 2026.8.5
-    values:
-      - ./applications/authentik/values.yaml
-      #   - postgresql:
-      #       auth:
-      #         password: '{{ (get (fromSecret "authentik" "authentik-secrets") "password") | b64dec }}'
     needs:
       - longhorn-system/longhorn
 

@@ -38,7 +38,7 @@ env:
   # real client IP instead of answering 403 (v3 change).
   - name: PAPERLESS_ALLAUTH_TRUSTED_PROXY_COUNT
     value: "1"
-  # SSO via tinyauth (OIDC client "paperless" in tinyauth's values).
+  # SSO via Pocket ID (OIDC client "paperless", managed in its UI).
   # Regular login stays enabled as a fallback; link an existing account
   # from Profile → Connect, since auto signup is off.
   - name: PAPERLESS_APPS
