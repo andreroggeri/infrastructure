@@ -25,7 +25,7 @@ main:
           url: https://n8n.local.roggeri.com.br
       forward:
         auth:
-          header: X-authentik-email
+          header: Remote-Email
   persistence:
     enabled: true
     type: dynamic
@@ -71,7 +71,7 @@ ingress:
   enabled: true
   className: traefik
   annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: "authentik-ak-outpost-authentik-embedded-outpost@kubernetescrd"
+    traefik.ingress.kubernetes.io/router.middlewares: "tinyauth-forward-auth@kubernetescrd"
   hosts:
     - host: n8n.local.roggeri.com.br
       paths:
