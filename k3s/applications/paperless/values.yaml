@@ -38,6 +38,20 @@ env:
   # real client IP instead of answering 403 (v3 change).
   - name: PAPERLESS_ALLAUTH_TRUSTED_PROXY_COUNT
     value: "1"
+  # SSO via authentik (app defined as a blueprint in authentik's values).
+  # Regular login stays enabled as a fallback; link an existing account
+  # from Profile → Connect, since auto signup is off.
+  - name: PAPERLESS_APPS
+    value: allauth.socialaccount.providers.openid_connect
+  - name: PAPERLESS_SOCIALACCOUNT_PROVIDERS
+    valueFrom:
+      secretKeyRef:
+        name: paperless-oidc
+        key: providers
+  - name: PAPERLESS_SOCIAL_AUTO_SIGNUP
+    value: "false"
+  - name: PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS
+    value: "false"
   - name: PAPERLESS_SECRET_KEY
     valueFrom:
       secretKeyRef:
