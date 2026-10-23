@@ -49,6 +49,15 @@ tinyauth:
           name: tinyauth-oidc
           key: memos
         trustedRedirectUris: https://notes.local.roggeri.com.br/auth/callback
+      # Actual also keeps its side in its own database (server-files/
+      # account.sqlite, table auth). It matches users by preferred_username.
+      - id: actual
+        clientId: actual
+        name: Actual Budget
+        clientSecretSecretRef:
+          name: tinyauth-oidc
+          key: actual
+        trustedRedirectUris: https://budget.local.roggeri.com.br/openid/callback
 
 env:
   # The chart only renders this setting when true, so `analytics.enabled:
