@@ -288,3 +288,14 @@ releases:
     needs:
       - longhorn-system/longhorn
       - paperless/paperless
+
+  - name: coruja
+    namespace: coruja
+    createNamespace: true
+    chart: ./charts/coruja
+    version: 0.1.0
+    values:
+      - ./applications/coruja/values.yaml
+    needs:
+      - paperless/paperless
+      - pombo/pombo

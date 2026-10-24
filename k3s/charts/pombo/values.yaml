@@ -1,5 +1,5 @@
 image:
-  repository: ghcr.io/andreroggeri/pombo
+  repository: ghcr.io/andreroggeri/tiny-apps/pombo
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -13,6 +13,10 @@ paperless:
   tokenSecret:
     name: ""
     key: paperless-token
+
+# Bearer token coruja sends to POST /notify. Optional key in the secret above;
+# without it the endpoint refuses everything.
+notifyTokenKey: notify-token
 
 # OpenAI-compatible API with image input, used to group photos sent together
 # into documents. Leave url empty to file every photo separately.

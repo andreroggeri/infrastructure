@@ -1,0 +1,23 @@
+# Public image built by github.com/andreroggeri/tiny-apps CI; pin the sha- tag.
+image:
+  tag: "sha-c74e9d8"
+
+paperless:
+  url: http://paperless.paperless.svc:8000
+  publicUrl: https://docs.local.roggeri.com.br
+
+secretName: coruja-secrets
+
+notifyUrl: http://pombo.pombo.svc:8080/notify
+
+# Gemma on the llama.cpp router, same model pombo uses.
+llm:
+  url: http://192.168.15.5:8080/v1
+  model: gemma-4-26B-A4B-it-UD-Q4_K_M
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 128Mi

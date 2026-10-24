@@ -1,0 +1,6 @@
+apiVersion: v2
+name: coruja
+description: Summarizes new paperless documents and has pombo announce them (github.com/andreroggeri/tiny-apps, apps/coruja)
+type: application
+version: 0.1.0
+appVersion: "sha-c74e9d8"

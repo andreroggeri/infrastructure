@@ -1,6 +1,6 @@
 apiVersion: v2
 name: pombo
-description: WhatsApp bot that routes family groups to handlers (github.com/andreroggeri/pombo)
+description: WhatsApp bot that routes family groups to handlers (github.com/andreroggeri/tiny-apps, apps/pombo)
 type: application
 version: 0.1.0
-appVersion: "sha-9fc6d11"
+appVersion: "sha-c74e9d8"

@@ -44,6 +44,12 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.paperless.tokenSecret.name }}
                   key: {{ .Values.paperless.tokenSecret.key }}
+            - name: NOTIFY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.paperless.tokenSecret.name }}
+                  key: {{ .Values.notifyTokenKey }}
+                  optional: true
           ports:
             - name: http
               containerPort: 8080
