@@ -3,4 +3,4 @@ name: pombo
 description: WhatsApp bot that routes family groups to handlers (github.com/andreroggeri/pombo)
 type: application
 version: 0.1.0
-appVersion: "sha-c919bba"
+appVersion: "sha-9fc6d11"
