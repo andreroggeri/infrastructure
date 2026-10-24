@@ -35,8 +35,10 @@ spec:
               value: /data
             - name: PAPERLESS_URL
               value: {{ .Values.paperless.url | quote }}
-            - name: PAPERLESS_PUBLIC_URL
-              value: {{ .Values.paperless.publicUrl | quote }}
+            - name: LLM_URL
+              value: {{ .Values.llm.url | quote }}
+            - name: LLM_MODEL
+              value: {{ .Values.llm.model | quote }}
             - name: PAPERLESS_TOKEN
               valueFrom:
                 secretKeyRef:

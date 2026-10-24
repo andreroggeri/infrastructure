@@ -1,13 +1,17 @@
 # Public image built by github.com/andreroggeri/pombo CI; pin the sha- tag.
 image:
-  tag: "sha-0ef8f99"
+  tag: "sha-b7cb3e3"
 
 paperless:
   url: http://paperless.paperless.svc:8000
-  publicUrl: https://docs.local.roggeri.com.br
   tokenSecret:
     name: pombo-secrets
     key: paperless-token
+
+# Gemma on the llama.cpp router; groups photos into documents.
+llm:
+  url: http://192.168.15.5:8080/v1
+  model: gemma-4-26B-A4B-it-UD-Q4_K_M
 
 resources:
   requests:

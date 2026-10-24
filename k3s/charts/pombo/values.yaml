@@ -9,12 +9,16 @@ imagePullSecrets: []
 paperless:
   # API base the bot calls (in-cluster).
   url: ""
-  # Base for links sent to the chat.
-  publicUrl: ""
   # Secret holding the API token of the account uploads are made as.
   tokenSecret:
     name: ""
     key: paperless-token
+
+# OpenAI-compatible API with image input, used to group photos sent together
+# into documents. Leave url empty to file every photo separately.
+llm:
+  url: ""
+  model: ""
 
 resources: {}
 
