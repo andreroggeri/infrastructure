@@ -1,6 +1,6 @@
 # Public image built by github.com/andreroggeri/tiny-apps CI; pin the sha- tag.
 image:
-  tag: "sha-c74e9d8"
+  tag: "sha-291df4e"
 
 paperless:
   url: http://paperless.paperless.svc:8000
