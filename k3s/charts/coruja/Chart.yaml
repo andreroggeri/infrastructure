@@ -3,4 +3,4 @@ name: coruja
 description: Summarizes new paperless documents and has pombo announce them (github.com/andreroggeri/tiny-apps, apps/coruja)
 type: application
 version: 0.1.0
-appVersion: "sha-291df4e"
+appVersion: "sha-bdee2bb"
