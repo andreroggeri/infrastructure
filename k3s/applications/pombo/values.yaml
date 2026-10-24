@@ -1,6 +1,6 @@
 # Public image built by github.com/andreroggeri/pombo CI; pin the sha- tag.
 image:
-  tag: "sha-b7cb3e3"
+  tag: "sha-c919bba"
 
 paperless:
   url: http://paperless.paperless.svc:8000
