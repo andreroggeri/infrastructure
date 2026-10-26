@@ -2,8 +2,13 @@ hub:
   appUrl: https://monitor.local.roggeri.com.br
   existingSecret: beszel-hub
   env:
-    # Log in through Pocket ID only.
+    # Log in through Pocket ID only. Access is decided there: the `beszel`
+    # client only admits the Pocket ID group `monitoring`.
     DISABLE_PASSWORD_AUTH: "true"
+    # First Pocket ID login creates a read-only account that sees every node.
+    USER_CREATION: "true"
+    OAUTH_DEFAULT_USER_ROLE: readonly
+    SHARE_ALL_SYSTEMS: "true"
 
 ingress:
   enabled: true

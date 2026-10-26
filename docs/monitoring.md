@@ -21,12 +21,19 @@ apps and backup jobs.
 
 ## Login
 
-Pocket ID, client `beszel`. Only users that already exist in Beszel can log in
-(`USER_CREATION` is off). Password login is off (`DISABLE_PASSWORD_AUTH`). Beszel matches the login by email, and only trusts
-it when Pocket ID marks the email as verified; an unverified email fails with
-"Only superusers can perform this action" and a blank screen. The first admin user comes from sealed secret
-`beszel-hub` (`USER_EMAIL`, `USER_PASSWORD`); the same credentials are the
-PocketBase superuser at `/_/`.
+Pocket ID only (client `beszel`); password login is off. Access is managed in
+Pocket ID: the client only admits the group `monitoring`. To give someone
+access, add them to that group. Their first login creates a read-only Beszel
+account that sees every node.
+
+Beszel matches logins by email and only trusts verified emails. Pocket ID's
+`emailsVerified` setting is on, so every email counts as verified. Because of
+that, users can't edit their own Pocket ID account (`allowOwnAccountEdit` is
+off). Otherwise someone could change their email to yours and log in as you.
+
+The first admin user comes from sealed secret `beszel-hub` (`USER_EMAIL`,
+`USER_PASSWORD`). The same credentials are the PocketBase superuser at `/_/`,
+which still accepts a password.
 
 ## Alerts
 
