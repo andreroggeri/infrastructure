@@ -1,0 +1,90 @@
+{{- range $node := .Values.agent.nodes }}
+{{- with $ }}
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Release.Name }}-agent-{{ $node.name }}
+  labels:
+    {{- include "beszel.labels" . | nindent 4 }}
+    app.kubernetes.io/component: agent
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: agent
+      beszel.dev/node: {{ $node.name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: agent
+        beszel.dev/node: {{ $node.name }}
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: {{ $node.name }}
+      # Host network so the agent reports the node's interfaces, not the pod's.
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      tolerations:
+        - operator: Exists
+      containers:
+        - name: agent
+          image: "{{ .Values.image.agent }}:{{ include "beszel.tag" . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: HUB_URL
+              value: "http://{{ .Release.Name }}-hub.{{ .Release.Namespace }}.svc:8090"
+            - name: SYSTEM_NAME
+              value: {{ $node.name | quote }}
+            - name: DATA_DIR
+              value: /var/lib/beszel-agent
+            # The hub doesn't dial agents (DISABLE_SSH on the hub), so don't listen.
+            - name: DISABLE_SSH
+              value: "true"
+            - name: DOCKER_HOST
+              value: {{ ternary "unix:///var/run/docker.sock" "" (default false $node.docker) | quote }}
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.agent.existingSecret }}
+                  key: TOKEN
+            - name: KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.agent.existingSecret }}
+                  key: KEY
+          resources:
+            {{- toYaml .Values.agent.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/beszel-agent
+            {{- if $node.docker }}
+            - name: docker
+              mountPath: /var/run/docker.sock
+              readOnly: true
+            {{- end }}
+            {{- range $node.extraFilesystems }}
+            - name: fs-{{ .name }}
+              mountPath: /extra-filesystems/{{ .name }}
+              readOnly: true
+            {{- end }}
+      volumes:
+        - name: data
+          hostPath:
+            path: {{ .Values.agent.dataHostPath }}
+            type: DirectoryOrCreate
+        {{- if $node.docker }}
+        - name: docker
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
+        {{- end }}
+        {{- range $node.extraFilesystems }}
+        - name: fs-{{ .name }}
+          hostPath:
+            path: {{ .hostPath }}
+            type: Directory
+        {{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: beszel
+description: Beszel hub and one agent per node for host and container stats
+type: application
+version: 0.1.0
+appVersion: "0.21.1"

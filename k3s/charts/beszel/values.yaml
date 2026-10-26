@@ -1,0 +1,51 @@
+image:
+  hub: henrygd/beszel
+  agent: henrygd/beszel-agent
+  tag: ""
+  pullPolicy: IfNotPresent
+
+hub:
+  # Public URL, used in alert links and OAuth redirects.
+  appUrl: ""
+  # Secret with optional USER_EMAIL / USER_PASSWORD, which create the first
+  # admin user on a new install.
+  existingSecret: ""
+  # Extra hub env vars, e.g. DISABLE_PASSWORD_AUTH.
+  env: {}
+  persistence:
+    storageClass: longhorn
+    size: 1Gi
+    # Put the volume in the nightly off-site Longhorn backup (docs/backups.md).
+    backup: true
+  resources:
+    requests:
+      cpu: 20m
+      memory: 64Mi
+    limits:
+      memory: 256Mi
+
+ingress:
+  enabled: false
+  className: traefik
+  host: ""
+
+agent:
+  # Secret with TOKEN (a permanent universal token of a hub user) and KEY (the
+  # hub's public key). Agents register themselves on first connect.
+  existingSecret: ""
+  # One agent per node, so each can mount its own disks and Docker socket.
+  nodes: []
+  #  - name: alexandria
+  #    docker: true
+  #    # Mounted read-only under /extra-filesystems/<name>.
+  #    extraFilesystems:
+  #      - name: archive
+  #        hostPath: /archive
+  # Persists the agent's fingerprint, so a restart doesn't register a new system.
+  dataHostPath: /var/lib/beszel-agent
+  resources:
+    requests:
+      cpu: 10m
+      memory: 16Mi
+    limits:
+      memory: 64Mi

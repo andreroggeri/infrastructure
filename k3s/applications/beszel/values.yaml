@@ -1,0 +1,21 @@
+hub:
+  appUrl: https://beszel.local.roggeri.com.br
+  existingSecret: beszel-hub
+
+ingress:
+  enabled: true
+  host: beszel.local.roggeri.com.br
+
+agent:
+  existingSecret: beszel-agent
+  nodes:
+    - name: alexandria
+      # NAS compose stacks still run on Docker here.
+      docker: true
+      extraFilesystems:
+        - name: data
+          hostPath: /data
+        - name: archive
+          hostPath: /archive
+    - name: k3s-node-01
+    - name: ubuntu

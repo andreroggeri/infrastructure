@@ -87,6 +87,7 @@ a second system for little gain at this size.
 | pombo | `pombo-data` | WhatsApp session and group routing. Losing it means re-pairing the bot. Labelled via the chart |
 | tinyauth | `tinyauth-data` | Forward-auth sessions |
 | pocket-id | `pocket-id` | Users, passkeys, OIDC clients and signing keys. Losing it logs everyone out and needs passkeys re-registered |
+| beszel | `beszel-hub` | Metrics history, alert rules, the Telegram link and the Pocket ID login setup. Labelled via the chart |
 
 About 5 GiB of real data in total (2026-10-21).
 

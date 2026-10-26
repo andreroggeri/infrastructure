@@ -299,3 +299,13 @@ releases:
     needs:
       - paperless/paperless
       - pombo/pombo
+
+  - name: beszel
+    namespace: beszel
+    createNamespace: true
+    chart: ./charts/beszel
+    version: 0.1.0
+    values:
+      - ./applications/beszel/values.yaml
+    needs:
+      - longhorn-system/longhorn

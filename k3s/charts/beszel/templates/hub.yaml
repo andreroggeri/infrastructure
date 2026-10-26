@@ -1,0 +1,121 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-hub
+  labels:
+    {{- include "beszel.labels" . | nindent 4 }}
+    {{- if .Values.hub.persistence.backup }}
+    # Longhorn copies recurring-job labels from the PVC to its volume, putting
+    # it in the nightly off-site backup group (docs/backups.md).
+    recurring-job.longhorn.io/source: enabled
+    recurring-job-group.longhorn.io/backup: enabled
+    {{- end }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.hub.persistence.storageClass | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.hub.persistence.size | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-hub
+  labels:
+    {{- include "beszel.labels" . | nindent 4 }}
+    app.kubernetes.io/component: hub
+spec:
+  replicas: 1
+  # One writer on the SQLite volume at a time.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: hub
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: hub
+    spec:
+      containers:
+        - name: hub
+          image: "{{ .Values.image.hub }}:{{ include "beszel.tag" . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: APP_URL
+              value: {{ .Values.hub.appUrl | quote }}
+            # Agents connect to the hub over WebSocket; the hub never dials them.
+            - name: DISABLE_SSH
+              value: "true"
+            {{- range $k, $v := .Values.hub.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
+            {{- end }}
+          {{- with .Values.hub.existingSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ . }}
+                optional: true
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 8090
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 10
+            failureThreshold: 6
+          resources:
+            {{- toYaml .Values.hub.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /beszel_data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-hub
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-hub
+  labels:
+    {{- include "beszel.labels" . | nindent 4 }}
+spec:
+  selector:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: hub
+  ports:
+    - name: http
+      port: 8090
+      targetPort: http
+{{- if .Values.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-hub
+  labels:
+    {{- include "beszel.labels" . | nindent 4 }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+    - host: {{ .Values.ingress.host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-hub
+                port:
+                  name: http
+{{- end }}
