@@ -1,10 +1,10 @@
 hub:
-  appUrl: https://beszel.local.roggeri.com.br
+  appUrl: https://monitor.local.roggeri.com.br
   existingSecret: beszel-hub
 
 ingress:
   enabled: true
-  host: beszel.local.roggeri.com.br
+  host: monitor.local.roggeri.com.br
 
 agent:
   existingSecret: beszel-agent
