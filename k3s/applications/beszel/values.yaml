@@ -1,6 +1,9 @@
 hub:
   appUrl: https://monitor.local.roggeri.com.br
   existingSecret: beszel-hub
+  env:
+    # Log in through Pocket ID only.
+    DISABLE_PASSWORD_AUTH: "true"
 
 ingress:
   enabled: true
