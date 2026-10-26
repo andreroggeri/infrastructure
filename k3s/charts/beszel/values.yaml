@@ -37,6 +37,8 @@ agent:
   nodes: []
   #  - name: alexandria
   #    docker: true
+  #    # Read S.M.A.R.T. data. Runs the agent privileged.
+  #    smart: true
   #    # Mounted read-only under /extra-filesystems/<name>.
   #    extraFilesystems:
   #      - name: archive

@@ -15,10 +15,13 @@ agent:
     - name: alexandria
       # NAS compose stacks still run on Docker here.
       docker: true
+      smart: true
       extraFilesystems:
         - name: data
           hostPath: /data
         - name: archive
           hostPath: /archive
+    # Oracle Cloud VM: virtual disk, no S.M.A.R.T.
     - name: k3s-node-01
     - name: ubuntu
+      smart: true

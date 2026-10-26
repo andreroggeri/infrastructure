@@ -30,7 +30,8 @@ spec:
         - operator: Exists
       containers:
         - name: agent
-          image: "{{ .Values.image.agent }}:{{ include "beszel.tag" . }}"
+          # The alpine variant ships smartctl.
+          image: "{{ .Values.image.agent }}:{{ include "beszel.tag" . }}{{ if $node.smart }}-alpine{{ end }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: HUB_URL
@@ -54,6 +55,13 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.agent.existingSecret }}
                   key: KEY
+          {{- if $node.smart }}
+          # smartctl needs raw access to the disks. Kubernetes can't pass single
+          # devices through, so the agent sees all of /dev; it skips Longhorn's
+          # iSCSI volumes itself (model VIRTUAL-DISK).
+          securityContext:
+            privileged: true
+          {{- end }}
           resources:
             {{- toYaml .Values.agent.resources | nindent 12 }}
           volumeMounts:
