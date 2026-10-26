@@ -187,4 +187,4 @@ file. If backed up, add the volume to the `backup` recurring-job group.
 | App | Removed | Last backup in B2 |
 |---|---|---|
 | Open WebUI | 2026-10-23 (unused) | `open-webui` volume, 2026-10-23 06:09 UTC. Restore it in the Longhorn UI (Backups) if ever needed. Old backups of removed volumes are not pruned automatically. |
-| n8n (+ n8n-mcp) | 2026-10-26 (unused) | `n8n` (data dir) and `db-1` (workflows, credentials) volumes: backups `n8n-final-a17bc99d` and `n8n-final-95e12232`, 2026-10-26. The encryption key for the credentials was in sealed secret `n8n-encryption-key-secret` (see git history before removal). |
+| n8n (+ n8n-mcp) | 2026-10-26 (unused) | `db-1` (workflows, credentials): backup `n8n-final-95e12232`, 2026-10-26 21:08 UTC. `n8n` (data dir): nightly backup `backup-012dc7871a314c48`, 2026-10-26 06:01 UTC. The encryption key for the credentials was in sealed secret `n8n-encryption-key-secret` (see git history before removal). |
