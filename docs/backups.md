@@ -141,6 +141,8 @@ was built locally (`pull_policy: build`), Docker's data root moved to
 `/data/docker/lib` around 2025-05-23, the local image was lost, and ofelia
 could not pull it from any registry. Its healthchecks pings could not have
 alerted either: `healthchecks.local.andreroggeri.com.br` does not resolve.
+The YNAB sync job in the same stack failed the same way. The whole NAS cron
+stack (ofelia, healthchecks, runitor jobs) was removed on 2026-10-26.
 
 ## Alerts
 
