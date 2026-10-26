@@ -1,0 +1,5 @@
+nodeSelector:
+  kubernetes.io/hostname: alexandria
+
+# Plex, Jellyfin, Frigate and Immich can each hold the iGPU at once.
+sharedDevNum: 4

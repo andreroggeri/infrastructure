@@ -1,0 +1,9 @@
+image:
+  repository: intel/intel-gpu-plugin
+  tag: ""
+
+# Nodes with an Intel GPU. Without NFD there is no automatic label.
+nodeSelector: {}
+
+# How many pods may share one GPU. Each pod asks for gpu.intel.com/i915: 1.
+sharedDevNum: 1

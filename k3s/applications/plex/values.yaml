@@ -1,0 +1,15 @@
+nodeName: alexandria
+
+media:
+  hostPath: /archive/media
+transcode:
+  hostPath: /data/plex_transcoding
+
+# Plex advertises https://plex.local.roggeri.com.br and
+# https://plex.roggeri.com.br as custom connection URLs (Settings → Network).
+# The public one is a Cloudflare tunnel route (set in the Cloudflare dashboard)
+# straight to http://plex.plex.svc.cluster.local:32400, not through Traefik.
+ingress:
+  enabled: true
+  hosts:
+    - plex.local.roggeri.com.br

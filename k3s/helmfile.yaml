@@ -32,6 +32,14 @@ releases:
     chart: ./charts/sealed-secrets-manifests
     version: 0.1.0
 
+  - name: intel-gpu-plugin
+    namespace: intel-gpu-plugin
+    createNamespace: true
+    chart: ./charts/intel-gpu-plugin
+    version: 0.1.0
+    values:
+      - ./infrastructure/intel-gpu-plugin/values.yaml
+
   - name: nfs-provisioner
     namespace: kube-system
     chart: nfs-subdir-external-provisioner/nfs-subdir-external-provisioner
@@ -287,3 +295,14 @@ releases:
       - ./applications/beszel/values.yaml
     needs:
       - longhorn-system/longhorn
+
+  - name: plex
+    namespace: plex
+    createNamespace: true
+    chart: ./charts/plex
+    version: 0.1.0
+    values:
+      - ./applications/plex/values.yaml
+    needs:
+      - longhorn-system/longhorn
+      - intel-gpu-plugin/intel-gpu-plugin
