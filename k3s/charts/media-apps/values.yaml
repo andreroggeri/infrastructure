@@ -1,0 +1,33 @@
+# Shared by every app (linuxserver images).
+env:
+  PUID: "1001"
+  PGID: "1001"
+  TZ: America/Sao_Paulo
+
+ingress:
+  className: traefik
+  # <app>.<domain>
+  domain: ""
+
+storageClass: longhorn
+
+# Each app gets a Deployment, a Service named after the app (so apps reach
+# each other by short name inside the namespace), an Ingress and a config PVC
+# in the nightly off-site Longhorn backup (docs/backups.md).
+apps: {}
+#  radarr:
+#    image: lscr.io/linuxserver/radarr:6.4.4
+#    port: 7878
+#    configSize: 2Gi
+#    replicas: 1          # 0 stops the app but keeps its volume
+#    nodeName: alexandria # required with hostPaths
+#    hostPaths:
+#      - hostPath: /archive
+#        mountPath: /data
+
+resources:
+  requests:
+    cpu: 20m
+    memory: 128Mi
+  limits:
+    memory: 1Gi

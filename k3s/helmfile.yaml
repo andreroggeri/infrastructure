@@ -317,3 +317,13 @@ releases:
     needs:
       - longhorn-system/longhorn
       - intel-gpu-plugin/intel-gpu-plugin
+
+  - name: media-apps
+    namespace: media
+    createNamespace: true
+    chart: ./charts/media-apps
+    version: 0.1.0
+    values:
+      - ./applications/media-apps/values.yaml
+    needs:
+      - longhorn-system/longhorn

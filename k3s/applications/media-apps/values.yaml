@@ -1,0 +1,45 @@
+# Moved from nas/compose/media-download.docker-compose.yml. Mount paths match
+# the compose file, so paths stored in each app's database still work.
+ingress:
+  domain: local.roggeri.com.br
+
+apps:
+  transmission:
+    image: lscr.io/linuxserver/transmission:4.1.3
+    port: 9091
+    nodeName: alexandria
+    hostPaths:
+      - hostPath: /archive/torrents
+        mountPath: /data/torrents
+      - hostPath: /archive/torrents/downloads
+        mountPath: /downloads
+  radarr:
+    image: lscr.io/linuxserver/radarr:6.4.4
+    port: 7878
+    configSize: 2Gi
+    nodeName: alexandria
+    hostPaths:
+      - hostPath: /archive
+        mountPath: /data
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:4.0.20
+    port: 8989
+    configSize: 2Gi
+    nodeName: alexandria
+    hostPaths:
+      - hostPath: /archive
+        mountPath: /data
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:1.6.2
+    port: 6767
+    nodeName: alexandria
+    hostPaths:
+      - hostPath: /archive/media
+        mountPath: /data/media
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:2.6.5
+    port: 9696
+  # Upstream is archived (2026-02); its successor is Seerr.
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:1.35.0
+    port: 5055
