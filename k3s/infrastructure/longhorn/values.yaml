@@ -12,3 +12,8 @@ ingress:
 defaultBackupStore:
   backupTarget: s3://roggeri-nas-backups@us-east-005/longhorn/
   backupTargetCredentialSecret: longhorn-b2
+
+defaultSettings:
+  # Move volumes to the current engine image on their own, one volume per node
+  # at a time, so chart upgrades don't leave volumes on old engines.
+  concurrentAutomaticEngineUpgradePerNodeLimit: 1

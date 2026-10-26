@@ -76,8 +76,6 @@ a second system for little gain at this size.
 |---|---|---|
 | home-assistant | `home-assistant-home-assistant-0` | All HA config, automations, history |
 | home-assistant | `data-volume-zigbee2mqtt-0` | Zigbee network state. Losing it means re-pairing every device |
-| n8n | `n8n` | Data dir, including the patched `hooks.js` that logs you in from tinyauth's `Remote-Email` header |
-| n8n | `db-1` | Workflows and credentials |
 | evolution-api | `evolution-db-1` | WhatsApp sessions and data |
 | actual-budget | `actual-budget-actualbudget-data` | Budget data |
 | memos | `memos` | Notes |
@@ -189,3 +187,4 @@ file. If backed up, add the volume to the `backup` recurring-job group.
 | App | Removed | Last backup in B2 |
 |---|---|---|
 | Open WebUI | 2026-10-23 (unused) | `open-webui` volume, 2026-10-23 06:09 UTC. Restore it in the Longhorn UI (Backups) if ever needed. Old backups of removed volumes are not pruned automatically. |
+| n8n (+ n8n-mcp) | 2026-10-26 (unused) | `n8n` (data dir) and `db-1` (workflows, credentials) volumes: backups `n8n-final-a17bc99d` and `n8n-final-95e12232`, 2026-10-26. The encryption key for the credentials was in sealed secret `n8n-encryption-key-secret` (see git history before removal). |

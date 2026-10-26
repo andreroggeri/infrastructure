@@ -1,4 +1,4 @@
-# Traefik forward-auth for apps without their own SSO (n8n). Logins go to
+# Traefik forward-auth for apps without their own SSO (pombo's dashboard). Logins go to
 # Pocket ID, which is the OpenID Connect provider for everything else.
 #
 # Local fallback users live in the sealed secret tinyauth-users (password
@@ -100,7 +100,7 @@ volumeMounts:
     mountPath: /data
 
 extraObjects:
-  # Forward-auth for apps without their own SSO (n8n). Use on an Ingress with
+  # Forward-auth for apps without their own SSO (pombo's dashboard). Use on an Ingress with
   #   traefik.ingress.kubernetes.io/router.middlewares: tinyauth-forward-auth@kubernetescrd
   # Traefik replaces any client-sent copies of these headers with tinyauth's.
   - apiVersion: traefik.io/v1alpha1

@@ -129,19 +129,6 @@ releases:
     needs:
       - longhorn-system/longhorn
 
-  - name: n8n
-    namespace: n8n
-    chart: oci://8gears.container-registry.com/library/n8n
-    version: 2.1.1
-    values:
-      - ./applications/n8n/values.yaml
-      - main:
-          encryption_key: '{{ exec "kubectl" (list "get" "secret" "n8n-encryption-key-secret" "--namespace" .Namespace "-o" "jsonpath={.data.encryption-key}") | b64dec }}'
-    needs:
-      - cnpg-system/cloudnative-pg
-      - redis-operator-system/redis-operator
-      - longhorn-system/longhorn
-
   - name: evolution-api
     namespace: evolution-api
     chart: ./charts/evolution-api
@@ -169,15 +156,6 @@ releases:
     version: 4.2.0
     values:
       - ./applications/uptime-kuma/values.yaml
-    needs:
-      - longhorn-system/longhorn
-
-  - name: n8n-mcp
-    namespace: n8n
-    chart: ./charts/n8n-mcp
-    version: 0.1.0
-    values:
-      - ./applications/n8n-mcp/values.yaml
     needs:
       - longhorn-system/longhorn
 
