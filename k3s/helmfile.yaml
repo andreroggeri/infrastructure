@@ -306,3 +306,14 @@ releases:
     needs:
       - longhorn-system/longhorn
       - intel-gpu-plugin/intel-gpu-plugin
+
+  - name: jellyfin
+    namespace: jellyfin
+    createNamespace: true
+    chart: ./charts/jellyfin
+    version: 0.1.0
+    values:
+      - ./applications/jellyfin/values.yaml
+    needs:
+      - longhorn-system/longhorn
+      - intel-gpu-plugin/intel-gpu-plugin

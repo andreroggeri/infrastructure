@@ -1,0 +1,6 @@
+apiVersion: v2
+name: jellyfin
+description: Jellyfin (official image) on a node with local media and an Intel GPU
+type: application
+version: 0.1.0
+appVersion: "12.4"

@@ -1,0 +1,141 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- if .Values.persistence.config.backup }}
+    # Longhorn copies recurring-job labels from the PVC to its volume, putting
+    # it in the nightly off-site backup group (docs/backups.md).
+    recurring-job.longhorn.io/source: enabled
+    recurring-job-group.longhorn.io/backup: enabled
+    {{- end }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ .Values.persistence.config.storageClass | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.config.size | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  # One Jellyfin at a time on the config volume.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: {{ .Values.nodeName }}
+      securityContext:
+        runAsUser: {{ .Values.runAsUser }}
+        runAsGroup: {{ .Values.runAsGroup }}
+        {{- if .Values.gpu }}
+        # The device plugin hands over /dev/dri nodes owned by group 0.
+        supplementalGroups: [0]
+        {{- end }}
+      containers:
+        - name: jellyfin
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            # Same layout as the linuxserver image the config came from.
+            - name: JELLYFIN_CONFIG_DIR
+              value: /config
+            - name: JELLYFIN_DATA_DIR
+              value: /config/data
+            - name: JELLYFIN_CACHE_DIR
+              value: /config/cache
+            - name: JELLYFIN_LOG_DIR
+              value: /config/log
+          ports:
+            - name: http
+              containerPort: 8096
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            # First boot after an upgrade runs database migrations.
+            initialDelaySeconds: 120
+            failureThreshold: 10
+          resources:
+            {{- $res := deepCopy .Values.resources }}
+            {{- if .Values.gpu }}
+            {{- $_ := set $res "limits" (merge (dict "gpu.intel.com/i915" 1) ($res.limits | default dict)) }}
+            {{- end }}
+            {{- toYaml $res | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: media
+              mountPath: {{ .Values.media.mountPath }}
+            # Encoding settings point TranscodingTempPath here; keeps
+            # transcodes off the Longhorn volume.
+            - name: transcode
+              mountPath: /config/data/transcodes
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-config
+        - name: media
+          hostPath:
+            path: {{ .Values.media.hostPath }}
+            type: Directory
+        - name: transcode
+          hostPath:
+            path: {{ .Values.transcode.hostPath }}
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selector:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - name: http
+      port: 8096
+      targetPort: http
+{{- if .Values.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ . | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $.Release.Name }}
+                port:
+                  name: http
+    {{- end }}
+{{- end }}

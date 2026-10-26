@@ -1,0 +1,13 @@
+nodeName: alexandria
+
+media:
+  hostPath: /archive/media
+transcode:
+  hostPath: /data/jellyfin_transcoding
+
+# Internal only. No SSO: the Pocket ID plugin has no Jellyfin 12 build
+# (2026-10). Users have Jellyfin accounts; TVs pair via Quick Connect.
+ingress:
+  enabled: true
+  hosts:
+    - jellyfin.local.roggeri.com.br

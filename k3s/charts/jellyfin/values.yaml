@@ -1,0 +1,42 @@
+image:
+  repository: jellyfin/jellyfin
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# 0 keeps the volume but stops Jellyfin (used while copying config in).
+replicas: 1
+
+nodeName: ""
+
+# Owner of the files on the config volume.
+runAsUser: 1001
+runAsGroup: 1001
+
+# Hardware transcoding through the Intel GPU device plugin.
+gpu: true
+
+persistence:
+  config:
+    storageClass: longhorn
+    size: 5Gi
+    # Put the volume in the nightly off-site Longhorn backup (docs/backups.md).
+    backup: true
+
+# Host paths on nodeName.
+media:
+  hostPath: ""
+  mountPath: /data
+transcode:
+  hostPath: ""
+
+ingress:
+  enabled: false
+  className: traefik
+  hosts: []
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    memory: 4Gi
