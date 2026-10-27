@@ -41,6 +41,14 @@ spec:
         app.kubernetes.io/name: {{ $name }}
         app.kubernetes.io/instance: {{ $.Release.Name }}
     spec:
+      {{- if $app.shareProcessNamespace }}
+      # The pause container then reaps zombies (images that expect an init).
+      shareProcessNamespace: true
+      {{- end }}
+      {{- with $app.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with $app.nodeName }}
       nodeSelector:
         kubernetes.io/hostname: {{ . }}
@@ -69,7 +77,7 @@ spec:
             {{- toYaml ($app.resources | default $.Values.resources) | nindent 12 }}
           volumeMounts:
             - name: config
-              mountPath: /config
+              mountPath: {{ $app.configMountPath | default "/config" }}
             {{- range $i, $p := $app.hostPaths }}
             - name: host-{{ $i }}
               mountPath: {{ $p.mountPath }}
@@ -112,7 +120,8 @@ metadata:
 spec:
   ingressClassName: {{ $.Values.ingress.className }}
   rules:
-    - host: {{ printf "%s.%s" $name $.Values.ingress.domain | quote }}
+    {{- range prepend ($app.extraHosts | default list) $name }}
+    - host: {{ printf "%s.%s" . $.Values.ingress.domain | quote }}
       http:
         paths:
           - path: /
@@ -122,5 +131,6 @@ spec:
                 name: {{ $name }}
                 port:
                   name: http
+    {{- end }}
 {{- end }}
 {{- end }}
