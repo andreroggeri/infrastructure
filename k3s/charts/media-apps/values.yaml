@@ -29,6 +29,8 @@ apps: {}
 #    podSecurityContext: {runAsUser: 1000}
 #    shareProcessNamespace: true
 #    extraHosts: [oldname]  # more <name>.<domain> hosts for the Ingress
+#    hostPorts:             # opened on the node's own IP (needs nodeName)
+#      - {name: peer-tcp, port: 51413, protocol: TCP}
 
 resources:
   requests:

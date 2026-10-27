@@ -8,6 +8,15 @@ apps:
     image: lscr.io/linuxserver/transmission:4.1.3
     port: 9091
     nodeName: alexandria
+    # Incoming peers, on alexandria's LAN IP (192.168.15.4). Matches
+    # peer-port in settings.json and the router's forward.
+    hostPorts:
+      - name: peer-tcp
+        port: 51413
+        protocol: TCP
+      - name: peer-udp
+        port: 51413
+        protocol: UDP
     hostPaths:
       - hostPath: /archive/torrents
         mountPath: /data/torrents

@@ -65,6 +65,12 @@ spec:
           ports:
             - name: http
               containerPort: {{ $app.port }}
+            {{- range $app.hostPorts }}
+            - name: {{ .name }}
+              containerPort: {{ .port }}
+              hostPort: {{ .port }}
+              protocol: {{ .protocol | default "TCP" }}
+            {{- end }}
           readinessProbe:
             tcpSocket:
               port: http
