@@ -89,6 +89,7 @@ a second system for little gain at this size.
 | plex | `plex-config` | Library database, watch history, metadata. Media itself is on `/archive/media` (not backed up). Labelled via the chart |
 | jellyfin | `jellyfin-config` | Users, watch state, metadata. Media is on `/archive/media` (not backed up). Labelled via the chart |
 | media | `radarr-config`, `sonarr-config`, `prowlarr-config`, `bazarr-config`, `transmission-config`, `seerr-config`, `overseerr-config` (stopped; pre-Seerr copy) | App settings, history, indexer setup, torrent list. Downloads and media are on `/archive` (not backed up). Labelled via the chart |
+| immich | `immich-database-1` | Immich's Postgres: albums, faces, people, metadata. Photos are on `/archive/data/immich` (restic, below). Labelled via `inheritedMetadata` |
 
 About 5 GiB of real data in total (2026-10-21).
 
@@ -119,7 +120,8 @@ Host and mount paths match the old NAS job (`--host alexandria`,
 | Target | Host path | Why |
 |---|---|---|
 | Docker volumes | `/data/docker/lib/volumes` | NAS compose apps not yet moved to k3s. Drop once none are left |
-| Immich | `/archive/data/nas/immich` | Photos (most also in Google Photos) and extracted courses (only copy) |
+| Immich (old NAS) | `/archive/data/nas/immich` | Photos (most also in Google Photos) and extracted courses (only copy) |
+| Immich (k3s) | `/archive/data/immich` | Library of the k3s Immich (fresh 2026-10, tag `immich`). Skips `thumbs` and `encoded-video` |
 
 Skipped:
 

@@ -1,0 +1,4 @@
+library:
+  nodeName: alexandria
+  # Fresh library (2026-10). The old NAS one is /archive/data/nas/immich.
+  hostPath: /archive/data/immich

@@ -1,0 +1,21 @@
+# Prefix for every object; the Immich release refers to <name>-database and
+# <name>-library.
+name: immich
+
+database:
+  # Upstream example: immich-charts local/cloudnative-pg*.yaml
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.6-standard-trixie
+  vchordImage: ghcr.io/tensorchord/vchord-scratch:pg18-v1.1.1
+  storageClass: longhorn
+  size: 5Gi
+  resources:
+    requests:
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+
+# Photos and videos live on the host, not on Longhorn.
+library:
+  nodeName: ""
+  hostPath: ""
+  size: 1Ti

@@ -1,0 +1,40 @@
+# Static hostPath volume: the node affinity also pins every pod that mounts
+# it (the Immich server) to that node.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.name }}-library
+spec:
+  capacity:
+    storage: {{ .Values.library.size }}
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  claimRef:
+    namespace: {{ .Release.Namespace }}
+    name: {{ .Values.name }}-library
+  hostPath:
+    path: {{ .Values.library.hostPath }}
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - {{ .Values.library.nodeName }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.name }}-library
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ""
+  volumeName: {{ .Values.name }}-library
+  resources:
+    requests:
+      storage: {{ .Values.library.size }}

@@ -1,0 +1,65 @@
+# Official chart: oci://ghcr.io/immich-app/immich-charts/immich
+# Postgres and the library volume come from the immich-extras release.
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          tag: v3.3.5
+        env:
+          DB_URL:
+            valueFrom:
+              secretKeyRef:
+                name: immich-database-app
+                key: uri
+
+immich:
+  persistence:
+    library:
+      existingClaim: immich-library
+
+valkey:
+  enabled: true
+
+server:
+  controllers:
+    main:
+      # All 4 iGPU slots are in use; a rolling update would need a 5th.
+      strategy: Recreate
+      containers:
+        main:
+          resources:
+            limits:
+              # Hardware video transcoding (Quick Sync / VA-API).
+              gpu.intel.com/i915: 1
+  ingress:
+    main:
+      enabled: true
+      className: traefik
+      annotations: {}
+      hosts:
+        - host: photos.local.roggeri.com.br
+          paths:
+            - path: /
+              service:
+                identifier: main
+
+machine-learning:
+  controllers:
+    main:
+      strategy: Recreate
+      containers:
+        main:
+          image:
+            # OpenVINO build runs face/search models on the Intel iGPU.
+            tag: v3.3.5-openvino
+          resources:
+            limits:
+              gpu.intel.com/i915: 1
+  persistence:
+    # Models (~1-2 GB) survive restarts instead of being downloaded again.
+    cache:
+      enabled: true
+      type: hostPath
+      hostPath: /data/immich-ml-cache
+      hostPathType: DirectoryOrCreate

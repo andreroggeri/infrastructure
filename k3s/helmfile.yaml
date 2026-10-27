@@ -327,3 +327,25 @@ releases:
       - ./applications/media-apps/values.yaml
     needs:
       - longhorn-system/longhorn
+
+  - name: immich-extras
+    namespace: immich
+    createNamespace: true
+    chart: ./charts/immich-extras
+    version: 0.1.0
+    values:
+      - ./applications/immich/extras.yaml
+    needs:
+      - cnpg-system/cloudnative-pg
+      - longhorn-system/longhorn
+
+  - name: immich
+    namespace: immich
+    createNamespace: true
+    chart: oci://ghcr.io/immich-app/immich-charts/immich
+    version: 0.13.4
+    values:
+      - ./applications/immich/values.yaml
+    needs:
+      - immich/immich-extras
+      - intel-gpu-plugin/intel-gpu-plugin
