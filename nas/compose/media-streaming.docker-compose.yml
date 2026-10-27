@@ -30,7 +30,7 @@ services:
       - traefik.http.services.plex.loadbalancer.server.port=32400
 
   jellyfin:
-    image: linuxserver/jellyfin:10.10.7
+    image: linuxserver/jellyfin:10.11.11
     container_name: jellyfin
     restart: unless-stopped
     environment:
