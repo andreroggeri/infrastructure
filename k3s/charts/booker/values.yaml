@@ -1,7 +1,7 @@
 # Stock Python image; deps are pip-installed at start (no custom image / registry).
 image:
   repository: python
-  tag: "3.12-slim"
+  tag: "3.15-slim"
   pullPolicy: IfNotPresent
 
 # Non-secret config -> ConfigMap env. Secrets (credentials, apprise) come from the
