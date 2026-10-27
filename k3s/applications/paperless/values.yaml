@@ -138,4 +138,4 @@ extraManifests:
       name: redis
     spec:
       kubernetesConfig:
-        image: quay.io/opstree/redis:v7.4.11
+        image: quay.io/opstree/redis:v8.10.1
