@@ -13,16 +13,6 @@ backup:
   # 22:00 São Paulo, before Longhorn's 03:00 run.
   schedule: "0 22 * * *"
   targets:
-    # Covers NAS compose apps (paperless documents, etc.) until they move to
-    # k3s and Longhorn. Drop once the compose stacks are gone.
-    - name: docker-volumes
-      hostPath: /data/docker/lib/volumes
-      mountPath: /mnt/docker-volumes
-      tag: docker-volumes
-      excludes:
-        - "*.tmp"
-        - "**/cache/**"
-        - "**/immich_immich_model_cache/**"
     # k3s Immich (fresh library, 2026-10).
     - name: immich-library
       hostPath: /archive/data/immich
