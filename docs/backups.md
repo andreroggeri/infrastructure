@@ -88,7 +88,7 @@ a second system for little gain at this size.
 | beszel | `beszel-hub` | Metrics history, alert rules, the Telegram link and the Pocket ID login setup. Labelled via the chart |
 | plex | `plex-config` | Library database, watch history, metadata. Media itself is on `/archive/media` (not backed up). Labelled via the chart |
 | jellyfin | `jellyfin-config` | Users, watch state, metadata. Media is on `/archive/media` (not backed up). Labelled via the chart |
-| media | `radarr-config`, `sonarr-config`, `prowlarr-config`, `bazarr-config`, `transmission-config`, `seerr-config`, `overseerr-config` (stopped; pre-Seerr copy) | App settings, history, indexer setup, torrent list. Downloads and media are on `/archive` (not backed up). Labelled via the chart |
+| media | `radarr-config`, `sonarr-config`, `prowlarr-config`, `bazarr-config`, `transmission-config`, `seerr-config` | App settings, history, indexer setup, torrent list. Downloads and media are on `/archive` (not backed up). Labelled via the chart |
 | immich | `immich-database-1` | Immich's Postgres: albums, faces, people, metadata. Photos are on `/archive/data/immich` (restic, below). Labelled via `inheritedMetadata` |
 
 About 5 GiB of real data in total (2026-10-21).
@@ -193,3 +193,4 @@ file. If backed up, add the volume to the `backup` recurring-job group.
 |---|---|---|
 | Open WebUI | 2026-10-23 (unused) | `open-webui` volume, 2026-10-23 06:09 UTC. Restore it in the Longhorn UI (Backups) if ever needed. Old backups of removed volumes are not pruned automatically. |
 | n8n (+ n8n-mcp) | 2026-10-26 (unused) | `db-1` (workflows, credentials): backup `n8n-final-95e12232`, 2026-10-26 21:08 UTC. `n8n` (data dir): nightly backup `backup-012dc7871a314c48`, 2026-10-26 06:01 UTC. The encryption key for the credentials was in sealed secret `n8n-encryption-key-secret` (see git history before removal). |
+| Overseerr | 2026-10-29 (replaced by Seerr) | `overseerr-config` volume, nightly backup of 2026-10-26. Seerr migrated its data. |

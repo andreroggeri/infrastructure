@@ -48,13 +48,6 @@ apps:
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:2.6.5
     port: 9696
-  # Archived upstream (2026-02), replaced by seerr below. Stopped; its volume
-  # is the pre-migration backup. Remove once Seerr has run for a while.
-  overseerr:
-    image: lscr.io/linuxserver/overseerr:1.35.0
-    port: 5055
-    replicas: 0
-    ingress: false
   # Successor of Overseerr. Migrated its config on first start (2026-10-26).
   seerr:
     image: ghcr.io/seerr-team/seerr:v3.5.1

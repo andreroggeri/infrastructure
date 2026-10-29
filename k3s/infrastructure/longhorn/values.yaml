@@ -13,7 +13,14 @@ defaultBackupStore:
   backupTarget: s3://roggeri-nas-backups@us-east-005/longhorn/
   backupTargetCredentialSecret: longhorn-b2
 
+# Only alexandria and ubuntu hold replicas (k3s-node-01 has a small disk and
+# scheduling off), so 3 replicas could never all be placed and every new
+# volume showed as degraded.
+persistence:
+  defaultClassReplicaCount: 2
+
 defaultSettings:
+  defaultReplicaCount: '{"v1":"2","v2":"2"}'
   # Move volumes to the current engine image on their own, one volume per node
   # at a time, so chart upgrades don't leave volumes on old engines.
   concurrentAutomaticEngineUpgradePerNodeLimit: 1
