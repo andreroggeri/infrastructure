@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Personal homelab infrastructure across three layers:
 - **K3s cluster** — Kubernetes workloads via Helmfile (`k3s/`)
-- **NAS** — Docker Compose stacks for media, photos, monitoring (`nas/compose/`)
+- **NAS** — node `alexandria` in the K3s cluster; its disks (`/archive`, `/data`) are used through hostPath
 - **Ansible** — Provisioning for nodes, VPN, K3s setup (`ansible/`)
 
 ## K3s / Helmfile
@@ -75,4 +75,6 @@ Requires `poetry install` first. All secrets are pulled from 1Password at runtim
 
 ## NAS
 
-Docker Compose stacks in `nas/compose/` are managed manually (no automation). Renovate auto-updates image tags in docker-compose files.
+The NAS (`alexandria`, `ansible@10.8.0.2`) no longer runs Docker Compose apps; everything moved to K3s in 2026-10. Apps that need its disks pin to it (`nodeName`/`nodeSelector` `kubernetes.io/hostname: alexandria`) and mount host paths, e.g. `/archive/media`, `/archive/torrents`, `/archive/data/immich`. Host-path data is backed up by the `restic` release (`k3s/applications/restic/values.yaml`), not Longhorn.
+
+The Intel iGPU is shared through `intel-gpu-plugin` (`gpu.intel.com/i915`, 4 slots, all used by Plex, Jellyfin, Immich server and Immich ML). Pods holding a slot must use the `Recreate` strategy, since a rolling update needs a free slot.
