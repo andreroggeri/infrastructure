@@ -120,7 +120,6 @@ Host and mount paths match the old NAS job (`--host alexandria`,
 | Target | Host path | Why |
 |---|---|---|
 | Docker volumes | `/data/docker/lib/volumes` | NAS compose apps not yet moved to k3s. Drop once none are left |
-| Immich (old NAS) | `/archive/data/nas/immich` | Photos (most also in Google Photos) and extracted courses (only copy) |
 | Immich (k3s) | `/archive/data/immich` | Library of the k3s Immich (fresh 2026-10, tag `immich`). Skips `thumbs` and `encoded-video` |
 
 Skipped:
@@ -194,3 +193,4 @@ file. If backed up, add the volume to the `backup` recurring-job group.
 | Open WebUI | 2026-10-23 (unused) | `open-webui` volume, 2026-10-23 06:09 UTC. Restore it in the Longhorn UI (Backups) if ever needed. Old backups of removed volumes are not pruned automatically. |
 | n8n (+ n8n-mcp) | 2026-10-26 (unused) | `db-1` (workflows, credentials): backup `n8n-final-95e12232`, 2026-10-26 21:08 UTC. `n8n` (data dir): nightly backup `backup-012dc7871a314c48`, 2026-10-26 06:01 UTC. The encryption key for the credentials was in sealed secret `n8n-encryption-key-secret` (see git history before removal). |
 | Overseerr | 2026-10-29 (replaced by Seerr) | `overseerr-config` volume, nightly backup of 2026-10-26. Seerr migrated its data. |
+| Immich (old NAS, v1.134) | 2026-10-29 (copied to the k3s Immich with immich-go) | restic snapshots tagged `images` (path `/mnt/immich`) stay in B2; the job no longer adds new ones. Drop them with `restic forget --tag images --prune` once the old library is deleted and you no longer want the fallback. |
