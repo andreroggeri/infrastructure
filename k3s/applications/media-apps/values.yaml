@@ -5,7 +5,7 @@ ingress:
 
 apps:
   transmission:
-    image: lscr.io/linuxserver/transmission:4.1.3
+    image: lscr.io/linuxserver/transmission:4.1.4
     port: 9091
     nodeName: alexandria
     # Incoming peers, on alexandria's LAN IP (192.168.15.4). Matches
