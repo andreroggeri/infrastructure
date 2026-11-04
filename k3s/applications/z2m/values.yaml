@@ -46,6 +46,12 @@ zigbee2mqtt:
   serial:
     port: /dev/ttyUSB0
   timezone: America/Sao_Paulo
+  homeassistant:
+    enabled: true
+    # Must match HA's MQTT birth topic. It was hass/status, so after an HA
+    # MQTT reconnect Z2M never resent cached states and sleepy sensors
+    # (leak sensors) stayed "unknown" in HA.
+    status_topic: homeassistant/status
   mqtt:
     server: mqtt://mosquitto:1883
     user: "!secret.yaml mqtt_user"
