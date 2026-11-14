@@ -46,7 +46,7 @@ apps:
       - hostPath: /archive/media
         mountPath: /data/media
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:2.6.5
+    image: lscr.io/linuxserver/prowlarr:2.7.0
     port: 9696
   # Successor of Overseerr. Migrated its config on first start (2026-10-26).
   seerr:
