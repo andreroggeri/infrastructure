@@ -11,6 +11,6 @@ collections:
 
 roles:
   - name: geerlingguy.security
-    version: 3.0.2
+    version: 3.1.0
   - name: geerlingguy.docker
     version: 8.0.0
