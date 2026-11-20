@@ -1,3 +1,7 @@
 config:
   cloudflare:apiToken:
     secure: AAABAMxddJBLjfaIoHCo8X7IKuaFF234VFLYgQeuNumvFoM68SOJqZUXl6o9YhR5UFYP1vwW6KfYVGg9ttGUStOExZ5oxYDmQjAN6BqicfSWkPtDTQ==
+  aws:region: us-east-1
+  aws:profile: homelab
+  homelab:alexaCfClientSecret:
+    secure: AAABACIcTggRIEa1RjnDKz+zsD7Q6/xAPRP3d5fNCpA4G6gNyQrCPExTA2IVcFNVYuB7t5Ox/+jHQJRkeGk9ttafP5/M19FiLjWQhfOoD9HrfGCHiQY=

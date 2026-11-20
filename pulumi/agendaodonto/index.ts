@@ -1,14 +1,14 @@
 import * as cloudflare from "@pulumi/cloudflare";
 
-// agendaodonto.com: separate project, not homelab. DNS only.
-const zoneId = "826505f342dd094e3817c3a8af3cc354";
+// agendaodonto.com: separate project, not homelab. TODO: import its Oracle servers.
+import { agendaodontoZoneId } from "../shared";
 
 export const agendaodonto_a_wildcard = new cloudflare.DnsRecord("agendaodonto-a-wildcard", {
     content: "204.216.135.129",
     name: "*.agendaodonto.com",
     ttl: 1,
     type: "A",
-    zoneId,
+    zoneId: agendaodontoZoneId,
 }, {
     protect: true,
 });
@@ -17,7 +17,7 @@ export const agendaodonto_a_root = new cloudflare.DnsRecord("agendaodonto-a-root
     name: "agendaodonto.com",
     ttl: 1,
     type: "A",
-    zoneId,
+    zoneId: agendaodontoZoneId,
 }, {
     protect: true,
 });
@@ -26,7 +26,7 @@ export const agendaodonto_a_wildcard_staging = new cloudflare.DnsRecord("agendao
     name: "*.staging.agendaodonto.com",
     ttl: 1,
     type: "A",
-    zoneId,
+    zoneId: agendaodontoZoneId,
 }, {
     protect: true,
 });
@@ -35,7 +35,7 @@ export const agendaodonto_a_staging = new cloudflare.DnsRecord("agendaodonto-a-s
     name: "staging.agendaodonto.com",
     ttl: 1,
     type: "A",
-    zoneId,
+    zoneId: agendaodontoZoneId,
 }, {
     protect: true,
 });
@@ -44,7 +44,7 @@ export const agendaodonto_txt_google_verification = new cloudflare.DnsRecord("ag
     name: "agendaodonto.com",
     ttl: 1,
     type: "TXT",
-    zoneId,
+    zoneId: agendaodontoZoneId,
 }, {
     protect: true,
 });

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@pulumi/aws": "^7.55.0",
     "@pulumi/cloudflare": "^6.24.0",
     "@pulumi/pulumi": "^3.277.0"
   },
