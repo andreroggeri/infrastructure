@@ -5,6 +5,7 @@
   "dependencies": {
     "@pulumi/aws": "^7.55.0",
     "@pulumi/cloudflare": "^6.24.0",
+    "@pulumi/oci": "^5.8.0",
     "@pulumi/pulumi": "^3.277.0"
   },
   "devDependencies": {

@@ -1,5 +1,3 @@
-// Entry point. Each folder is one system; see its index.ts.
+// Entry point: one folder per project.
 import "./homelab";
-import "./alexa";
-import "./wireguard";
 import "./agendaodonto";

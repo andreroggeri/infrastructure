@@ -1,13 +1,13 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as cloudflare from "@pulumi/cloudflare";
-import { accountId } from "../shared";
+import { cloudflareAccountId } from "../../shared";
 
 // Alexa smart home skill → Lambda (us-east-1) → Cloudflare Access → Home Assistant.
 // Imported 2026-11-20. Uses the "homelab" AWS profile (see Pulumi.homelab.yaml).
-const config = new pulumi.Config();
+export const config = new pulumi.Config();
 
-const lambdaRole = new aws.iam.Role("smart-home-lambda-role", {
+export const alexaLambdaRole = new aws.iam.Role("smart-home-lambda-role", {
     assumeRolePolicy: JSON.stringify({
         Version: "2012-10-17",
         Statement: [{ Action: "sts:AssumeRole", Effect: "Allow", Principal: { Service: "lambda.amazonaws.com" } }],
@@ -18,22 +18,22 @@ const lambdaRole = new aws.iam.Role("smart-home-lambda-role", {
 
 new aws.iam.RolePolicyAttachment("smart-home-lambda-basic-execution", {
     policyArn: "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-    role: lambdaRole.name,
+    role: alexaLambdaRole.name,
 }, { protect: true });
 
-const logGroup = new aws.cloudwatch.LogGroup("smart-home-alexa-logs", {
+export const alexaLambdaLogs = new aws.cloudwatch.LogGroup("smart-home-alexa-logs", {
     logGroupClass: "STANDARD",
     name: "/aws/lambda/smart-home-alexa",
 }, { protect: true });
 
 export const alexaFunction = new aws.lambda.Function("smart-home-alexa", {
     name: "smart-home-alexa",
-    code: new pulumi.asset.FileArchive("./alexa/lambda"),
+    code: new pulumi.asset.FileArchive("./homelab/alexa/lambda"),
     handler: "lambda_function.lambda_handler",
     runtime: aws.lambda.Runtime.Python3d13,
     architectures: ["x86_64"],
     packageType: "Zip",
-    role: lambdaRole.arn,
+    role: alexaLambdaRole.arn,
     environment: {
         variables: {
             BASE_URL: "https://home.roggeri.com.br",
@@ -44,7 +44,7 @@ export const alexaFunction = new aws.lambda.Function("smart-home-alexa", {
         },
     },
     ephemeralStorage: { size: 512 },
-    loggingConfig: { logFormat: "Text", logGroup: logGroup.name },
+    loggingConfig: { logFormat: "Text", logGroup: alexaLambdaLogs.name },
     tracingConfig: { mode: "PassThrough" },
 }, { protect: true });
 
@@ -58,8 +58,8 @@ new aws.lambda.Permission("smart-home-alexa-allow-alexa", {
 }, { protect: true });
 
 // Cloudflare side: the service token the Lambda sends, and the Access policy that lets it in.
-export const service_token_alexa_lambda = new cloudflare.ZeroTrustAccessServiceToken("service-token-alexa-lambda", {
-    accountId,
+export const alexaLambdaServiceToken = new cloudflare.ZeroTrustAccessServiceToken("service-token-alexa-lambda", {
+    accountId: cloudflareAccountId,
     // Expires yearly. Refresh it in Zero Trust (Access → Service auth) before it lapses, or Alexa breaks.
     duration: "8760h",
     // Bumped by each "Rotate" in the dashboard; must match Cloudflare or updates fail.
@@ -71,12 +71,12 @@ export const service_token_alexa_lambda = new cloudflare.ZeroTrustAccessServiceT
     protect: true,
 });
 
-export const policy_allow_access_from_the_aws_lambda = new cloudflare.ZeroTrustAccessPolicy("policy-allow-access-from-the-aws-lambda", {
-    accountId,
+export const allowAlexaLambdaPolicy = new cloudflare.ZeroTrustAccessPolicy("policy-allow-access-from-the-aws-lambda", {
+    accountId: cloudflareAccountId,
     decision: "non_identity",
     includes: [{
         serviceToken: {
-            tokenId: service_token_alexa_lambda.id,
+            tokenId: alexaLambdaServiceToken.id,
         },
     }],
     name: "Allow access from the AWS Lambda",
