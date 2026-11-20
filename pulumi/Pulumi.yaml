@@ -1,0 +1,6 @@
+name: homelab
+description: Cloudflare (and later AWS) config for the homelab
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
