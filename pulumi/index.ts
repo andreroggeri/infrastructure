@@ -175,6 +175,9 @@ const service_token_alexa_lambda = new cloudflare.ZeroTrustAccessServiceToken("s
     accountId,
     // Expires yearly. Refresh it in Zero Trust (Access → Service auth) before it lapses, or Alexa breaks.
     duration: "8760h",
+    // Bumped by each "Rotate" in the dashboard; must match Cloudflare or updates fail.
+    clientSecretVersion: 3,
+    previousClientSecretExpiresAt: "2026-11-20T19:35:52Z",
     enabled: true,
     name: "Alexa Skill Lambda",
 }, {
