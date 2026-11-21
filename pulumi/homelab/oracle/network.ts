@@ -80,6 +80,7 @@ export const labSecurityList = new oci.core.SecurityList("oracle-lab-security-li
     },
     ingressSecurityRules: [
         {
+            // WireGuard clients (10.8.0.0/24). Covers traffic from the VPN server into the VCN.
             protocol: "all",
             source: "10.8.0.0/24",
             sourceType: "CIDR_BLOCK",
@@ -118,12 +119,6 @@ export const labSecurityList = new oci.core.SecurityList("oracle-lab-security-li
             description: "Allow all from vcn subnet",
             protocol: "all",
             source: "10.0.0.0/8",
-            sourceType: "CIDR_BLOCK",
-        },
-        {
-            description: "Allow all traffic from my VPN IP",
-            protocol: "all",
-            source: config.requireSecret("oracleAllowedVpnIp"),
             sourceType: "CIDR_BLOCK",
         },
         {

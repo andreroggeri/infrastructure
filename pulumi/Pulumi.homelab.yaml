@@ -7,8 +7,6 @@ config:
     secure: AAABACIcTggRIEa1RjnDKz+zsD7Q6/xAPRP3d5fNCpA4G6gNyQrCPExTA2IVcFNVYuB7t5Ox/+jHQJRkeGk9ttafP5/M19FiLjWQhfOoD9HrfGCHiQY=
   oci:region: sa-vinhedo-1
   oci:auth: SecurityToken
-  oci:configFileProfile: DEFAULT
+  oci:configFileProfile: homelab
   homelab:oracleAllowedHomeIp:
     secure: AAABAExAT/IP9TfdIZPxXztap71LlG6ijU9pDP96dZv31g+GWsH5woYrOl6CJ3b6fQ==
-  homelab:oracleAllowedVpnIp:
-    secure: AAABAP68beWMoreD6ZDSp+jRj8Dtcy/HC6RAYq1GrEKq6RrDY8MOizrZLZqJ0DAozqM=

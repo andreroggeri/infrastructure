@@ -54,7 +54,7 @@ export const vpnServer = new oci.core.Instance("oracle-vpn-server", {
 
 // Public name the WireGuard clients connect to.
 export const vpnServerRecord = new cloudflare.DnsRecord("dns-a-wg-roggeri-com-br", {
-    content: "204.216.165.63",
+    content: vpnServer.publicIp,
     name: "wg.roggeri.com.br",
     ttl: 1,
     type: "A",
