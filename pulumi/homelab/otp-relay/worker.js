@@ -62,6 +62,7 @@ export function mailboxName(to) {
 // time or phone-like run, preferring one next to "código"/"code".
 export function findCode(text) {
   const cleaned = text
+    .replace(/https?:\/\/\S+/g, " ") // links ("answer=184973" in Gmail's footer)
     .replace(/\d{1,4}[\/.-]\d{1,2}[\/.-]\d{1,4}/g, " ") // dates
     .replace(/\d{1,2}:\d{2}(:\d{2})?/g, " "); // times
   const near = cleaned.match(/(?:c[oó]digo|code|token)[^0-9]{0,40}(\d{4,9})\b/i);
