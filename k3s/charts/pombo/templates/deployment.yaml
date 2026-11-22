@@ -39,6 +39,10 @@ spec:
               value: {{ .Values.llm.url | quote }}
             - name: LLM_MODEL
               value: {{ .Values.llm.model | quote }}
+            {{- with .Values.superlogica.loginUrl }}
+            - name: SUPERLOGICA_LOGIN_URL
+              value: {{ . | quote }}
+            {{- end }}
             - name: PAPERLESS_TOKEN
               valueFrom:
                 secretKeyRef:

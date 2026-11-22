@@ -3,3 +3,4 @@ import "./dns";
 import "./public-access";
 import "./alexa";
 import "./oracle";
+import "./otp-relay";

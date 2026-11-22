@@ -24,6 +24,12 @@ llm:
   url: ""
   model: ""
 
+# Condo bookings (reservas handler). Condo/unit IDs default in the app.
+superlogica:
+  # Login service that returns a session (see apps/pombo/login in tiny-apps).
+  # Empty: sessions are pasted in the dashboard.
+  loginUrl: ""
+
 resources: {}
 
 persistence:
