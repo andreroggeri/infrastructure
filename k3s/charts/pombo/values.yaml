@@ -24,11 +24,19 @@ llm:
   url: ""
   model: ""
 
-# Condo bookings (reservas handler). Condo/unit IDs default in the app.
+# Condo bookings (reservas handler). The app refuses to start without the
+# site URL and the condo/unit IDs.
 superlogica:
   # Login service that returns a session (see apps/pombo/login in tiny-apps).
-  # Empty: sessions are pasted in the dashboard.
+  # Empty: sessions renew in-process from the pasted SSO cookies.
   loginUrl: ""
+  # The condo host and the condo/unit IDs together identify a single
+  # apartment, so they live in the sealed secret, never in values.
+  secret:
+    name: ""
+    urlKey: superlogica-url
+    condoIdKey: superlogica-condo-id
+    unitIdKey: superlogica-unit-id
 
 resources: {}
 

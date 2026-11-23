@@ -43,6 +43,21 @@ spec:
             - name: SUPERLOGICA_LOGIN_URL
               value: {{ . | quote }}
             {{- end }}
+            - name: SUPERLOGICA_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.superlogica.secret.name }}
+                  key: {{ .Values.superlogica.secret.urlKey }}
+            - name: SUPERLOGICA_CONDO_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.superlogica.secret.name }}
+                  key: {{ .Values.superlogica.secret.condoIdKey }}
+            - name: SUPERLOGICA_UNIT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.superlogica.secret.name }}
+                  key: {{ .Values.superlogica.secret.unitIdKey }}
             - name: PAPERLESS_TOKEN
               valueFrom:
                 secretKeyRef:

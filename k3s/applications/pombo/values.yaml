@@ -1,12 +1,17 @@
 # Public image built by github.com/andreroggeri/tiny-apps CI; pin the sha- tag.
 image:
-  tag: "sha-c74e9d8"
+  tag: "sha-d92518f"
 
 paperless:
   url: http://paperless.paperless.svc:8000
   tokenSecret:
     name: pombo-secrets
     key: paperless-token
+
+# Condo booking identifiers live in the pombo-secrets sealed secret.
+superlogica:
+  secret:
+    name: pombo-secrets
 
 # Gemma on the llama.cpp router; groups photos into documents.
 llm:
