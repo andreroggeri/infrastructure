@@ -39,6 +39,10 @@ spec:
               value: {{ .Values.llm.url | quote }}
             - name: LLM_MODEL
               value: {{ .Values.llm.model | quote }}
+            {{- if .Values.tesourinha.image.tag }}
+            - name: CROP_URL
+              value: "http://localhost:{{ .Values.tesourinha.port }}"
+            {{- end }}
             {{- with .Values.superlogica.loginUrl }}
             - name: SUPERLOGICA_LOGIN_URL
               value: {{ . | quote }}
@@ -90,6 +94,32 @@ spec:
             # SQLite temp files; the root filesystem is read-only.
             - name: tmp
               mountPath: /tmp
+        {{- with .Values.tesourinha }}
+        {{- if .image.tag }}
+        # Crops photos to the page before pombo files them (apps/tesourinha).
+        - name: tesourinha
+          image: "{{ .image.repository }}:{{ .image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          env:
+            - name: TESOURINHA_LISTEN
+              value: ":{{ .port }}"
+          ports:
+            - name: tesourinha
+              containerPort: {{ .port }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: tesourinha
+            periodSeconds: 30
+          resources:
+            {{- toYaml .resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+        {{- end }}
+        {{- end }}
       volumes:
         - name: data
           persistentVolumeClaim:

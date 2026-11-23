@@ -1,6 +1,6 @@
 # Public image built by github.com/andreroggeri/tiny-apps CI; pin the sha- tag.
 image:
-  tag: "sha-d92518f"
+  tag: "sha-b46434a"
 
 paperless:
   url: http://paperless.paperless.svc:8000
@@ -17,6 +17,18 @@ superlogica:
 llm:
   url: http://192.168.15.5:8080/v1
   model: gemma-4-26B-A4B-it-UD-Q4_K_M
+
+# Crops photos to the page before filing. Pin the sha- tag CI publishes.
+tesourinha:
+  image:
+    tag: "sha-b46434a"
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+    limits:
+      # A 12 MP photo is ~36 MB decoded; a few copies while cropping.
+      memory: 512Mi
 
 resources:
   requests:

@@ -24,6 +24,15 @@ llm:
   url: ""
   model: ""
 
+# Sidecar that crops photos to the page before they're filed. Empty tag: no
+# sidecar, photos are filed as sent.
+tesourinha:
+  image:
+    repository: ghcr.io/andreroggeri/tiny-apps/tesourinha
+    tag: ""
+  port: 8081
+  resources: {}
+
 # Condo bookings (reservas handler). The app refuses to start without the
 # site URL and the condo/unit IDs.
 superlogica:
